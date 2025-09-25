@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "283937135425",
+    "project_id": "maa-yegue",
+    "storage_bucket": "maa-yegue.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:283937135425:android:1b76e5af09b25394c5dfc0",
+        "android_client_info": {
+          "package_name": "com.example.mayegue"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5PIKXCm7-yf3c4Mi6EXRFUCL94uXsctg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

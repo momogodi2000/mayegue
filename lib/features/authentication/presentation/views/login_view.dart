@@ -1,0 +1,247 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
+import '../../../../core/constants/routes.dart';
+import '../viewmodels/auth_viewmodel.dart';
+
+class LoginView extends StatefulWidget {
+  const LoginView({super.key});
+
+  @override
+  State<LoginView> createState() => _LoginViewState();
+}
+
+class _LoginViewState extends State<LoginView> {
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _handleLogin() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    final authViewModel = context.read<AuthViewModel>();
+    final success = await authViewModel.login(
+      emailController.text.trim(),
+      passwordController.text,
+    );
+
+    if (success && mounted) {
+      // Navigation will be handled by the router based on auth state and role
+      authViewModel.navigateToRoleBasedDashboard(context);
+    }
+  }
+
+  Future<void> _handleGoogleSignIn() async {
+    final authViewModel = context.read<AuthViewModel>();
+    final success = await authViewModel.signInWithGoogle();
+
+    if (success && mounted) {
+      // Navigation will be handled by the router based on auth state and role
+      authViewModel.navigateToRoleBasedDashboard(context);
+    }
+  }
+
+  Future<void> _handleFacebookSignIn() async {
+    final authViewModel = context.read<AuthViewModel>();
+    final success = await authViewModel.signInWithFacebook();
+
+    if (success && mounted) {
+      // Navigation will be handled by the router based on auth state and role
+      authViewModel.navigateToRoleBasedDashboard(context);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final authViewModel = context.watch<AuthViewModel>();
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Connexion"),
+        backgroundColor: Colors.redAccent,
+      ),
+      body: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.green, Colors.yellow],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            children: [
+              const Icon(Icons.lock, size: 100, color: Colors.white),
+              const SizedBox(height: 20),
+
+              // Error message display
+              if (authViewModel.errorMessage != null)
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.red.shade100,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.red.shade300),
+                  ),
+                  child: Text(
+                    authViewModel.errorMessage!,
+                    style: const TextStyle(color: Colors.red),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+
+              if (authViewModel.errorMessage != null) const SizedBox(height: 15),
+
+              // Email field
+              TextFormField(
+                controller: emailController,
+                keyboardType: TextInputType.emailAddress,
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(Icons.email),
+                  labelText: "Email",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Entrez votre email";
+                  }
+                  if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+                    return "Entrez un email valide";
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 15),
+
+              // Password field
+              TextFormField(
+                controller: passwordController,
+                obscureText: true,
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(Icons.lock),
+                  labelText: "Mot de passe",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                ),
+                validator: (value) =>
+                    value == null || value.isEmpty ? "Entrez votre mot de passe" : null,
+              ),
+              const SizedBox(height: 25),
+
+              // Login button
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.redAccent,
+                  padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                ),
+                onPressed: authViewModel.isLoading ? null : _handleLogin,
+                child: authViewModel.isLoading
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
+                      )
+                    : const Text(
+                        "Se connecter",
+                        style: TextStyle(fontSize: 18, color: Colors.white),
+                      ),
+              ),
+              const SizedBox(height: 15),
+
+              // Social Sign In Buttons
+              const Text(
+                'Ou continuer avec',
+                style: TextStyle(color: Colors.white, fontSize: 14),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 10),
+
+              // Google Sign In Button
+              ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.black,
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  minimumSize: const Size(double.infinity, 48),
+                ),
+                onPressed: authViewModel.isLoading ? null : _handleGoogleSignIn,
+                icon: Image.asset(
+                  'assets/icons/google.png', // You'll need to add this asset
+                  height: 24,
+                  width: 24,
+                  errorBuilder: (context, error, stackTrace) => const Icon(Icons.g_mobiledata),
+                ),
+                label: const Text('Continuer avec Google'),
+              ),
+              const SizedBox(height: 10),
+
+              // Facebook Sign In Button
+              ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF1877F2),
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  minimumSize: const Size(double.infinity, 48),
+                ),
+                onPressed: authViewModel.isLoading ? null : _handleFacebookSignIn,
+                icon: const Icon(Icons.facebook),
+                label: const Text('Continuer avec Facebook'),
+              ),
+              const SizedBox(height: 15),
+
+              // Register navigation
+              TextButton(
+                onPressed: () {
+                  context.go(Routes.register);
+                },
+                child: const Text(
+                  "Pas encore de compte ? S'inscrire",
+                  style: TextStyle(color: Colors.blue, fontSize: 16),
+                ),
+              ),
+
+              // Forgot password
+              TextButton(
+                onPressed: () {
+                  context.go(Routes.forgotPassword);
+                },
+                child: Text(
+                  "Mot de passe oublié ?",
+                  style: TextStyle(color: Colors.blue[700], fontSize: 14),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
