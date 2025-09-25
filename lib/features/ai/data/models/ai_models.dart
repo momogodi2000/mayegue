@@ -94,9 +94,9 @@ class AiResponseModel {
   }
 }
 
-/// Translation model
-class TranslationModel extends TranslationEntity {
-  const TranslationModel({
+/// AI Translation model for AI-powered translations
+class AiTranslationModel extends TranslationEntity {
+  const AiTranslationModel({
     required super.id,
     required super.userId,
     required super.sourceText,
@@ -108,8 +108,8 @@ class TranslationModel extends TranslationEntity {
     super.metadata,
   });
 
-  factory TranslationModel.fromJson(Map<String, dynamic> json) {
-    return TranslationModel(
+  factory AiTranslationModel.fromJson(Map<String, dynamic> json) {
+    return AiTranslationModel(
       id: json['id'] ?? '',
       userId: json['userId'] ?? '',
       sourceText: json['sourceText'] ?? '',

@@ -185,7 +185,7 @@ class AiRepositoryImpl implements AiRepository {
         targetLanguage: targetLanguage,
       );
 
-      final translation = TranslationModel(
+      final translation = AiTranslationModel(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
         userId: userId,
         sourceText: sourceText,
@@ -315,7 +315,7 @@ class AiRepositoryImpl implements AiRepository {
   @override
   Future<Either<Failure, bool>> saveTranslation(TranslationEntity translation) async {
     try {
-      await firestore.collection('translations').doc(translation.id).set((translation as TranslationModel).toJson());
+      await firestore.collection('translations').doc(translation.id).set((translation as AiTranslationModel).toJson());
       return const Right(true);
     } catch (e) {
       return Left(ServerFailure('Failed to save translation: $e'));
@@ -333,7 +333,7 @@ class AiRepositoryImpl implements AiRepository {
           .get();
 
       final translations = querySnapshot.docs
-          .map((doc) => TranslationModel.fromJson(doc.data()))
+          .map((doc) => AiTranslationModel.fromJson(doc.data()))
           .toList();
 
       return Right(translations);

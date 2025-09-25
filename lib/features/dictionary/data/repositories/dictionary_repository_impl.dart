@@ -418,4 +418,75 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
       return Left(ServerFailure('Unexpected error: ${e.toString()}'));
     }
   }
+
+  @override
+  Future<Either<Failure, List<TranslationEntity>>> getAllTranslations(String wordId) async {
+    try {
+      if (await networkInfo.isConnected) {
+        final result = await remoteDataSource.getAllTranslations(wordId);
+        return Right(result.map((model) => model.toEntity()).toList());
+      } else {
+        return const Left(ConnectionFailure('No internet connection'));
+      }
+    } on Exception catch (failure) {
+      return Left(failure);
+    } catch (e) {
+      return Left(ServerFailure('Unexpected error: ${e.toString()}'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<String>>> getAutocompleteSuggestions(
+    String query,
+    String language, {
+    int limit = 10,
+  }) async {
+    try {
+      if (await networkInfo.isConnected) {
+        final result = await remoteDataSource.getAutocompleteSuggestions(query, language, limit: limit);
+        return Right(result);
+      } else {
+        return const Left(ConnectionFailure('No internet connection'));
+      }
+    } on Exception catch (failure) {
+      return Left(failure);
+    } catch (e) {
+      return Left(ServerFailure('Unexpected error: ${e.toString()}'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Map<String, dynamic>>> getDictionaryStatistics() async {
+    try {
+      if (await networkInfo.isConnected) {
+        final result = await remoteDataSource.getDictionaryStatistics();
+        return Right(result);
+      } else {
+        return const Left(ConnectionFailure('No internet connection'));
+      }
+    } on Exception catch (failure) {
+      return Left(failure);
+    } catch (e) {
+      return Left(ServerFailure('Unexpected error: ${e.toString()}'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<WordEntity>>> getPopularWords({
+    int limit = 20,
+    String? language,
+  }) async {
+    try {
+      if (await networkInfo.isConnected) {
+        final result = await remoteDataSource.getPopularWords(limit: limit, language: language);
+        return Right(result.map((model) => model.toEntity()).toList());
+      } else {
+        return const Left(ConnectionFailure('No internet connection'));
+      }
+    } on Exception catch (failure) {
+      return Left(failure);
+    } catch (e) {
+      return Left(ServerFailure('Unexpected error: ${e.toString()}'));
+    }
+  }
 }

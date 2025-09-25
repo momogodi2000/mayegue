@@ -90,6 +90,15 @@ service cloud.firestore {
       allow create: if isLearner() && request.auth.uid == resource.data.userId;
     }
 
+    // Languages collection - 6 traditional Cameroonian languages
+    match /languages/{languageId} {
+      // Allow read for all users (even non-authenticated for language discovery)
+      allow read: if true;
+
+      // Allow teachers and admins to manage languages
+      allow create, update, delete: if isAuthenticated() && (isTeacher() || isAdmin());
+    }
+
     // Dictionary collection
     match /dictionary/{wordId} {
       // Allow read for all authenticated users

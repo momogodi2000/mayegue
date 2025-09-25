@@ -41,9 +41,11 @@ dependencies:
   dartz: ^0.10.1
   file_picker: ^8.0.0
   permission_handler: ^11.3.0
+  # 🔒 Security
+  crypto: ^3.0.3
   # 🔐 Auth Providers
   google_sign_in: ^6.2.1
-  flutter_facebook_auth: ^6.0.3
+  flutter_facebook_auth: ^6.0.4
   sign_in_with_apple: ^5.0.0
   # 🔧 Environment Variables
   flutter_dotenv: ^5.1.0

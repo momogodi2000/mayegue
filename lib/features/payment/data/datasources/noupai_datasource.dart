@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import '../../../../core/network/dio_client.dart';
 import '../../../../core/constants/payment_constants.dart';
-import '../../../../core/payment/payment_datasource.dart';
+import 'campay_datasource.dart';
 
 /// NouPai implementation
 class NouPaiDataSourceImpl implements PaymentDataSource {

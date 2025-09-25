@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../firebase_options.dart';
-import '../../core/utils/language_seeder.dart';
+import '../core/utils/language_seeder.dart';
 
 /// Command-line script to seed languages data
 /// Run with: dart run lib/scripts/seed_languages.dart
