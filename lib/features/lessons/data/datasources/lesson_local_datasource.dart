@@ -58,7 +58,7 @@ class LessonLocalDataSource implements LessonDataSource {
         title: 'Transcription phonétique',
         content: '[m.bɔ.lɔ] - Bonjour\n[ɔ.sɛ.zɛ.jɛ] - Comment allez-vous ?\n[mɛ.zɛ.jɛ] - Je vais bien',
         order: 2,
-        metadata: {'translation': 'Mbolo - Bonjour\nOsezeye - Comment allez-vous ?\nMezeye - Je vais bien'},
+        metadata: const {'translation': 'Mbolo - Bonjour\nOsezeye - Comment allez-vous ?\nMezeye - Je vais bien'},
         createdAt: now,
       ),
       LessonContentModel(
@@ -68,7 +68,7 @@ class LessonLocalDataSource implements LessonDataSource {
         title: 'Écoutez la prononciation',
         content: 'assets/audio/ewondo_greetings.mp3',
         order: 3,
-        metadata: {'duration': 45},
+        metadata: const {'duration': 45},
         createdAt: now,
       ),
     ];
@@ -90,7 +90,7 @@ class LessonLocalDataSource implements LessonDataSource {
         title: 'Prononciation des chiffres',
         content: '[ó.sɛ] - 1\n[í.bá] - 2\n[í.lá] - 3\n[í.né] - 4\n[í.tán] - 5\n[í.sám] - 6\n[í.ndám] - 7\n[í.móm] - 8\n[í.bwóm] - 9\n[á.wɔm] - 10',
         order: 2,
-        metadata: {'translation': 'Óse, Ibá, Ilá, Iné, Itán, Isám, Indám, Imóm, Ibwóm, Awóm'},
+        metadata: const {'translation': 'Óse, Ibá, Ilá, Iné, Itán, Isám, Indám, Imóm, Ibwóm, Awóm'},
         createdAt: now,
       ),
     ];
@@ -135,7 +135,7 @@ class LessonLocalDataSource implements LessonDataSource {
         status: LessonStatus.available,
         estimatedDuration: 10,
         thumbnailUrl: 'assets/images/lessons/bafang_intro.jpg',
-        contents: [],
+        contents: const [],
         createdAt: now,
         updatedAt: now,
       ),

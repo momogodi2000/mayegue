@@ -1,23 +1,10 @@
 import 'package:dio/dio.dart';
 import '../../../../core/network/dio_client.dart';
 import '../../../../core/constants/payment_constants.dart';
-
-/// CamPay payment datasource
-abstract class CamPayDataSource {
-  Future<Map<String, dynamic>> initiatePayment({
-    required String phoneNumber,
-    required double amount,
-    required String description,
-    required String externalReference,
-  });
-
-  Future<Map<String, dynamic>> checkPaymentStatus(String transactionId);
-
-  Future<bool> validateWebhook(Map<String, dynamic> webhookData);
-}
+import '../../../../core/payment/payment_datasource.dart';
 
 /// CamPay implementation
-class CamPayDataSourceImpl implements CamPayDataSource {
+class CamPayDataSourceImpl implements PaymentDataSource {
   final DioClient dioClient;
 
   CamPayDataSourceImpl(this.dioClient);

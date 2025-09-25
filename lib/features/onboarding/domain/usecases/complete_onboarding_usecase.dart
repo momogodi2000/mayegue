@@ -13,7 +13,7 @@ class CompleteOnboardingUsecase {
     try {
       return await repository.saveOnboardingData(onboardingData);
     } catch (e) {
-      return Left(CacheFailure('Échec de sauvegarde des données d\'onboarding'));
+      return const Left(CacheFailure('Échec de sauvegarde des données d\'onboarding'));
     }
   }
 }
@@ -28,7 +28,7 @@ class GetOnboardingDataUsecase {
     try {
       return await repository.getOnboardingData();
     } catch (e) {
-      return Left(CacheFailure('Échec de récupération des données d\'onboarding'));
+      return const Left(CacheFailure('Échec de récupération des données d\'onboarding'));
     }
   }
 }
@@ -43,7 +43,7 @@ class ClearOnboardingDataUsecase {
     try {
       return await repository.clearOnboardingData();
     } catch (e) {
-      return Left(CacheFailure('Échec de suppression des données d\'onboarding'));
+      return const Left(CacheFailure('Échec de suppression des données d\'onboarding'));
     }
   }
 }

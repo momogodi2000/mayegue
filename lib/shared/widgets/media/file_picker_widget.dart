@@ -41,7 +41,7 @@ class _FilePickerWidgetState extends State<FilePickerWidget> {
       children: [
         Text(
           widget.label,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w500,
             color: AppColors.onSurface,
@@ -54,7 +54,7 @@ class _FilePickerWidgetState extends State<FilePickerWidget> {
           child: Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: widget.enabled ? AppColors.surface : AppColors.onSurface.withOpacity(0.05),
+              color: widget.enabled ? AppColors.surface : AppColors.onSurface.withValues(alpha: 12),
               border: Border.all(
                 color: _errorMessage != null ? AppColors.error : AppColors.border,
               ),
@@ -64,7 +64,7 @@ class _FilePickerWidgetState extends State<FilePickerWidget> {
               children: [
                 Icon(
                   _getFileIcon(),
-                  color: widget.enabled ? AppColors.primary : AppColors.onSurface.withOpacity(0.3),
+                  color: widget.enabled ? AppColors.primary : AppColors.onSurface.withValues(alpha: 76),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -74,7 +74,7 @@ class _FilePickerWidgetState extends State<FilePickerWidget> {
                       Text(
                         _getDisplayText(),
                         style: TextStyle(
-                          color: widget.enabled ? AppColors.onSurface : AppColors.onSurface.withOpacity(0.5),
+                          color: widget.enabled ? AppColors.onSurface : AppColors.onSurface.withValues(alpha: 127),
                           fontSize: 14,
                         ),
                         maxLines: 2,
@@ -85,7 +85,7 @@ class _FilePickerWidgetState extends State<FilePickerWidget> {
                         Text(
                           _getFileInfo(),
                           style: TextStyle(
-                            color: AppColors.onSurface.withOpacity(0.6),
+                            color: AppColors.onSurface.withValues(alpha: 153),
                             fontSize: 12,
                           ),
                         ),
@@ -96,7 +96,7 @@ class _FilePickerWidgetState extends State<FilePickerWidget> {
                 if (_selectedFiles.isNotEmpty)
                   IconButton(
                     onPressed: _clearSelection,
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.clear,
                       color: AppColors.error,
                     ),
@@ -106,7 +106,7 @@ class _FilePickerWidgetState extends State<FilePickerWidget> {
                 else
                   Icon(
                     Icons.attach_file,
-                    color: widget.enabled ? AppColors.primary : AppColors.onSurface.withOpacity(0.3),
+                    color: widget.enabled ? AppColors.primary : AppColors.onSurface.withValues(alpha: 76),
                   ),
               ],
             ),
@@ -116,7 +116,7 @@ class _FilePickerWidgetState extends State<FilePickerWidget> {
           const SizedBox(height: 8),
           Text(
             _errorMessage!,
-            style: TextStyle(
+            style: const TextStyle(
               color: AppColors.error,
               fontSize: 12,
             ),
@@ -256,7 +256,7 @@ class FileUploadCard extends StatefulWidget {
 }
 
 class _FileUploadCardState extends State<FileUploadCard> {
-  bool _isDragging = false;
+  final bool _isDragging = false;
   List<PlatformFile> _uploadedFiles = [];
 
   @override
@@ -264,7 +264,7 @@ class _FileUploadCardState extends State<FileUploadCard> {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: _isDragging ? AppColors.primary.withOpacity(0.05) : AppColors.surface,
+        color: _isDragging ? AppColors.primary.withValues(alpha: 12) : AppColors.surface,
         border: Border.all(
           color: _isDragging ? AppColors.primary : AppColors.border,
           width: _isDragging ? 2 : 1,
@@ -281,7 +281,7 @@ class _FileUploadCardState extends State<FileUploadCard> {
           const SizedBox(height: 16),
           Text(
             _uploadedFiles.isNotEmpty ? 'Fichier(s) téléchargé(s)' : widget.title,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
               color: AppColors.onSurface,
@@ -295,7 +295,7 @@ class _FileUploadCardState extends State<FileUploadCard> {
                 : widget.subtitle,
             style: TextStyle(
               fontSize: 14,
-              color: AppColors.onSurface.withOpacity(0.7),
+              color: AppColors.onSurface.withValues(alpha: 178),
             ),
             textAlign: TextAlign.center,
           ),
@@ -323,12 +323,12 @@ class _FileUploadCardState extends State<FileUploadCard> {
                       _formatFileSize(file.size),
                       style: TextStyle(
                         fontSize: 12,
-                        color: AppColors.onSurface.withOpacity(0.6),
+                        color: AppColors.onSurface.withValues(alpha: 153),
                       ),
                     ),
                     trailing: IconButton(
                       onPressed: () => _removeFile(index),
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.close,
                         color: AppColors.error,
                         size: 20,

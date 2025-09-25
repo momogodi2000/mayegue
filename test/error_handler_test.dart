@@ -7,7 +7,7 @@ void main() {
   group('ErrorHandler', () {
     group('handleException', () {
       test('should convert ServerException to ServerFailure', () {
-        final exception = ServerException('Server error');
+        const exception = ServerException('Server error');
         final failure = ErrorHandler.handleException(exception);
         
         expect(failure, isA<ServerFailure>());
@@ -15,7 +15,7 @@ void main() {
       });
 
       test('should convert AuthException to AuthFailure', () {
-        final exception = AuthException('Auth error');
+        const exception = AuthException('Auth error');
         final failure = ErrorHandler.handleException(exception);
         
         expect(failure, isA<AuthFailure>());
@@ -23,7 +23,7 @@ void main() {
       });
 
       test('should convert NetworkException to NetworkFailure', () {
-        final exception = NetworkException('Network error');
+        const exception = NetworkException('Network error');
         final failure = ErrorHandler.handleException(exception);
         
         expect(failure, isA<NetworkFailure>());
@@ -31,7 +31,7 @@ void main() {
       });
 
       test('should convert ValidationException to ValidationFailure', () {
-        final exception = ValidationException('Validation error');
+        const exception = ValidationException('Validation error');
         final failure = ErrorHandler.handleException(exception);
         
         expect(failure, isA<ValidationFailure>());
@@ -39,7 +39,7 @@ void main() {
       });
 
       test('should convert PaymentException to PaymentFailure', () {
-        final exception = PaymentException('Payment error');
+        const exception = PaymentException('Payment error');
         final failure = ErrorHandler.handleException(exception);
         
         expect(failure, isA<PaymentFailure>());

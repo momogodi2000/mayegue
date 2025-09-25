@@ -45,7 +45,7 @@ class DashboardView extends StatelessWidget {
                     borderRadius: BorderRadius.circular(15),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
+                        color: Colors.black.withValues(alpha: 25),
                         blurRadius: 8,
                         offset: const Offset(0, 4),
                       ),
@@ -92,7 +92,7 @@ class DashboardView extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
+                              color: Colors.black.withValues(alpha: 12),
                               blurRadius: 4,
                               offset: const Offset(0, 2),
                             ),
@@ -178,7 +178,7 @@ class DashboardView extends StatelessWidget {
                       final activity = dashboardData['recentActivity'][index];
                       return ListTile(
                         leading: CircleAvatar(
-                          backgroundColor: activity['color'].withOpacity(0.1),
+                          backgroundColor: activity['color'].withValues(alpha: 25),
                           child: Icon(activity['icon'], color: activity['color']),
                         ),
                         title: Text(activity['title']),

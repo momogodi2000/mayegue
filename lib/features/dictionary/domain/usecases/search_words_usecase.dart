@@ -13,20 +13,32 @@ class SearchWordsUsecase implements UseCase<List<WordEntity>, SearchWordsParams>
 
   @override
   Future<Either<Failure, List<WordEntity>>> call(SearchWordsParams params) async {
-    return await repository.searchWords(params.query, language: params.language);
+    return await repository.searchWords(
+      params.query,
+      sourceLanguage: params.sourceLanguage,
+      targetLanguage: params.targetLanguage,
+      categories: params.categories,
+      maxDifficulty: params.maxDifficulty,
+    );
   }
 }
 
 /// Parameters for SearchWordsUsecase
 class SearchWordsParams extends Equatable {
   final String query;
-  final String? language;
+  final String? sourceLanguage;
+  final String? targetLanguage;
+  final List<String>? categories;
+  final int? maxDifficulty;
 
   const SearchWordsParams({
     required this.query,
-    this.language,
+    this.sourceLanguage,
+    this.targetLanguage,
+    this.categories,
+    this.maxDifficulty,
   });
 
   @override
-  List<Object?> get props => [query, language];
+  List<Object?> get props => [query, sourceLanguage, targetLanguage, categories, maxDifficulty];
 }

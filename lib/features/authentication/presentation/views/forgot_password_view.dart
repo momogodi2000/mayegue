@@ -33,8 +33,8 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
 
     if (success && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Email de réinitialisation envoyé avec succès'),
+        const SnackBar(
+          content: Text('Email de réinitialisation envoyé avec succès'),
           backgroundColor: AppColors.success,
         ),
       );
@@ -107,13 +107,13 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: AppColors.error.withOpacity(0.1),
+                      color: AppColors.error.withValues(alpha: 25),
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: AppColors.error.withOpacity(0.3)),
+                      border: Border.all(color: AppColors.error.withValues(alpha: 76)),
                     ),
                     child: Text(
                       authViewModel.errorMessage!,
-                      style: TextStyle(color: AppColors.error),
+                      style: const TextStyle(color: AppColors.error),
                     ),
                   ),
                 const SizedBox(height: 24),

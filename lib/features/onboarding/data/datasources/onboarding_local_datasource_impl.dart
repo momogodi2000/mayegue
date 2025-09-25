@@ -46,7 +46,7 @@ class OnboardingLocalDataSourceImpl implements OnboardingLocalDataSource {
         final model = OnboardingModel.fromJson(data);
         return Right(model);
       } else {
-        return Left(CacheFailure('Format de données d\'onboarding invalide'));
+        return const Left(CacheFailure('Format de données d\'onboarding invalide'));
       }
     } catch (e) {
       return Left(CacheFailure('Erreur lors de la récupération des données d\'onboarding: $e'));

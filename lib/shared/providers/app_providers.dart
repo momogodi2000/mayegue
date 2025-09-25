@@ -1,10 +1,12 @@
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import '../../core/config/environment_config.dart';
 import '../../core/services/firebase_service.dart';
 import '../../core/services/storage_service.dart';
 import '../../core/services/database_helper.dart';
 import '../../core/services/sync_manager.dart';
+import '../../core/services/ai_service.dart';
 import '../../core/network/dio_client.dart';
 import '../../core/network/network_info.dart';
 import '../../features/authentication/data/datasources/auth_remote_datasource.dart';
@@ -46,13 +48,17 @@ import '../../features/lessons/domain/usecases/progress_usecases.dart';
 import '../../features/lessons/presentation/viewmodels/courses_viewmodel.dart';
 import '../../features/lessons/presentation/viewmodels/lessons_viewmodel.dart';
 import '../../features/dictionary/data/datasources/dictionary_remote_datasource.dart';
-import '../../features/dictionary/data/datasources/dictionary_local_datasource.dart';
-import '../../features/dictionary/data/repositories/dictionary_repository_impl.dart';
 import '../../features/dictionary/domain/repositories/dictionary_repository.dart';
-import '../../features/dictionary/domain/usecases/search_words_usecase.dart';
-import '../../features/dictionary/domain/usecases/get_word_usecase.dart';
-import '../../features/dictionary/domain/usecases/save_favorite_word_usecase.dart';
+import '../../features/dictionary/data/repositories/dictionary_repository_impl.dart';
+import '../../features/dictionary/domain/usecases/search_words.dart';
+import '../../features/dictionary/domain/usecases/get_all_translations.dart';
+import '../../features/dictionary/domain/usecases/get_autocomplete_suggestions.dart';
+import '../../features/dictionary/domain/usecases/increment_usage_count.dart';
+import '../../features/dictionary/domain/usecases/save_to_favorites.dart';
+import '../../features/dictionary/domain/usecases/remove_from_favorites.dart';
+import '../../features/dictionary/domain/usecases/get_favorite_words.dart';
 import '../../features/dictionary/presentation/viewmodels/dictionary_viewmodel.dart';
+import '../../features/dictionary/data/datasources/dictionary_local_datasource.dart';
 import '../../features/gamification/data/datasources/gamification_datasource.dart';
 import '../../features/gamification/data/datasources/gamification_local_datasource.dart';
 import '../../features/gamification/data/repositories/gamification_repository_impl.dart';
@@ -64,6 +70,26 @@ import '../../features/ai/data/repositories/ai_repository_impl.dart';
 import '../../features/ai/domain/repositories/ai_repository.dart';
 import '../../features/ai/domain/usecases/ai_usecases.dart';
 import '../../features/ai/presentation/viewmodels/ai_viewmodels.dart';
+import '../../features/payment/data/datasources/campay_datasource.dart';
+import '../../features/payment/data/datasources/noupai_datasource.dart';
+import '../../features/payment/data/datasources/payment_remote_datasource.dart';
+import '../../features/payment/domain/repositories/payment_repository.dart';
+import '../../features/payment/data/repositories/payment_repository_impl.dart';
+import '../../features/payment/domain/usecases/process_payment_usecase.dart';
+import '../../features/payment/domain/usecases/get_payment_history_usecase.dart';
+import '../../features/payment/domain/usecases/get_payment_status_usecase.dart';
+import '../../features/payment/domain/usecases/create_subscription_usecase.dart';
+import '../../features/payment/domain/usecases/get_user_subscription_usecase.dart';
+import '../../features/payment/domain/usecases/cancel_subscription_usecase.dart';
+import '../../features/payment/domain/usecases/get_subscription_plans_usecase.dart';
+import '../../features/payment/domain/usecases/handle_payment_callback_usecase.dart';
+import '../../features/payment/presentation/viewmodels/payment_viewmodel.dart';
+import '../../features/payment/presentation/viewmodels/subscription_viewmodel.dart';
+import '../../features/languages/data/datasources/language_remote_datasource.dart';
+import '../../features/languages/domain/repositories/language_repository.dart';
+import '../../features/languages/data/repositories/language_repository_impl.dart';
+import '../../features/languages/domain/usecases/language_usecases.dart';
+import '../../features/languages/presentation/viewmodels/language_viewmodel.dart';
 import 'theme_provider.dart';
 
 /// List of all providers for the app
@@ -86,6 +112,9 @@ List<SingleChildWidget> getProviders() {
     ),
     Provider<SyncManager>(
       create: (_) => SyncManager(),
+    ),
+    Provider<GeminiAIService>(
+      create: (_) => GeminiAIService(apiKey: EnvironmentConfig.geminiApiKey),
     ),
     Provider<DioClient>(
       create: (_) => DioClient(),
@@ -392,28 +421,44 @@ List<SingleChildWidget> getProviders() {
         networkInfo: NetworkInfo(Connectivity()),
       ),
     ),
-    ProxyProvider<DictionaryRepository, SearchWordsUsecase>(
-      update: (_, repository, __) => SearchWordsUsecase(repository),
+    ProxyProvider<DictionaryRepository, SearchWords>(
+      update: (_, repository, __) => SearchWords(repository),
     ),
-    ProxyProvider<DictionaryRepository, GetWordUsecase>(
-      update: (_, repository, __) => GetWordUsecase(repository),
+    ProxyProvider<DictionaryRepository, GetAllTranslations>(
+      update: (_, repository, __) => GetAllTranslations(repository),
     ),
-    ProxyProvider<DictionaryRepository, SaveFavoriteWordUsecase>(
-      update: (_, repository, __) => SaveFavoriteWordUsecase(repository),
+    ProxyProvider<DictionaryRepository, GetAutocompleteSuggestions>(
+      update: (_, repository, __) => GetAutocompleteSuggestions(repository),
     ),
-    ProxyProvider3<SearchWordsUsecase, GetWordUsecase, SaveFavoriteWordUsecase, DictionaryViewModel>(
-      update: (_, search, getWord, saveFavorite, __) => DictionaryViewModel(
-        searchWordsUsecase: search,
-        getWordUsecase: getWord,
-        saveFavoriteWordUsecase: saveFavorite,
+    ProxyProvider<DictionaryRepository, IncrementUsageCount>(
+      update: (_, repository, __) => IncrementUsageCount(repository),
+    ),
+    ProxyProvider<DictionaryRepository, SaveToFavorites>(
+      update: (_, repository, __) => SaveToFavorites(repository),
+    ),
+    ProxyProvider<DictionaryRepository, RemoveFromFavorites>(
+      update: (_, repository, __) => RemoveFromFavorites(repository),
+    ),
+    ProxyProvider<DictionaryRepository, GetFavoriteWords>(
+      update: (_, repository, __) => GetFavoriteWords(repository),
+    ),
+    ChangeNotifierProvider<DictionaryViewModel>(
+      create: (context) => DictionaryViewModel(
+        searchWords: context.read<SearchWords>(),
+        getAllTranslations: context.read<GetAllTranslations>(),
+        getAutocompleteSuggestions: context.read<GetAutocompleteSuggestions>(),
+        incrementUsageCount: context.read<IncrementUsageCount>(),
+        saveToFavorites: context.read<SaveToFavorites>(),
+        removeFromFavorites: context.read<RemoveFromFavorites>(),
+        getFavoriteWords: context.read<GetFavoriteWords>(),
+        aiService: context.read<GeminiAIService>(),
       ),
     ),
 
     // AI providers
-    Provider<AiRemoteDataSource>(
-      create: (_) => AiRemoteDataSourceImpl(
-        apiKey: 'your-openai-api-key', // TODO: Move to environment variables
-        baseUrl: 'https://api.openai.com/v1',
+    ProxyProvider<GeminiAIService, AiRemoteDataSource>(
+      update: (_, geminiService, __) => AiRemoteDataSourceImpl(
+        geminiService: geminiService,
       ),
     ),
     ProxyProvider2<AiRemoteDataSource, FirebaseService, AiRepository>(
@@ -486,6 +531,126 @@ List<SingleChildWidget> getProviders() {
     // Dashboard ViewModel
     ProxyProvider<AuthViewModel, DashboardViewModel>(
       update: (_, authViewModel, __) => DashboardViewModel(authViewModel),
+    ),
+
+    // Payment Data Sources
+    ProxyProvider<DioClient, CamPayDataSourceImpl>(
+      update: (_, dioClient, __) => CamPayDataSourceImpl(dioClient),
+    ),
+    ProxyProvider<DioClient, NouPaiDataSourceImpl>(
+      update: (_, dioClient, __) => NouPaiDataSourceImpl(dioClient),
+    ),
+    ProxyProvider3<FirebaseService, CamPayDataSourceImpl, NouPaiDataSourceImpl, PaymentRemoteDataSource>(
+      update: (_, firebaseService, camPayDataSource, nouPaiDataSource, __) =>
+        PaymentRemoteDataSourceImpl(
+          firebaseService: firebaseService,
+          camPayDataSource: camPayDataSource,
+          nouPaiDataSource: nouPaiDataSource,
+        ),
+    ),
+
+    // Payment Repository
+    ProxyProvider<PaymentRemoteDataSource, PaymentRepository>(
+      update: (_, remoteDataSource, __) => PaymentRepositoryImpl(remoteDataSource),
+    ),
+
+    // Payment Use Cases
+    ProxyProvider<PaymentRepository, ProcessPaymentUseCase>(
+      update: (_, repository, __) => ProcessPaymentUseCase(repository),
+    ),
+    ProxyProvider<PaymentRepository, GetPaymentHistoryUseCase>(
+      update: (_, repository, __) => GetPaymentHistoryUseCase(repository),
+    ),
+    ProxyProvider<PaymentRepository, GetPaymentStatusUseCase>(
+      update: (_, repository, __) => GetPaymentStatusUseCase(repository),
+    ),
+    ProxyProvider<PaymentRepository, CreateSubscriptionUseCase>(
+      update: (_, repository, __) => CreateSubscriptionUseCase(repository),
+    ),
+    ProxyProvider<PaymentRepository, GetUserSubscriptionUseCase>(
+      update: (_, repository, __) => GetUserSubscriptionUseCase(repository),
+    ),
+    ProxyProvider<PaymentRepository, CancelSubscriptionUseCase>(
+      update: (_, repository, __) => CancelSubscriptionUseCase(repository),
+    ),
+    ProxyProvider<PaymentRepository, GetSubscriptionPlansUseCase>(
+      update: (_, repository, __) => GetSubscriptionPlansUseCase(repository),
+    ),
+    ProxyProvider<PaymentRepository, HandlePaymentCallbackUseCase>(
+      update: (_, repository, __) => HandlePaymentCallbackUseCase(repository),
+    ),
+
+    // Payment ViewModels
+    ChangeNotifierProvider<PaymentViewModel>(
+      create: (context) => PaymentViewModel(
+        processPaymentUseCase: context.read<ProcessPaymentUseCase>(),
+        getPaymentHistoryUseCase: context.read<GetPaymentHistoryUseCase>(),
+        getPaymentStatusUseCase: context.read<GetPaymentStatusUseCase>(),
+        handlePaymentCallbackUseCase: context.read<HandlePaymentCallbackUseCase>(),
+      ),
+    ),
+    ChangeNotifierProvider<SubscriptionViewModel>(
+      create: (context) => SubscriptionViewModel(
+        getSubscriptionPlansUseCase: context.read<GetSubscriptionPlansUseCase>(),
+        getUserSubscriptionUseCase: context.read<GetUserSubscriptionUseCase>(),
+        createSubscriptionUseCase: context.read<CreateSubscriptionUseCase>(),
+        cancelSubscriptionUseCase: context.read<CancelSubscriptionUseCase>(),
+      ),
+    ),
+
+    // Language Data Sources
+    ProxyProvider<FirebaseService, LanguageRemoteDataSource>(
+      update: (_, firebaseService, __) => LanguageRemoteDataSourceImpl(
+        firestore: firebaseService.firestore,
+      ),
+    ),
+
+    // Language Repository
+    ProxyProvider<LanguageRemoteDataSource, LanguageRepository>(
+      update: (_, remoteDataSource, __) => LanguageRepositoryImpl(
+        remoteDataSource: remoteDataSource,
+      ),
+    ),
+
+    // Language Use Cases
+    ProxyProvider<LanguageRepository, GetAllLanguagesUseCase>(
+      update: (_, repository, __) => GetAllLanguagesUseCase(repository),
+    ),
+    ProxyProvider<LanguageRepository, GetLanguageByIdUseCase>(
+      update: (_, repository, __) => GetLanguageByIdUseCase(repository),
+    ),
+    ProxyProvider<LanguageRepository, SearchLanguagesUseCase>(
+      update: (_, repository, __) => SearchLanguagesUseCase(repository),
+    ),
+    ProxyProvider<LanguageRepository, GetLanguagesByRegionUseCase>(
+      update: (_, repository, __) => GetLanguagesByRegionUseCase(repository),
+    ),
+    ProxyProvider<LanguageRepository, CreateLanguageUseCase>(
+      update: (_, repository, __) => CreateLanguageUseCase(repository),
+    ),
+    ProxyProvider<LanguageRepository, UpdateLanguageUseCase>(
+      update: (_, repository, __) => UpdateLanguageUseCase(repository),
+    ),
+    ProxyProvider<LanguageRepository, DeleteLanguageUseCase>(
+      update: (_, repository, __) => DeleteLanguageUseCase(repository),
+    ),
+    ProxyProvider<LanguageRepository, GetLanguageStatisticsUseCase>(
+      update: (_, repository, __) => GetLanguageStatisticsUseCase(repository),
+    ),
+
+    // Language ViewModel
+    ChangeNotifierProvider<LanguageViewModel>(
+      create: (context) => LanguageViewModel(
+        getAllLanguagesUseCase: context.read<GetAllLanguagesUseCase>(),
+        getLanguageByIdUseCase: context.read<GetLanguageByIdUseCase>(),
+        searchLanguagesUseCase: context.read<SearchLanguagesUseCase>(),
+        getLanguagesByRegionUseCase: context.read<GetLanguagesByRegionUseCase>(),
+        createLanguageUseCase: context.read<CreateLanguageUseCase>(),
+        updateLanguageUseCase: context.read<UpdateLanguageUseCase>(),
+        deleteLanguageUseCase: context.read<DeleteLanguageUseCase>(),
+        getLanguageStatisticsUseCase: context.read<GetLanguageStatisticsUseCase>(),
+        aiService: context.read<GeminiAIService>(),
+      ),
     ),
 
     // TODO: Add more providers for other features

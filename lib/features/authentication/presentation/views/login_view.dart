@@ -81,7 +81,7 @@ class _LoginViewState extends State<LoginView> {
       ),
       body: Container(
         padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [AppColors.primary, AppColors.secondary],
             begin: Alignment.topLeft,
@@ -92,7 +92,7 @@ class _LoginViewState extends State<LoginView> {
           key: _formKey,
           child: ListView(
             children: [
-              Icon(Icons.lock, size: 100, color: AppColors.onPrimary),
+              const Icon(Icons.lock, size: 100, color: AppColors.onPrimary),
               const SizedBox(height: 20),
 
               // Error message display
@@ -106,7 +106,7 @@ class _LoginViewState extends State<LoginView> {
                   ),
                   child: Text(
                     authViewModel.errorMessage!,
-                    style: TextStyle(color: AppColors.error),
+                    style: const TextStyle(color: AppColors.error),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -176,7 +176,7 @@ class _LoginViewState extends State<LoginView> {
                           valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                         ),
                       )
-                    : Text(
+                    : const Text(
                         "Se connecter",
                         style: TextStyle(fontSize: 18, color: AppColors.onPrimary),
                       ),
@@ -184,7 +184,7 @@ class _LoginViewState extends State<LoginView> {
               const SizedBox(height: 15),
 
               // Social Sign In Buttons
-              Text(
+              const Text(
                 'Ou continuer avec',
                 style: TextStyle(color: AppColors.onPrimary, fontSize: 14),
                 textAlign: TextAlign.center,
@@ -250,7 +250,7 @@ class _LoginViewState extends State<LoginView> {
               // Phone Auth Button
               OutlinedButton.icon(
                 style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: AppColors.secondary, width: 2),
+                  side: const BorderSide(color: AppColors.secondary, width: 2),
                   foregroundColor: AppColors.secondary,
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                   shape: RoundedRectangleBorder(
@@ -269,7 +269,7 @@ class _LoginViewState extends State<LoginView> {
                 onPressed: () {
                   context.go(Routes.register);
                 },
-                child: Text(
+                child: const Text(
                   "Pas encore de compte ? S'inscrire",
                   style: TextStyle(color: AppColors.secondary, fontSize: 16),
                 ),
@@ -280,7 +280,7 @@ class _LoginViewState extends State<LoginView> {
                 onPressed: () {
                   context.go(Routes.forgotPassword);
                 },
-                child: Text(
+                child: const Text(
                   "Mot de passe oublié ?",
                   style: TextStyle(color: AppColors.secondary, fontSize: 14),
                 ),

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../domain/entities/word_entity.dart';
+import '../../../../shared/themes/app_theme.dart';
+import '../../../../shared/widgets/app_dimensions.dart';
 import '../viewmodels/dictionary_viewmodel.dart';
-import '../../../../shared/themes/colors.dart';
+import '../widgets/dictionary_word_card.dart';
+import 'word_details_view.dart';
 
+/// Main dictionary search view
 class DictionaryView extends StatefulWidget {
   const DictionaryView({super.key});
 
@@ -13,43 +16,320 @@ class DictionaryView extends StatefulWidget {
 
 class _DictionaryViewState extends State<DictionaryView> {
   final TextEditingController _searchController = TextEditingController();
-  final FocusNode _searchFocusNode = FocusNode();
+  final FocusNode _searchFocus = FocusNode();
 
   @override
   void initState() {
     super.initState();
-    // Request focus on search field when view opens
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _searchFocusNode.requestFocus();
-    });
+    _searchController.addListener(_onSearchChanged);
   }
 
   @override
   void dispose() {
     _searchController.dispose();
-    _searchFocusNode.dispose();
+    _searchFocus.dispose();
     super.dispose();
+  }
+
+  void _onSearchChanged() {
+    final viewModel = context.read<DictionaryViewModel>();
+    viewModel.setSearchQuery(_searchController.text);
+    if (_searchController.text.isNotEmpty) {
+      viewModel.loadSuggestions(_searchController.text);
+    }
+  }
+
+  void _performSearch() {
+    final viewModel = context.read<DictionaryViewModel>();
+    if (_searchController.text.isNotEmpty) {
+      viewModel.performSearch(_searchController.text);
+      _searchFocus.unfocus();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<DictionaryViewModel>();
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Dictionnaire'),
-        backgroundColor: AppColors.primary,
-        foregroundColor: AppColors.onPrimary,
         elevation: 0,
       ),
-      body: Column(
+      body: Consumer<DictionaryViewModel>(
+        builder: (context, viewModel, child) {
+          return Column(
+            children: [
+              // Search header
+              Container(
+                padding: EdgeInsets.all(AppDimensions.spacing),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).cardColor,
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(AppDimensions.borderRadius),
+                    bottomRight: Radius.circular(AppDimensions.borderRadius),
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    // Language selectors
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildLanguageDropdown(
+                            label: 'De',
+                            value: viewModel.selectedSourceLanguage,
+                            onChanged: viewModel.setSourceLanguage,
+                          ),
+                        ),
+                        SizedBox(width: AppDimensions.spacing),
+                        Icon(Icons.arrow_forward, color: AppTheme.primaryColor),
+                        SizedBox(width: AppDimensions.spacing),
+                        Expanded(
+                          child: _buildLanguageDropdown(
+                            label: 'Vers',
+                            value: viewModel.selectedTargetLanguage,
+                            onChanged: viewModel.setTargetLanguage,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: AppDimensions.spacing),
+
+                    // Search field
+                    TextField(
+                      controller: _searchController,
+                      focusNode: _searchFocus,
+                      decoration: InputDecoration(
+                        hintText: 'Rechercher un mot...',
+                        prefixIcon: const Icon(Icons.search),
+                        suffixIcon: _searchController.text.isNotEmpty
+                            ? IconButton(
+                                icon: const Icon(Icons.clear),
+                                onPressed: () {
+                                  _searchController.clear();
+                                  viewModel.clearSearch();
+                                },
+                              )
+                            : null,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(AppDimensions.borderRadius),
+                        ),
+                        filled: true,
+                        fillColor: Theme.of(context).inputDecorationTheme.fillColor,
+                      ),
+                      onSubmitted: (_) => _performSearch(),
+                    ),
+
+                    // Autocomplete suggestions
+                    if (viewModel.suggestions.isNotEmpty && viewModel.isLoadingSuggestions)
+                      Container(
+                        constraints: const BoxConstraints(maxHeight: 200),
+                        margin: EdgeInsets.only(top: AppDimensions.spacing / 2),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).cardColor,
+                          borderRadius: BorderRadius.circular(AppDimensions.borderRadius),
+                          border: Border.all(color: Theme.of(context).dividerColor),
+                        ),
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: viewModel.suggestions.length,
+                          itemBuilder: (context, index) {
+                            final suggestion = viewModel.suggestions[index];
+                            return ListTile(
+                              title: Text(suggestion),
+                              onTap: () {
+                                _searchController.text = suggestion;
+                                _performSearch();
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+
+              // Content area
+              Expanded(
+                child: viewModel.isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : viewModel.error != null
+                        ? _buildErrorView(viewModel)
+                        : viewModel.searchResults.isEmpty && _searchController.text.isNotEmpty
+                            ? _buildEmptyView()
+                            : _buildResultsView(viewModel),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildLanguageDropdown({
+    required String label,
+    required String value,
+    required Function(String) onChanged,
+  }) {
+    return Consumer<DictionaryViewModel>(
+      builder: (context, viewModel, child) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              label,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
+                  ),
+            ),
+            SizedBox(height: AppDimensions.spacing / 4),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: AppDimensions.spacing / 2),
+              decoration: BoxDecoration(
+                border: Border.all(color: Theme.of(context).dividerColor),
+                borderRadius: BorderRadius.circular(AppDimensions.borderRadius / 2),
+              ),
+              child: DropdownButton<String>(
+                value: value,
+                isExpanded: true,
+                underline: const SizedBox(),
+                items: DictionaryViewModel.supportedLanguages.map((lang) {
+                  return DropdownMenuItem<String>(
+                    value: lang['code'],
+                    child: Text(
+                      lang['name'] ?? '',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  );
+                }).toList(),
+                onChanged: (newValue) {
+                  if (newValue != null) {
+                    onChanged(newValue);
+                  }
+                },
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildErrorView(DictionaryViewModel viewModel) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Search bar
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
+          Icon(
+            Icons.error_outline,
+            size: 64,
+            color: Theme.of(context).colorScheme.error,
+          ),
+          SizedBox(height: AppDimensions.spacing),
+          Text(
+            'Erreur',
+            style: Theme.of(context).textTheme.headlineSmall,
+          ),
+          SizedBox(height: AppDimensions.spacing / 2),
+          Text(
+            viewModel.error ?? 'Une erreur est survenue',
+            style: Theme.of(context).textTheme.bodyMedium,
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: AppDimensions.spacing),
+          ElevatedButton(
+            onPressed: () {
+              if (_searchController.text.isNotEmpty) {
+                viewModel.performSearch(_searchController.text);
+              }
+            },
+            child: const Text('Réessayer'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEmptyView() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.search_off,
+            size: 64,
+            color: Theme.of(context).disabledColor,
+          ),
+          SizedBox(height: AppDimensions.spacing),
+          Text(
+            'Aucun résultat',
+            style: Theme.of(context).textTheme.headlineSmall,
+          ),
+          SizedBox(height: AppDimensions.spacing / 2),
+          Text(
+            'Essayez avec un autre mot ou vérifiez l\'orthographe',
+            style: Theme.of(context).textTheme.bodyMedium,
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildResultsView(DictionaryViewModel viewModel) {
+    if (viewModel.searchResults.isEmpty && _searchController.text.isEmpty) {
+      return _buildWelcomeView();
+    }
+
+    return ListView.builder(
+      padding: EdgeInsets.all(AppDimensions.spacing),
+      itemCount: viewModel.searchResults.length,
+      itemBuilder: (context, index) {
+        final word = viewModel.searchResults[index];
+        return DictionaryWordCard(
+          word: word,
+          onTap: () {
+            // Navigate to word details
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => WordDetailsView(wordId: word.id),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildWelcomeView() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.translate,
+            size: 64,
+            color: AppTheme.primaryColor,
+          ),
+          SizedBox(height: AppDimensions.spacing),
+          Text(
+            'Bienvenue dans le dictionnaire',
+            style: Theme.of(context).textTheme.headlineSmall,
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: AppDimensions.spacing / 2),
+          Text(
+            'Recherchez des mots en français ou en anglais\net découvrez leurs traductions dans les langues camerounaises',
+            style: Theme.of(context).textTheme.bodyMedium,
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+}
               color: AppColors.primaryLight,
-              borderRadius: const BorderRadius.only(
+              borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(20),
                 bottomRight: Radius.circular(20),
               ),
@@ -59,10 +339,10 @@ class _DictionaryViewState extends State<DictionaryView> {
               focusNode: _searchFocusNode,
               decoration: InputDecoration(
                 hintText: 'Rechercher un mot...',
-                prefixIcon: Icon(Icons.search, color: AppColors.primary),
+                prefixIcon: const Icon(Icons.search, color: AppColors.primary),
                 suffixIcon: _searchController.text.isNotEmpty
                     ? IconButton(
-                        icon: Icon(Icons.clear, color: AppColors.primary),
+                        icon: const Icon(Icons.clear, color: AppColors.primary),
                         onPressed: () {
                           _searchController.clear();
                           viewModel.clearSearch();
@@ -155,18 +435,18 @@ class _DictionaryViewState extends State<DictionaryView> {
           Icon(
             Icons.search_off,
             size: 64,
-            color: AppColors.onSurface.withOpacity(0.4),
+            color: AppColors.onSurface.withValues(alpha: 102),
           ),
           const SizedBox(height: 16),
           Text(
             'Aucun résultat trouvé pour "${_searchController.text}"',
-            style: TextStyle(fontSize: 16, color: AppColors.onSurface.withOpacity(0.7)),
+            style: TextStyle(fontSize: 16, color: AppColors.onSurface.withValues(alpha: 178)),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8),
           Text(
             'Vérifiez l\'orthographe ou essayez un autre mot',
-            style: TextStyle(fontSize: 14, color: AppColors.onSurface.withOpacity(0.5)),
+            style: TextStyle(fontSize: 14, color: AppColors.onSurface.withValues(alpha: 127)),
             textAlign: TextAlign.center,
           ),
         ],
@@ -194,13 +474,13 @@ class _DictionaryViewState extends State<DictionaryView> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
+          const Icon(
             Icons.book,
             size: 80,
             color: AppColors.primaryLight,
           ),
           const SizedBox(height: 24),
-          Text(
+          const Text(
             'Bienvenue dans le Dictionnaire',
             style: TextStyle(
               fontSize: 24,
@@ -211,13 +491,13 @@ class _DictionaryViewState extends State<DictionaryView> {
           const SizedBox(height: 16),
           Text(
             'Recherchez des mots en français ou dans les langues locales',
-            style: TextStyle(fontSize: 16, color: AppColors.onSurface.withOpacity(0.7)),
+            style: TextStyle(fontSize: 16, color: AppColors.onSurface.withValues(alpha: 178)),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 32),
           Text(
             '💡 Conseil: Tapez au moins 2 caractères pour commencer la recherche',
-            style: TextStyle(fontSize: 14, color: AppColors.onSurface.withOpacity(0.5)),
+            style: TextStyle(fontSize: 14, color: AppColors.onSurface.withValues(alpha: 127)),
             textAlign: TextAlign.center,
           ),
         ],
@@ -253,7 +533,7 @@ class _DictionaryViewState extends State<DictionaryView> {
                   Expanded(
                     child: Text(
                       word.word,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: AppColors.primary,
@@ -268,7 +548,7 @@ class _DictionaryViewState extends State<DictionaryView> {
                     ),
                     child: Text(
                       word.language.toUpperCase(),
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
                         color: AppColors.secondary,

@@ -112,7 +112,7 @@ class _CustomAppBarWithSearchState extends State<CustomAppBarWithSearch> {
               decoration: InputDecoration(
                 hintText: widget.searchHint ?? 'Rechercher...',
                 hintStyle: TextStyle(
-                  color: (widget.foregroundColor ?? AppColors.onPrimary).withOpacity(0.7),
+                  color: (widget.foregroundColor ?? AppColors.onPrimary).withValues(alpha: 178),
                 ),
                 border: InputBorder.none,
               ),

@@ -43,7 +43,7 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
       'createdAt': user.createdAt.toIso8601String(),
       'lastLoginAt': user.lastLoginAt?.toIso8601String(),
       'isEmailVerified': user.isEmailVerified ? 1 : 0,
-      'preferences': user.preferences != null ? user.preferences.toString() : null,
+      'preferences': user.preferences?.toString(),
       'last_sync': DateTime.now().toIso8601String(),
       'is_synced': 1,
     };
@@ -66,7 +66,7 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
       'role': user.role,
       'lastLoginAt': user.lastLoginAt?.toIso8601String(),
       'isEmailVerified': user.isEmailVerified ? 1 : 0,
-      'preferences': user.preferences != null ? user.preferences.toString() : null,
+      'preferences': user.preferences?.toString(),
       'last_sync': DateTime.now().toIso8601String(),
       'is_synced': 1,
     };

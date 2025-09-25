@@ -1,23 +1,10 @@
 import 'package:dio/dio.dart';
 import '../../../../core/network/dio_client.dart';
 import '../../../../core/constants/payment_constants.dart';
-
-/// NouPai payment datasource (fallback)
-abstract class NouPaiDataSource {
-  Future<Map<String, dynamic>> initiatePayment({
-    required String phoneNumber,
-    required double amount,
-    required String description,
-    required String externalReference,
-  });
-
-  Future<Map<String, dynamic>> checkPaymentStatus(String transactionId);
-
-  Future<bool> validateWebhook(Map<String, dynamic> webhookData);
-}
+import '../../../../core/payment/payment_datasource.dart';
 
 /// NouPai implementation
-class NouPaiDataSourceImpl implements NouPaiDataSource {
+class NouPaiDataSourceImpl implements PaymentDataSource {
   final DioClient dioClient;
 
   NouPaiDataSourceImpl(this.dioClient);

@@ -123,4 +123,42 @@ class WordModel extends WordEntity {
       updatedAt: updatedAt,
     );
   }
+
+  /// Create a copy with updated fields
+  @override
+  WordModel copyWith({
+    String? id,
+    String? word,
+    String? language,
+    String? translation,
+    String? pronunciation,
+    String? phonetic,
+    String? definition,
+    String? example,
+    String? audioUrl,
+    List<String>? synonyms,
+    List<String>? antonyms,
+    String? category,
+    int? difficulty,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) {
+    return WordModel(
+      id: id ?? this.id,
+      word: word ?? this.word,
+      language: language ?? this.language,
+      translation: translation ?? this.translation,
+      pronunciation: pronunciation ?? this.pronunciation,
+      phonetic: phonetic ?? this.phonetic,
+      definition: definition ?? this.definition,
+      example: example ?? this.example,
+      audioUrl: audioUrl ?? this.audioUrl,
+      synonyms: synonyms ?? this.synonyms,
+      antonyms: antonyms ?? this.antonyms,
+      category: category ?? this.category,
+      difficulty: difficulty ?? this.difficulty,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
 }

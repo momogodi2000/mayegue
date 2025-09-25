@@ -61,6 +61,8 @@ class AppColors {
   // Surface variants
   static const Color surfaceVariant = Color(0xFFEEEEEE);
   static const Color surfaceVariantDark = Color(0xFF424242);
+  static const Color surfaceContainerHighest = Color(0xFFE6E6E6);
+  static const Color surfaceContainerHighestDark = Color(0xFF4A4A4A);
 
   // Outline colors
   static const Color outline = Color(0xFF9E9E9E);

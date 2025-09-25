@@ -33,7 +33,7 @@ class GamificationLocalDataSource implements GamificationDataSource {
   List<AchievementModel> _getDefaultAchievements() {
     return [
       // Learning achievements
-      AchievementModel(
+      const AchievementModel(
         id: 'first_lesson',
         title: 'Premier pas',
         description: 'Complétez votre première leçon',
@@ -44,7 +44,7 @@ class GamificationLocalDataSource implements GamificationDataSource {
         isUnlocked: false,
         unlockedAt: null,
       ),
-      AchievementModel(
+      const AchievementModel(
         id: 'lesson_master',
         title: 'Maître des leçons',
         description: 'Complétez 10 leçons',
@@ -55,7 +55,7 @@ class GamificationLocalDataSource implements GamificationDataSource {
         isUnlocked: false,
         unlockedAt: null,
       ),
-      AchievementModel(
+      const AchievementModel(
         id: 'course_champion',
         title: 'Champion de cours',
         description: 'Terminez votre premier cours complet',
@@ -68,7 +68,7 @@ class GamificationLocalDataSource implements GamificationDataSource {
       ),
 
       // Streak achievements
-      AchievementModel(
+      const AchievementModel(
         id: 'streak_beginner',
         title: 'Débutant assidu',
         description: 'Maintenez une série de 3 jours',
@@ -79,7 +79,7 @@ class GamificationLocalDataSource implements GamificationDataSource {
         isUnlocked: false,
         unlockedAt: null,
       ),
-      AchievementModel(
+      const AchievementModel(
         id: 'streak_warrior',
         title: 'Guerrier de la série',
         description: 'Maintenez une série de 7 jours',
@@ -90,7 +90,7 @@ class GamificationLocalDataSource implements GamificationDataSource {
         isUnlocked: false,
         unlockedAt: null,
       ),
-      AchievementModel(
+      const AchievementModel(
         id: 'streak_legend',
         title: 'Légende de la série',
         description: 'Maintenez une série de 30 jours',
@@ -103,7 +103,7 @@ class GamificationLocalDataSource implements GamificationDataSource {
       ),
 
       // Points milestones
-      AchievementModel(
+      const AchievementModel(
         id: 'points_100',
         title: 'Centurion',
         description: 'Accumulez 100 points',
@@ -114,7 +114,7 @@ class GamificationLocalDataSource implements GamificationDataSource {
         isUnlocked: false,
         unlockedAt: null,
       ),
-      AchievementModel(
+      const AchievementModel(
         id: 'points_500',
         title: 'Maître des points',
         description: 'Accumulez 500 points',
@@ -140,8 +140,8 @@ class GamificationLocalDataSource implements GamificationDataSource {
           currentLevel: 1,
           experiencePoints: 0,
           pointsToNextLevel: 100,
-          earnedBadges: [],
-          achievements: [],
+          earnedBadges: const [],
+          achievements: const [],
           lessonsCompleted: 0,
           coursesCompleted: 0,
           streakDays: 0,

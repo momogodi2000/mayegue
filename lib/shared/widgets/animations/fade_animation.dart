@@ -86,9 +86,9 @@ class FadeInAnimation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FadeAnimation(
-      child: child,
       duration: duration,
       delay: delay,
+      child: child,
     );
   }
 }

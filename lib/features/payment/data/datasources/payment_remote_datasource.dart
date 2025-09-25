@@ -40,8 +40,8 @@ abstract class PaymentRemoteDataSource {
 /// Firebase implementation of PaymentRemoteDataSource
 class PaymentRemoteDataSourceImpl implements PaymentRemoteDataSource {
   final FirebaseService firebaseService;
-  final CamPayDataSource camPayDataSource;
-  final NouPaiDataSource nouPaiDataSource;
+  final CamPayDataSourceImpl camPayDataSource;
+  final NouPaiDataSourceImpl nouPaiDataSource;
 
   PaymentRemoteDataSourceImpl({
     required this.firebaseService,

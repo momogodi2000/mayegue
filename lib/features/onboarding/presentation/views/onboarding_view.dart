@@ -103,6 +103,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                   _WelcomeStep(viewModel: viewModel),
                   _LanguageSelectionStep(viewModel: viewModel),
                   _PreferencesStep(viewModel: viewModel),
+                  _PermissionsStep(viewModel: viewModel),
                   _CompletionStep(viewModel: viewModel),
                 ],
               ),
@@ -211,17 +212,49 @@ class _LanguageSelectionStep extends StatelessWidget {
           _LanguageOption(
             language: 'ewondo',
             displayName: 'Ewondo',
-            description: 'Langue bantoue parlée au Cameroun',
+            description: 'Langue beti-pahuin parlée dans le Centre',
             isSelected: viewModel.selectedLanguage == 'ewondo',
             onTap: () => viewModel.setSelectedLanguage('ewondo'),
           ),
           const SizedBox(height: 16),
           _LanguageOption(
+            language: 'duala',
+            displayName: 'Duala',
+            description: 'Langue bantoue parlée dans le Littoral',
+            isSelected: viewModel.selectedLanguage == 'duala',
+            onTap: () => viewModel.setSelectedLanguage('duala'),
+          ),
+          const SizedBox(height: 16),
+          _LanguageOption(
             language: 'bafang',
-            displayName: 'Bafang',
-            description: 'Langue bantoue parlée dans l\'Ouest du Cameroun',
+            displayName: 'Bafang/Fe\'efe\'e',
+            description: 'Langue grassfields parlée dans l\'Ouest',
             isSelected: viewModel.selectedLanguage == 'bafang',
             onTap: () => viewModel.setSelectedLanguage('bafang'),
+          ),
+          const SizedBox(height: 16),
+          _LanguageOption(
+            language: 'fulfulde',
+            displayName: 'Fufulde',
+            description: 'Langue niger-congo parlée dans le Nord',
+            isSelected: viewModel.selectedLanguage == 'fulfulde',
+            onTap: () => viewModel.setSelectedLanguage('fulfulde'),
+          ),
+          const SizedBox(height: 16),
+          _LanguageOption(
+            language: 'bassa',
+            displayName: 'Bassa',
+            description: 'Langue bantoue parlée Centre-Littoral',
+            isSelected: viewModel.selectedLanguage == 'bassa',
+            onTap: () => viewModel.setSelectedLanguage('bassa'),
+          ),
+          const SizedBox(height: 16),
+          _LanguageOption(
+            language: 'bamum',
+            displayName: 'Bamum',
+            description: 'Langue grassfields parlée dans l\'Ouest',
+            isSelected: viewModel.selectedLanguage == 'bamum',
+            onTap: () => viewModel.setSelectedLanguage('bamum'),
           ),
         ],
       ),
@@ -401,6 +434,127 @@ class _PreferenceToggle extends StatelessWidget {
   }
 }
 
+class _PermissionsStep extends StatelessWidget {
+  final OnboardingViewModel viewModel;
+
+  const _PermissionsStep({required this.viewModel});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(24.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.security, size: 80, color: Colors.red),
+          const SizedBox(height: 32),
+          Text(
+            viewModel.stepTitles[3],
+            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            viewModel.stepDescriptions[3],
+            style: const TextStyle(fontSize: 16, color: Colors.grey),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 48),
+
+          // Permission requests
+          _PermissionRequest(
+            title: 'Microphone',
+            description: 'Pour enregistrer votre prononciation',
+            isGranted: viewModel.microphonePermissionGranted,
+            onRequest: viewModel.requestMicrophonePermission,
+          ),
+          const SizedBox(height: 16),
+          _PermissionRequest(
+            title: 'Caméra',
+            description: 'Pour les leçons vidéo',
+            isGranted: viewModel.cameraPermissionGranted,
+            onRequest: viewModel.requestCameraPermission,
+          ),
+          const SizedBox(height: 16),
+          _PermissionRequest(
+            title: 'Stockage',
+            description: 'Pour sauvegarder vos progrès',
+            isGranted: viewModel.storagePermissionGranted,
+            onRequest: viewModel.requestStoragePermission,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _PermissionRequest extends StatelessWidget {
+  final String title;
+  final String description;
+  final bool isGranted;
+  final VoidCallback onRequest;
+
+  const _PermissionRequest({
+    required this.title,
+    required this.description,
+    required this.isGranted,
+    required this.onRequest,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: isGranted ? Colors.green : Colors.grey.shade300,
+          width: isGranted ? 2 : 1,
+        ),
+        borderRadius: BorderRadius.circular(12),
+        color: isGranted ? Colors.green.shade50 : Colors.white,
+      ),
+      child: Row(
+        children: [
+          Icon(
+            isGranted ? Icons.check_circle : Icons.mic,
+            color: isGranted ? Colors.green : Colors.grey,
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: isGranted ? Colors.green : Colors.black,
+                  ),
+                ),
+                Text(
+                  description,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: isGranted ? Colors.green.shade700 : Colors.grey,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (!isGranted)
+            ElevatedButton(
+              onPressed: onRequest,
+              child: const Text('Autoriser'),
+            )
+          else
+            const Icon(Icons.check, color: Colors.green),
+        ],
+      ),
+    );
+  }
+}
+
 class _CompletionStep extends StatelessWidget {
   final OnboardingViewModel viewModel;
 
@@ -416,13 +570,13 @@ class _CompletionStep extends StatelessWidget {
           const Icon(Icons.celebration, size: 100, color: Colors.green),
           const SizedBox(height: 32),
           Text(
-            viewModel.stepTitles[3],
+            viewModel.stepTitles[4],
             style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
           Text(
-            viewModel.stepDescriptions[3],
+            viewModel.stepDescriptions[4],
             style: const TextStyle(fontSize: 16, color: Colors.grey),
             textAlign: TextAlign.center,
           ),

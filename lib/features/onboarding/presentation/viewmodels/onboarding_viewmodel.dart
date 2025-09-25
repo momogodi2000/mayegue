@@ -24,6 +24,9 @@ class OnboardingViewModel extends ChangeNotifier {
   String _userName = '';
   bool _notificationsEnabled = true;
   bool _soundEnabled = true;
+  bool _microphonePermissionGranted = false;
+  bool _cameraPermissionGranted = false;
+  bool _storagePermissionGranted = false;
 
   // Getters
   bool get isLoading => _isLoading;
@@ -34,15 +37,19 @@ class OnboardingViewModel extends ChangeNotifier {
   String get userName => _userName;
   bool get notificationsEnabled => _notificationsEnabled;
   bool get soundEnabled => _soundEnabled;
+  bool get microphonePermissionGranted => _microphonePermissionGranted;
+  bool get cameraPermissionGranted => _cameraPermissionGranted;
+  bool get storagePermissionGranted => _storagePermissionGranted;
 
   // Total steps in onboarding
-  static const int totalSteps = 4;
+  static const int totalSteps = 5;
 
   // Step titles
   List<String> get stepTitles => [
     'Bienvenue',
     'Choisissez votre langue',
     'Préférences',
+    'Permissions',
     'Prêt à commencer !'
   ];
 
@@ -51,6 +58,7 @@ class OnboardingViewModel extends ChangeNotifier {
     'Découvrez Mayegue, votre compagnon d\'apprentissage des langues camerounaises.',
     'Sélectionnez la langue que vous souhaitez apprendre.',
     'Personnalisez votre expérience d\'apprentissage.',
+    'Autorisez l\'accès aux fonctionnalités nécessaires.',
     'Votre aventure linguistique commence maintenant !'
   ];
 
@@ -59,7 +67,7 @@ class OnboardingViewModel extends ChangeNotifier {
     _setLoading(true);
     _clearError();
 
-    final result = await getOnboardingStatusUsecase(NoParams());
+    final result = await getOnboardingStatusUsecase(const NoParams());
 
     result.fold(
       (failure) {
@@ -195,5 +203,24 @@ class OnboardingViewModel extends ChangeNotifier {
     } else {
       return 'Une erreur s\'est produite: ${failure.message}';
     }
+  }
+
+  // Permission methods
+  Future<void> requestMicrophonePermission() async {
+    // TODO: Implement permission request using PermissionService
+    _microphonePermissionGranted = true; // Mock for now
+    notifyListeners();
+  }
+
+  Future<void> requestCameraPermission() async {
+    // TODO: Implement permission request
+    _cameraPermissionGranted = true; // Mock for now
+    notifyListeners();
+  }
+
+  Future<void> requestStoragePermission() async {
+    // TODO: Implement permission request
+    _storagePermissionGranted = true; // Mock for now
+    notifyListeners();
   }
 }

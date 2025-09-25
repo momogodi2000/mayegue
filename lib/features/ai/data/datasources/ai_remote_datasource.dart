@@ -1,5 +1,4 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import '../../../../core/services/ai_service.dart';
 
 /// AI Remote Data Source
 abstract class AiRemoteDataSource {
@@ -33,14 +32,12 @@ abstract class AiRemoteDataSource {
   Future<List<Map<String, dynamic>>> getPersonalizedRecommendations(String userId);
 }
 
-/// OpenAI implementation
+/// Gemini AI implementation
 class AiRemoteDataSourceImpl implements AiRemoteDataSource {
-  final String apiKey;
-  final String baseUrl;
+  final GeminiAIService geminiService;
 
   AiRemoteDataSourceImpl({
-    required this.apiKey,
-    this.baseUrl = 'https://api.openai.com/v1',
+    required this.geminiService,
   });
 
   @override
@@ -50,45 +47,28 @@ class AiRemoteDataSourceImpl implements AiRemoteDataSource {
     required List<Map<String, dynamic>> conversationHistory,
   }) async {
     try {
-      final messages = [
-        {
-          'role': 'system',
-          'content': 'You are Mayegue, an AI assistant specialized in teaching traditional Cameroonian languages. You help users learn Ewondo and Bafang with cultural context and pronunciation guidance. Be friendly, patient, and culturally sensitive.'
-        },
-        ...conversationHistory.map((msg) => {
-          'role': msg['sender'] == 'user' ? 'user' : 'assistant',
-          'content': msg['content'],
-        }),
-        {
-          'role': 'user',
-          'content': message,
-        }
-      ];
+      // Build context from conversation history
+      final context = conversationHistory.map((msg) => msg['content'] as String).join('\n');
+      final prompt = '''
+You are Mayegue, an AI assistant specialized in teaching traditional Cameroonian languages (Ewondo, Duala, Bafang, Fulfulde, Bassa, Bamum).
+Help users learn these languages with cultural context and pronunciation guidance.
+Be friendly, patient, and culturally sensitive.
 
-      final response = await http.post(
-        Uri.parse('$baseUrl/chat/completions'),
-        headers: {
-          'Authorization': 'Bearer $apiKey',
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode({
-          'model': 'gpt-3.5-turbo',
-          'messages': messages,
-          'max_tokens': 500,
-          'temperature': 0.7,
-        }),
-      );
+Previous conversation:
+$context
 
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        return {
-          'content': data['choices'][0]['message']['content'],
-          'usage': data['usage'],
-          'timestamp': DateTime.now().toIso8601String(),
-        };
-      } else {
-        throw Exception('AI API error: ${response.statusCode}');
-      }
+User message: $message
+
+Respond helpfully in French or the target language as appropriate.
+''';
+
+      final response = await geminiService.generateContent(prompt);
+
+      return {
+        'content': response,
+        'usage': {'total_tokens': response.length ~/ 4}, // Rough estimate
+        'timestamp': DateTime.now().toIso8601String(),
+      };
     } catch (e) {
       // Fallback to mock response for development
       return {
@@ -401,7 +381,7 @@ Role-play this dialogue with a partner.
   }
 
   List<String> _getMockTags(String type, String topic) {
-    final baseTags = ['$type', '$topic'];
+    final baseTags = [type, topic];
     switch (type) {
       case 'lesson':
         return [...baseTags, 'vocabulary', 'grammar', 'practice'];

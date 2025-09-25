@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'core/router.dart';
+import 'core/config/environment_config.dart';
 import 'shared/providers/app_providers.dart';
 import 'shared/themes/app_theme.dart';
 import 'shared/providers/theme_provider.dart';
@@ -11,6 +12,10 @@ import 'l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize environment configuration
+  await EnvironmentConfig.init();
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );

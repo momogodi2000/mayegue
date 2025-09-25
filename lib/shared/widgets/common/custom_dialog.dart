@@ -50,7 +50,7 @@ class CustomDialog extends StatelessWidget {
               ? Text(
                   content!,
                   style: TextStyle(
-                    color: contentColor ?? AppColors.onSurface.withOpacity(0.8),
+                    color: contentColor ?? AppColors.onSurface.withValues(alpha: 204),
                     fontSize: 16,
                   ),
                 )
@@ -116,7 +116,7 @@ class ConfirmationDialog extends StatelessWidget {
         TextButton(
           onPressed: onCancel ?? () => Navigator.of(context).pop(),
           style: TextButton.styleFrom(
-            foregroundColor: cancelButtonColor ?? AppColors.onSurface.withOpacity(0.7),
+            foregroundColor: cancelButtonColor ?? AppColors.onSurface.withValues(alpha: 178),
           ),
           child: Text(cancelText),
         ),

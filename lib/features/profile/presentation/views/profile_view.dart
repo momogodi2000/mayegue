@@ -35,9 +35,9 @@ class ProfilPage extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  CircleAvatar(
+                  const CircleAvatar(
                     radius: 55,
-                    backgroundImage: const NetworkImage(
+                    backgroundImage: NetworkImage(
                       "https://cdn-icons-png.flaticon.com/512/1946/1946429.png",
                     ),
                     backgroundColor: Colors.white,
@@ -52,7 +52,7 @@ class ProfilPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 6),
-                  Text(
+                  const Text(
                     "Apprenant inscrit depuis 2025",
                     style: TextStyle(color: Colors.white70, fontSize: 14),
                   ),
@@ -187,12 +187,12 @@ class _ModifierProfilPageState extends State<ModifierProfilPage> {
           child: Column(
             children: [
               // 🔹 Photo de profil
-              Center(
+              const Center(
                 child: Stack(
                   children: [
                     CircleAvatar(
                       radius: 50,
-                      backgroundImage: const NetworkImage(
+                      backgroundImage: NetworkImage(
                         "https://cdn-icons-png.flaticon.com/512/1946/1946429.png",
                       ),
                     ),
@@ -202,7 +202,7 @@ class _ModifierProfilPageState extends State<ModifierProfilPage> {
                       child: CircleAvatar(
                         radius: 18,
                         backgroundColor: Colors.green,
-                        child: const Icon(Icons.camera_alt,
+                        child: Icon(Icons.camera_alt,
                             color: Colors.white, size: 18),
                       ),
                     ),

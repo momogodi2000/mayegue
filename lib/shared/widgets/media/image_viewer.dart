@@ -40,8 +40,8 @@ class _ImageViewerState extends State<ImageViewer> {
     Widget imageWidget = _hasError
         ? (widget.errorWidget ??
             Container(
-              color: AppColors.error.withOpacity(0.1),
-              child: Icon(
+              color: AppColors.error.withValues(alpha: 25),
+              child: const Icon(
                 Icons.broken_image,
                 color: AppColors.error,
                 size: 48,
@@ -63,7 +63,7 @@ class _ImageViewerState extends State<ImageViewer> {
                             ? loadingProgress.cumulativeBytesLoaded /
                                 loadingProgress.expectedTotalBytes!
                             : null,
-                        valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+                        valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
                       ),
                     ),
                   );
@@ -74,8 +74,8 @@ class _ImageViewerState extends State<ImageViewer> {
               });
               return widget.errorWidget ??
                   Container(
-                    color: AppColors.error.withOpacity(0.1),
-                    child: Icon(
+                    color: AppColors.error.withValues(alpha: 25),
+                    child: const Icon(
                       Icons.broken_image,
                       color: AppColors.error,
                       size: 48,
@@ -120,10 +120,10 @@ class _ImageViewerState extends State<ImageViewer> {
             if (widget.title != null) ...[
               Container(
                 padding: const EdgeInsets.all(8),
-                color: AppColors.surface.withOpacity(0.9),
+                color: AppColors.surface.withValues(alpha: 229),
                 child: Text(
                   widget.title!,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
                     color: AppColors.onSurface,
@@ -181,7 +181,7 @@ class ImageGallery extends StatelessWidget {
             color: AppColors.surface,
             child: Icon(
               Icons.image,
-              color: AppColors.onSurface.withOpacity(0.3),
+              color: AppColors.onSurface.withValues(alpha: 76),
             ),
           ),
         );
@@ -223,7 +223,7 @@ class FullScreenImageViewer extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: Colors.black.withOpacity(0.7),
+        backgroundColor: Colors.black.withValues(alpha: 178),
         foregroundColor: Colors.white,
         title: title != null ? Text(title!) : null,
         leading: IconButton(
@@ -265,7 +265,7 @@ class FullScreenImageViewer extends StatelessWidget {
                     const SizedBox(height: 16),
                     Text(
                       'Erreur de chargement de l\'image',
-                      style: TextStyle(color: Colors.white.withOpacity(0.7)),
+                      style: TextStyle(color: Colors.white.withValues(alpha: 178)),
                     ),
                   ],
                 ),

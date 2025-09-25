@@ -60,4 +60,22 @@ class SubscriptionEntity {
 
   bool get isActive => status == 'active' && endDate.isAfter(DateTime.now());
   bool get isExpired => endDate.isBefore(DateTime.now());
+
+  /// Convert to JSON map
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'userId': userId,
+      'planId': planId,
+      'planName': planName,
+      'price': price,
+      'currency': currency,
+      'interval': interval,
+      'status': status,
+      'startDate': startDate.toIso8601String(),
+      'endDate': endDate.toIso8601String(),
+      'cancelledAt': cancelledAt?.toIso8601String(),
+      'autoRenew': autoRenew,
+    };
+  }
 }

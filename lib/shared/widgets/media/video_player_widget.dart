@@ -121,7 +121,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
               padding: const EdgeInsets.all(12),
               child: Text(
                 widget.title!,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   color: AppColors.onSurface,
@@ -145,14 +145,14 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
           opacity: _showControls || !_controller.value.isPlaying ? 1.0 : 0.0,
           duration: const Duration(milliseconds: 300),
           child: Container(
-            color: Colors.black.withOpacity(0.3),
+            color: Colors.black.withValues(alpha: 76),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 // Play/Pause button
                 Container(
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(0.9),
+                    color: AppColors.primary.withValues(alpha: 229),
                     shape: BoxShape.circle,
                   ),
                   child: IconButton(
@@ -175,8 +175,8 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
                         allowScrubbing: true,
                         colors: VideoProgressColors(
                           playedColor: AppColors.primary,
-                          bufferedColor: AppColors.primary.withOpacity(0.3),
-                          backgroundColor: AppColors.onSurface.withOpacity(0.3),
+                          bufferedColor: AppColors.primary.withValues(alpha: 76),
+                          backgroundColor: AppColors.onSurface.withValues(alpha: 76),
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -185,14 +185,14 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
                         children: [
                           Text(
                             _formatDuration(_controller.value.position),
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: AppColors.onPrimary,
                               fontSize: 12,
                             ),
                           ),
                           Text(
                             _formatDuration(_controller.value.duration),
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: AppColors.onPrimary,
                               fontSize: 12,
                             ),
@@ -302,7 +302,7 @@ class _CompactVideoPlayerState extends State<CompactVideoPlayer> {
             Container(
               width: 120,
               height: 120,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: AppColors.primary,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(8),
@@ -319,7 +319,7 @@ class _CompactVideoPlayerState extends State<CompactVideoPlayer> {
                         ),
                         Container(
                           decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.3),
+                            color: Colors.black.withValues(alpha: 76),
                             shape: BoxShape.circle,
                           ),
                           child: Icon(
@@ -343,7 +343,7 @@ class _CompactVideoPlayerState extends State<CompactVideoPlayer> {
                   children: [
                     Text(
                       widget.title,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
                         color: AppColors.onSurface,
@@ -356,7 +356,7 @@ class _CompactVideoPlayerState extends State<CompactVideoPlayer> {
                       LinearProgressIndicator(
                         value: widget.progress,
                         backgroundColor: AppColors.border,
-                        valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+                        valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
                       ),
                     ],
                   ],

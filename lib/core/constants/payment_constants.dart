@@ -1,13 +1,15 @@
+import '../config/environment_config.dart';
+
 /// Payment and subscription constants
 class PaymentConstants {
   // CamPay
-  static const String campayBaseUrl = 'https://api.campay.net';
-  static const String campayApiKey = 'your_campay_api_key';
-  static const String campaySecret = 'your_campay_secret';
+  static String get campayBaseUrl => EnvironmentConfig.campayBaseUrl;
+  static String get campayApiKey => EnvironmentConfig.campayApiKey;
+  static String get campaySecret => EnvironmentConfig.campaySecret;
 
   // NouPai
-  static const String noupaiBaseUrl = 'https://api.noupai.com';
-  static const String noupaiApiKey = 'your_noupai_api_key';
+  static String get noupaiBaseUrl => EnvironmentConfig.noupaiBaseUrl;
+  static String get noupaiApiKey => EnvironmentConfig.noupaiApiKey;
 
   // Subscription Plans
   static const Map<String, dynamic> freemiumPlan = {

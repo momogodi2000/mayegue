@@ -81,4 +81,28 @@ class TranslationModel extends TranslationEntity {
       createdAt: createdAt,
     );
   }
+
+  /// Create a copy with updated fields
+  @override
+  TranslationModel copyWith({
+    String? id,
+    String? wordId,
+    String? sourceLanguage,
+    String? targetLanguage,
+    String? translation,
+    String? context,
+    bool? isPrimary,
+    DateTime? createdAt,
+  }) {
+    return TranslationModel(
+      id: id ?? this.id,
+      wordId: wordId ?? this.wordId,
+      sourceLanguage: sourceLanguage ?? this.sourceLanguage,
+      targetLanguage: targetLanguage ?? this.targetLanguage,
+      translation: translation ?? this.translation,
+      context: context ?? this.context,
+      isPrimary: isPrimary ?? this.isPrimary,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
 }

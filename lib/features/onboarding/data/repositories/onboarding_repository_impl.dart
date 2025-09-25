@@ -17,7 +17,7 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
       final model = OnboardingModel.fromEntity(data);
       return await localDataSource.saveOnboardingData(model);
     } catch (e) {
-      return Left(CacheFailure('Erreur lors de la sauvegarde des données d\'onboarding'));
+      return const Left(CacheFailure('Erreur lors de la sauvegarde des données d\'onboarding'));
     }
   }
 
@@ -26,7 +26,7 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
     try {
       return await localDataSource.getOnboardingStatus();
     } catch (e) {
-      return Left(CacheFailure('Erreur lors de la récupération du statut d\'onboarding'));
+      return const Left(CacheFailure('Erreur lors de la récupération du statut d\'onboarding'));
     }
   }
 
@@ -39,7 +39,7 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
         (model) => Right(model?.toEntity()),
       );
     } catch (e) {
-      return Left(CacheFailure('Erreur lors de la récupération des données d\'onboarding'));
+      return const Left(CacheFailure('Erreur lors de la récupération des données d\'onboarding'));
     }
   }
 
@@ -48,7 +48,7 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
     try {
       return await localDataSource.clearOnboardingData();
     } catch (e) {
-      return Left(CacheFailure('Erreur lors de la suppression des données d\'onboarding'));
+      return const Left(CacheFailure('Erreur lors de la suppression des données d\'onboarding'));
     }
   }
 }

@@ -57,7 +57,7 @@ class _RegisterViewState extends State<RegisterView> {
       ),
       body: Container(
         padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [AppColors.primary, AppColors.secondary],
             begin: Alignment.topLeft,
@@ -68,7 +68,7 @@ class _RegisterViewState extends State<RegisterView> {
           key: _formKey,
           child: ListView(
             children: [
-              Icon(Icons.school, size: 100, color: AppColors.onPrimary),
+              const Icon(Icons.school, size: 100, color: AppColors.onPrimary),
               const SizedBox(height: 20),
 
               // Error message display
@@ -82,7 +82,7 @@ class _RegisterViewState extends State<RegisterView> {
                   ),
                   child: Text(
                     authViewModel.errorMessage!,
-                    style: TextStyle(color: AppColors.error),
+                    style: const TextStyle(color: AppColors.error),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -217,7 +217,7 @@ class _RegisterViewState extends State<RegisterView> {
                           valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                         ),
                       )
-                    : Text(
+                    : const Text(
                         "S'inscrire",
                         style: TextStyle(fontSize: 18, color: AppColors.onPrimary),
                       ),
@@ -229,7 +229,7 @@ class _RegisterViewState extends State<RegisterView> {
                 onPressed: () {
                   Navigator.of(context).pushReplacementNamed('/login');
                 },
-                child: Text(
+                child: const Text(
                   "Déjà inscrit ? Se connecter",
                   style: TextStyle(color: AppColors.secondary, fontSize: 16),
                 ),

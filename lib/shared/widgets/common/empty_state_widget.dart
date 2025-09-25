@@ -32,12 +32,12 @@ class EmptyStateWidget extends StatelessWidget {
           Icon(
             icon,
             size: 80,
-            color: iconColor ?? AppColors.onSurface.withOpacity(0.4),
+            color: iconColor ?? AppColors.onSurface.withValues(alpha: 102),
           ),
           const SizedBox(height: 24),
           Text(
             title,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
               color: AppColors.onSurface,
@@ -50,7 +50,7 @@ class EmptyStateWidget extends StatelessWidget {
               message!,
               style: TextStyle(
                 fontSize: 16,
-                color: AppColors.onSurface.withOpacity(0.7),
+                color: AppColors.onSurface.withValues(alpha: 178),
               ),
               textAlign: TextAlign.center,
             ),

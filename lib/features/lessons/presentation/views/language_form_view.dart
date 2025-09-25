@@ -70,7 +70,7 @@ class FormulaireLanguePage extends StatelessWidget {
                 onPressed: () {
                   // TODO: Rediriger vers paiement PayPal
                 },
-                icon: Icon(Icons.payment, color: Colors.white),
+                icon: const Icon(Icons.payment, color: Colors.white),
                 label: const Text("Payer pour continuer"),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.orangeAccent,

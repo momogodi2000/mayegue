@@ -70,7 +70,7 @@ class _PhoneAuthViewState extends State<PhoneAuthView> {
       ),
       body: Container(
         padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [AppColors.primaryLight, AppColors.surface],
             begin: Alignment.topLeft,
@@ -151,13 +151,13 @@ class _PhoneAuthViewState extends State<PhoneAuthView> {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: AppColors.error.withOpacity(0.1),
+                color: AppColors.error.withValues(alpha: 25),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: AppColors.error.withOpacity(0.3)),
+                border: Border.all(color: AppColors.error.withValues(alpha: 76)),
               ),
               child: Text(
                 authViewModel.errorMessage!,
-                style: TextStyle(color: AppColors.error),
+                style: const TextStyle(color: AppColors.error),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -242,13 +242,13 @@ class _PhoneAuthViewState extends State<PhoneAuthView> {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: AppColors.error.withOpacity(0.1),
+                color: AppColors.error.withValues(alpha: 25),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: AppColors.error.withOpacity(0.3)),
+                border: Border.all(color: AppColors.error.withValues(alpha: 76)),
               ),
               child: Text(
                 authViewModel.errorMessage!,
-                style: TextStyle(color: AppColors.error),
+                style: const TextStyle(color: AppColors.error),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -278,7 +278,7 @@ class _PhoneAuthViewState extends State<PhoneAuthView> {
                 _isOtpSent = false;
               });
             },
-            child: Text(
+            child: const Text(
               'Changer de numéro',
               style: TextStyle(color: AppColors.primary),
             ),

@@ -1012,8 +1012,158 @@ SEMAINES 21-22: 🚀 Déploiement + Lancement
 
 ---
 
+## 🌍 **INTEGRATION LANGUES TRADITIONNELLES CAMEROUNAISES**
+
+### ✅ **Langues Identifiées et Modélisées**
+- [x] **Ewondo (Beti-Pahuin)** - Central region primary language
+- [x] **Duala (Coastal Bantu)** - Littoral commercial language  
+- [x] **Bafang/Fe'efe'e (Grassfields)** - Western highlands language
+- [x] **Fufulde (Niger-Congo)** - Northern pastoral language
+- [x] **Bassa (A40 Bantu)** - Central-Littoral traditional language
+- [x] **Bamum (Grassfields)** - Western cultural heritage language
+
+### ✅ **Architecture Technique Implémentée**
+- [x] **Modèle de données Firebase** - Collection `languages` avec champs complets
+- [x] **Repository pattern** - LanguageRepository avec toutes les opérations CRUD
+- [x] **Use cases** - GetAllLanguages, SearchLanguages, CreateLanguage, etc.
+- [x] **ViewModel** - LanguageViewModel avec gestion d'état et recherche
+- [x] **UI Components** - LanguageCard, LanguagesListView
+- [x] **Service Gemini AI** - Intégration pour génération de contenu éducatif
+
+### ✅ **Fonctionnalités IA Implémentées**
+- [x] **Génération de leçons** - Contenu pédagogique personnalisé
+- [x] **Traduction assistée** - Aide à la traduction avec contexte culturel
+- [x] **Guide de prononciation** - Transcription IPA et descriptions audio
+- [x] **Statistiques linguistiques** - Insights sur l'état des langues
+- [x] **Génération de quiz** - Questions à choix multiples
+
+### 📋 **Tâches Restantes - Priorité Haute**
+- [x] **Script de peuplement** - Créé `lib/scripts/seed_languages.dart` pour ajouter les 6 langues
+- [ ] **Exécution du script** - Lancer `dart run lib/scripts/seed_languages.dart` pour peupler Firebase
+- [ ] **Interface d'administration** - Vue pour gérer les langues (ajout/modification)
+- [ ] **Intégration dans l'onboarding** - Sélection de langue maternelle lors de l'inscription
+- [ ] **Navigation et routing** - Ajouter routes pour les vues de langues
+- [ ] **Service de localisation** - Détection automatique de la région utilisateur
+- [ ] **Cache offline** - Stockage local des données linguistiques
+- [ ] **Synchronisation Firebase** - Gestion des conflits et offline-first
+- [ ] **Tests unitaires** - Couverture pour tous les use cases et ViewModels
+- [ ] **Analytics linguistiques** - Tracking de l'utilisation des langues
+- [ ] **Multimédia intégré** - Audio/vidéo pour prononciation et leçons
+
+### 🔧 **Configuration Requise**
+**Variables d'environnement:**
+- `GEMINI_API_KEY` - Clé API Google Gemini AI
+- `FIREBASE_PROJECT_ID` - ID du projet Firebase
+
+**Scripts de déploiement:**
+```bash
+# Peupler la base de données avec les langues camerounaises
+dart run lib/scripts/seed_languages.dart
+```
+
+**Permissions supplémentaires:**
+- Accès microphone (prononciation)
+- Stockage local (cache offline)
+
+---
+
 ## �📞 **CONTACT ET SUPPORT**
 
 **Cette analyse constitue une feuille de route complète pour finaliser l'application mobile d'apprentissage des langues traditionnelles camerounaises selon les spécifications du cahier des charges.**
 
-*Dernière mise à jour: 25 septembre 2025*
+*Dernière mise à jour: 25 septembre 2025 - Intégration langues traditionnelles camerounaises*
+
+🔹 Updated & Regenerated Prompt Message
+
+Traditional Cameroonian Languages Integration – System Plan
+
+Languages to Support & Store in Firebase DB:
+
+Ewondo (Beti-Pahuin): Central region primary language.
+
+Duala (Coastal Bantu): Littoral commercial language.
+
+Bafang/Fe'efe'e (Grassfields): Western highlands language.
+
+Fulfulde (Niger-Congo): Northern pastoral language.
+
+Bassa (A40 Bantu): Central-Littoral traditional language.
+
+Bamum (Grassfields): Western cultural heritage language.
+
+Database Model (Firebase Firestore Suggested):
+Collection: languages
+
+{
+  "id": "auto-generated",
+  "name": "Ewondo",
+  "group": "Beti-Pahuin",
+  "region": "Central",
+  "type": "Primary",
+  "status": "active",
+  "createdAt": "timestamp",
+  "updatedAt": "timestamp"
+}
+
+
+Each language entry should store:
+
+name → Language name
+
+group → Linguistic family/cluster
+
+region → Geographical usage region
+
+type → Role (primary, commercial, heritage, etc.)
+
+status → active/inactive
+
+timestamps
+
+AI Integration (Gemini AI):
+
+Language Processing: Use Gemini AI for text translation, contextual understanding, and cultural preservation insights.
+
+Dynamic Support: Allow users to type or speak in their local language → system auto-detects and maps to Firebase model.
+
+Extensions: Gemini AI can help provide missing vocabulary mappings, dialect nuances, and training datasets.
+
+Task Flow:
+
+✅ Define the six languages.
+
+✅ Map linguistic metadata (name, group, region, type).
+
+🔄 Create Firebase DB schema (languages collection).
+
+🔄 Integrate Gemini AI for language handling (translation, recognition, enrichment).
+
+🔲 Build UI module for switching/using these languages.
+
+🔲 Test storage + AI enrichment end-to-end.
+
+🔹 Suggested docs/todo.md Update
+# Project TODO – Traditional Cameroonian Languages Integration
+
+## ✅ Completed
+- Identified six core traditional Cameroonian languages:
+  - Ewondo (Beti-Pahuin) – Central
+  - Duala (Coastal Bantu) – Littoral
+  - Bafang/Fe'efe'e (Grassfields) – West
+  - Fulfulde (Niger-Congo) – North
+  - Bassa (A40 Bantu) – Central-Littoral
+  - Bamum (Grassfields) – West
+- Defined metadata fields: name, group, region, type, status, timestamps.
+- Selected **Gemini AI** as language AI model.
+
+## 🔄 In Progress
+- Firebase Firestore schema setup for `languages` collection.
+- Gemini AI integration pipeline for:
+  - Auto-detection of input language
+  - Contextual translation & processing
+  - Vocabulary & dialect enrichment.
+
+## 🔲 Remaining
+- Build UI module for language switching.
+- Test full flow (Firebase + Gemini AI + UI).
+- Documentation for contributors.

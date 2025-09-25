@@ -21,6 +21,7 @@ class Routes {
   static const String leaderboard = '/leaderboard';
   static const String achievements = '/achievements';
   static const String dashboard = '/dashboard';
+  static const String languages = '/languages';
   static const String adminDashboard = '/admin-dashboard';
   static const String teacherDashboard = '/teacher-dashboard';
   static const String subscriptions = '/subscriptions';

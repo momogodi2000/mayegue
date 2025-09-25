@@ -106,7 +106,7 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
           if (widget.title != null) ...[
             Text(
               widget.title!,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
                 color: AppColors.onSurface,
@@ -145,14 +145,14 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
               Text(
                 _formatDuration(_position),
                 style: TextStyle(
-                  color: AppColors.onSurface.withOpacity(0.7),
+                  color: AppColors.onSurface.withValues(alpha: 178),
                   fontSize: 12,
                 ),
               ),
               Text(
                 _formatDuration(_duration),
                 style: TextStyle(
-                  color: AppColors.onSurface.withOpacity(0.7),
+                  color: AppColors.onSurface.withValues(alpha: 178),
                   fontSize: 12,
                 ),
               ),
@@ -168,14 +168,14 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
               onPressed: () {
                 _audioPlayer.seek(Duration.zero);
               },
-              icon: Icon(
+              icon: const Icon(
                 Icons.replay_10,
                 color: AppColors.primary,
               ),
             ),
             const SizedBox(width: 16),
             Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: AppColors.primary,
                 shape: BoxShape.circle,
               ),
@@ -203,7 +203,7 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
                 final newPosition = _position + const Duration(seconds: 10);
                 _audioPlayer.seek(newPosition);
               },
-              icon: Icon(
+              icon: const Icon(
                 Icons.forward_10,
                 color: AppColors.primary,
               ),
@@ -287,7 +287,7 @@ class _CompactAudioPlayerState extends State<CompactAudioPlayer> {
         child: Row(
           children: [
             Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: AppColors.primary,
                 shape: BoxShape.circle,
               ),
@@ -309,7 +309,7 @@ class _CompactAudioPlayerState extends State<CompactAudioPlayer> {
                 children: [
                   Text(
                     widget.title,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
                       color: AppColors.onSurface,
@@ -322,7 +322,7 @@ class _CompactAudioPlayerState extends State<CompactAudioPlayer> {
                     LinearProgressIndicator(
                       value: widget.progress,
                       backgroundColor: AppColors.border,
-                      valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+                      valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
                     ),
                   ],
                 ],

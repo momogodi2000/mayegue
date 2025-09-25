@@ -9,10 +9,14 @@ import '../features/authentication/presentation/views/forgot_password_view.dart'
 import '../features/authentication/presentation/views/phone_auth_view.dart';
 import '../features/onboarding/presentation/views/splash_view.dart';
 import '../features/onboarding/presentation/views/onboarding_view.dart';
-import '../features/dashboard/presentation/views/dashboard_view.dart';
 import '../features/profile/presentation/views/profile_view.dart';
 import '../features/lessons/presentation/views/courses_view.dart';
 import '../features/dictionary/presentation/views/dictionary_view.dart';
+import '../features/payment/presentation/views/subscription_plans_view.dart';
+import '../features/payment/presentation/views/payment_view.dart';
+import '../features/payment/presentation/views/payment_success_view.dart';
+import '../features/payment/presentation/views/payment_history_view.dart';
+import '../features/languages/presentation/views/languages_list_view.dart';
 import 'constants/routes.dart';
 
 /// Global auth refresh notifier
@@ -55,6 +59,10 @@ class AppRouter {
             path: Routes.teacherDashboard,
             builder: (context, state) => const _TeacherDashboardPlaceholder(),
           ),
+          GoRoute(
+            path: Routes.languages,
+            builder: (context, state) => const LanguagesListView(),
+          ),
         GoRoute(
           path: Routes.home,
           redirect: (context, state) => Routes.dashboard, // Redirect home to dashboard
@@ -74,6 +82,28 @@ class AppRouter {
         GoRoute(
           path: Routes.community,
           builder: (context, state) => const _CommunityPlaceholder(),
+        ),
+        GoRoute(
+          path: Routes.subscriptions,
+          builder: (context, state) => const SubscriptionPlansView(),
+        ),
+        GoRoute(
+          path: Routes.payment,
+          builder: (context, state) {
+            final plan = state.extra as Map<String, dynamic>?;
+            return PaymentView(selectedPlan: plan ?? {});
+          },
+        ),
+        GoRoute(
+          path: '${Routes.payment}/success',
+          builder: (context, state) {
+            final plan = state.extra as Map<String, dynamic>?;
+            return PaymentSuccessView(selectedPlan: plan ?? {});
+          },
+        ),
+        GoRoute(
+          path: '${Routes.payment}/history',
+          builder: (context, state) => const PaymentHistoryView(),
         ),
         GoRoute(
           path: Routes.profile,
