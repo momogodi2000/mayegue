@@ -61,8 +61,8 @@ class _IaPageState extends State<IaPage> with SingleTickerProviderStateMixin {
     return _tabController.index == 0
         ? FloatingActionButton(
             onPressed: () => _startNewConversation(context),
-            child: const Icon(Icons.add),
             tooltip: 'New Conversation',
+            child: const Icon(Icons.add),
           )
         : null;
   }

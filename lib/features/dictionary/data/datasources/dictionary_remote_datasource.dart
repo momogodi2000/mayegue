@@ -190,7 +190,7 @@ class DictionaryRemoteDataSourceImpl implements DictionaryRemoteDataSource {
           .get();
 
       return wordsQuery.docs
-          .map((doc) => WordModel.fromFirestore(doc.data() as Map<String, dynamic>, doc.id))
+          .map((doc) => WordModel.fromFirestore(doc.data(), doc.id))
           .toList();
     } catch (e) {
       throw ServerFailure('Failed to get favorite words: ${e.toString()}');

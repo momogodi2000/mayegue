@@ -13,7 +13,7 @@ class ResetPasswordUsecase {
       await repository.sendPasswordResetEmail(email);
       return const Right(null);
     } catch (e) {
-      return Left(AuthFailure('Échec d\'envoi de l\'email de réinitialisation'));
+      return const Left(AuthFailure('Échec d\'envoi de l\'email de réinitialisation'));
     }
   }
 }

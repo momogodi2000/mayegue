@@ -21,9 +21,9 @@ class DashboardView extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             // User progress overview
-            Card(
+            const Card(
               elevation: 2,
-              child: ListTile(
+              child: const ListTile(
                 leading: const Icon(Icons.emoji_events, color: Colors.orange),
                 title: const Text('Progression'),
                 subtitle: const Text('Votre niveau actuel : Débutant'),
@@ -32,25 +32,25 @@ class DashboardView extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             // Quick access menu
-            Row(
+            const Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _DashboardShortcut(
+                const _DashboardShortcut(
                   icon: Icons.menu_book,
                   label: 'Leçons',
                   route: '/lessons',
                 ),
-                _DashboardShortcut(
+                const _DashboardShortcut(
                   icon: Icons.translate,
                   label: 'Dictionnaire',
                   route: '/dictionary',
                 ),
-                _DashboardShortcut(
+                const _DashboardShortcut(
                   icon: Icons.videogame_asset,
                   label: 'Jeux',
                   route: '/games',
                 ),
-                _DashboardShortcut(
+                const _DashboardShortcut(
                   icon: Icons.forum,
                   label: 'Communauté',
                   route: '/community',
@@ -61,12 +61,12 @@ class DashboardView extends StatelessWidget {
             // Achievements
             const Text('Succès récents', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
             const SizedBox(height: 8),
-            Wrap(
+            const Wrap(
               spacing: 8,
               children: [
-                Chip(label: Text('Premier quiz réussi'), avatar: Icon(Icons.check_circle, color: Colors.green)),
-                Chip(label: Text('10 mots appris'), avatar: Icon(Icons.star, color: Colors.yellow)),
-                Chip(label: Text('Profil complété'), avatar: Icon(Icons.person, color: Colors.blue)),
+                Chip(label: const Text('Premier quiz réussi'), avatar: const Icon(Icons.check_circle, color: Colors.green)),
+                Chip(label: const Text('10 mots appris'), avatar: const Icon(Icons.star, color: Colors.yellow)),
+                Chip(label: const Text('Profil complété'), avatar: const Icon(Icons.person, color: Colors.blue)),
               ],
             ),
             const SizedBox(height: 24),

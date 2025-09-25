@@ -294,7 +294,7 @@ class AiRepositoryImpl implements AiRepository {
       final recommendationsData = await remoteDataSource.getPersonalizedRecommendations(userId);
 
       final recommendations = recommendationsData.map((data) => AiLearningRecommendationModel(
-        id: DateTime.now().millisecondsSinceEpoch.toString() + '_${recommendationsData.indexOf(data)}',
+        id: '${DateTime.now().millisecondsSinceEpoch}_${recommendationsData.indexOf(data)}',
         userId: userId,
         type: data['type'] as String,
         title: data['title'] as String,

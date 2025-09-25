@@ -180,7 +180,7 @@ class AuthViewModel extends ChangeNotifier {
     _setLoading(true);
     _clearError();
 
-    final result = await googleSignInUsecase(NoParams());
+    final result = await googleSignInUsecase(const NoParams());
 
     return result.fold(
       (failure) {
@@ -203,7 +203,7 @@ class AuthViewModel extends ChangeNotifier {
     _setLoading(true);
     _clearError();
 
-    final result = await facebookSignInUsecase(NoParams());
+    final result = await facebookSignInUsecase(const NoParams());
 
     return result.fold(
       (failure) {
@@ -226,7 +226,7 @@ class AuthViewModel extends ChangeNotifier {
     _setLoading(true);
     _clearError();
 
-    final result = await appleSignInUsecase(NoParams());
+    final result = await appleSignInUsecase(const NoParams());
 
     return result.fold(
       (failure) {
@@ -332,7 +332,7 @@ class AuthViewModel extends ChangeNotifier {
 
   // Check onboarding status
   Future<void> checkOnboardingStatus() async {
-    final result = await getOnboardingStatusUsecase(NoParams());
+    final result = await getOnboardingStatusUsecase(const NoParams());
 
     result.fold(
       (failure) {

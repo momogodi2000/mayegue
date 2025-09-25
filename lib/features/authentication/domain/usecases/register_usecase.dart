@@ -22,7 +22,7 @@ class RegisterUsecase {
       );
       return Right(result);
     } catch (e) {
-      return Left(AuthFailure('Échec d\'inscription'));
+      return const Left(AuthFailure('Échec d\'inscription'));
     }
   }
 }

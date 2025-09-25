@@ -68,7 +68,7 @@ class AchievementsWidget extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: achievement.isUnlocked
-            ? Theme.of(context).primaryColor.withOpacity(0.1)
+            ? Theme.of(context).primaryColor.withValues(alpha: 0.1)
             : Colors.grey[200],
         borderRadius: BorderRadius.circular(12),
         border: Border.all(

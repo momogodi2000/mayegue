@@ -13,7 +13,7 @@ class LogoutUsecase {
       await repository.signOut();
       return const Right(null);
     } catch (e) {
-      return Left(AuthFailure('Échec de déconnexion'));
+      return const Left(AuthFailure('Échec de déconnexion'));
     }
   }
 }

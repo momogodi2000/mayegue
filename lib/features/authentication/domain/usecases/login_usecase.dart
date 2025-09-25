@@ -17,7 +17,7 @@ class LoginUsecase {
       final result = await repository.signInWithEmailAndPassword(email, password);
       return Right(result);
     } catch (e) {
-      return Left(AuthFailure('Échec de connexion'));
+      return const Left(AuthFailure('Échec de connexion'));
     }
   }
 }

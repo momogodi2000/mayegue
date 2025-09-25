@@ -14,7 +14,7 @@ class GetCurrentUserUsecase {
       final user = await repository.getCurrentUser();
       return Right(user);
     } catch (e) {
-      return Left(AuthFailure('Échec de récupération de l\'utilisateur'));
+      return const Left(AuthFailure('Échec de récupération de l\'utilisateur'));
     }
   }
 }

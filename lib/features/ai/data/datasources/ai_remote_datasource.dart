@@ -307,10 +307,10 @@ class AiRemoteDataSourceImpl implements AiRemoteDataSource {
     switch (type) {
       case 'lesson':
         return '''
-# ${capitalizedTopic} - ${languageName} Lesson
+# $capitalizedTopic - $languageName Lesson
 
 ## Introduction
-Welcome to your personalized ${difficulty} level lesson on ${topic} in ${languageName}.
+Welcome to your personalized $difficulty level lesson on $topic in $languageName.
 
 ## Key Vocabulary
 - Word 1: Definition
@@ -323,7 +323,7 @@ Welcome to your personalized ${difficulty} level lesson on ${topic} in ${languag
 3. Example sentence three.
 
 ## Cultural Notes
-${topic} is important in ${languageName} culture because...
+$topic is important in $languageName culture because...
 
 ## Exercises
 1. Translate the following sentences...
@@ -332,18 +332,18 @@ ${topic} is important in ${languageName} culture because...
 
       case 'exercise':
         return '''
-# ${capitalizedTopic} Practice Exercise
+# $capitalizedTopic Practice Exercise
 
 ## Instructions
-Complete the following exercises to practice ${topic} in ${languageName}.
+Complete the following exercises to practice $topic in $languageName.
 
 ## Fill in the Blanks
 1. ___ (to eat) rice every day.
 2. She ___ (to go) to market.
-3. We ___ (to learn) ${languageName}.
+3. We ___ (to learn) $languageName.
 
 ## Translation Practice
-Translate these sentences to ${languageName}:
+Translate these sentences to $languageName:
 1. I am learning the language.
 2. Where is the market?
 3. Thank you for your help.
@@ -354,7 +354,7 @@ Practice saying these words clearly: word1, word2, word3.
 
       case 'story':
         return '''
-# A Short ${languageName} Story: ${capitalizedTopic}
+# A Short $languageName Story: $capitalizedTopic
 
 Once upon a time in a small village...
 
@@ -375,12 +375,12 @@ The end.
 
       case 'dialogue':
         return '''
-# Everyday Dialogue: ${capitalizedTopic}
+# Everyday Dialogue: $capitalizedTopic
 
-**Person A:** Greeting in ${languageName}
+**Person A:** Greeting in $languageName
 **Person B:** Response
 
-**Person A:** Question about ${topic}
+**Person A:** Question about $topic
 **Person B:** Answer
 
 **Person A:** Follow-up question
@@ -396,12 +396,12 @@ Role-play this dialogue with a partner.
         ''';
 
       default:
-        return 'Generated content for ${type}: ${topic} in ${languageName} (${difficulty} level)';
+        return 'Generated content for $type: $topic in $languageName ($difficulty level)';
     }
   }
 
   List<String> _getMockTags(String type, String topic) {
-    final baseTags = ['${type}', '${topic}'];
+    final baseTags = ['$type', '$topic'];
     switch (type) {
       case 'lesson':
         return [...baseTags, 'vocabulary', 'grammar', 'practice'];

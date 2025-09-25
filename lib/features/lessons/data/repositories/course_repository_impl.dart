@@ -3,7 +3,6 @@ import '../../../../core/errors/failures.dart';
 import '../../domain/entities/course.dart';
 import '../../domain/repositories/course_repository.dart';
 import '../datasources/course_local_datasource.dart';
-import '../models/course_model.dart';
 
 /// Course repository implementation
 class CourseRepositoryImpl implements CourseRepository {
