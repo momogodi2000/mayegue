@@ -1,6 +1,8 @@
 /// Application routes
 class Routes {
   static const String splash = '/';
+  static const String termsAndConditions = '/terms-and-conditions';
+  static const String landing = '/landing';
   static const String onboarding = '/onboarding';
   static const String login = '/login';
   static const String register = '/register';

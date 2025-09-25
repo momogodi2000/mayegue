@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import '../../../authentication/presentation/viewmodels/auth_viewmodel.dart';
 
 /// Splash screen with Lottie animation
@@ -50,8 +51,19 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
 
   void _navigateToNextScreen() {
     final authViewModel = context.read<AuthViewModel>();
-    authViewModel.checkOnboardingStatus();
-    // Navigation will be handled by the router based on auth state
+
+    // Check if user has already accepted terms and conditions
+    // For now, we'll always show terms on first launch
+    // In production, you'd check SharedPreferences or user preferences
+
+    if (authViewModel.isAuthenticated) {
+      // If already authenticated, check onboarding status
+      authViewModel.checkOnboardingStatus();
+      // Navigation will be handled by the router based on auth state
+    } else {
+      // First time users go to terms and conditions
+      context.go('/terms-and-conditions');
+    }
   }
 
   @override

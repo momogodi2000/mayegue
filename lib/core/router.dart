@@ -8,6 +8,8 @@ import '../features/authentication/presentation/views/register_view.dart';
 import '../features/authentication/presentation/views/forgot_password_view.dart';
 import '../features/authentication/presentation/views/phone_auth_view.dart';
 import '../features/onboarding/presentation/views/splash_view.dart';
+import '../features/onboarding/presentation/views/terms_and_conditions_view.dart';
+import '../features/onboarding/presentation/views/landing_view.dart';
 import '../features/onboarding/presentation/views/onboarding_view.dart';
 import '../features/profile/presentation/views/profile_view.dart';
 import '../features/lessons/presentation/views/courses_view.dart';
@@ -114,10 +116,18 @@ class AppRouter {
           builder: (context, state) => const _SettingsPlaceholder(),
         ),
 
-        // Splash
+        // Splash and initial flow
         GoRoute(
           path: Routes.splash,
           builder: (context, state) => const SplashView(),
+        ),
+        GoRoute(
+          path: Routes.termsAndConditions,
+          builder: (context, state) => const TermsAndConditionsView(),
+        ),
+        GoRoute(
+          path: Routes.landing,
+          builder: (context, state) => const LandingView(),
         ),
         GoRoute(
           path: Routes.onboarding,
@@ -129,15 +139,27 @@ class AppRouter {
         final isAuthenticated = authViewModel.isAuthenticated;
         final isOnboardingCompleted = authViewModel.isOnboardingCompleted;
         final currentUser = authViewModel.currentUser;
+
         final isAuthRoute = state.matchedLocation == Routes.login ||
                            state.matchedLocation == Routes.register ||
-                           state.matchedLocation == Routes.forgotPassword;
+                           state.matchedLocation == Routes.forgotPassword ||
+                           state.matchedLocation == Routes.phoneAuth;
+
         final isSplashRoute = state.matchedLocation == Routes.splash;
         final isOnboardingRoute = state.matchedLocation == Routes.onboarding;
+        final isTermsRoute = state.matchedLocation == Routes.termsAndConditions;
+        final isLandingRoute = state.matchedLocation == Routes.landing;
 
-        // If not authenticated and trying to access protected route, redirect to login
-        if (!isAuthenticated && !isAuthRoute && !isSplashRoute) {
-          return Routes.login;
+        // Allow guest access to certain routes
+        final isGuestAllowedRoute = isAuthRoute || isSplashRoute || isTermsRoute ||
+                                   isLandingRoute || state.matchedLocation == Routes.dashboard ||
+                                   state.matchedLocation == Routes.languages ||
+                                   state.matchedLocation == Routes.dictionary ||
+                                   state.matchedLocation == Routes.courses;
+
+        // If not authenticated and trying to access protected route, redirect to landing
+        if (!isAuthenticated && !isGuestAllowedRoute && !isOnboardingRoute) {
+          return Routes.landing;
         }
 
         // If authenticated and on auth routes, check onboarding status and role
