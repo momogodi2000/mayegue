@@ -221,6 +221,29 @@ class AuthViewModel extends ChangeNotifier {
     );
   }
 
+  // Apple Sign In
+  Future<bool> signInWithApple() async {
+    _setLoading(true);
+    _clearError();
+
+    final result = await appleSignInUsecase(NoParams());
+
+    return result.fold(
+      (failure) {
+        _setError(_mapFailureToMessage(failure));
+        _setLoading(false);
+        return false;
+      },
+      (authResponse) {
+        _currentUser = authResponse.user;
+        _setLoading(false);
+        authRefreshNotifier.notifyAuthChanged();
+        notifyListeners();
+        return true;
+      },
+    );
+  }
+
   // Forgot Password
   Future<bool> forgotPassword(String email) async {
     _setLoading(true);

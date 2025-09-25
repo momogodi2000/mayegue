@@ -5,6 +5,8 @@ import '../features/authentication/presentation/viewmodels/auth_viewmodel.dart';
 import '../features/authentication/presentation/views/login_view.dart';
 import '../features/authentication/presentation/views/register_view.dart';
 import '../features/authentication/presentation/views/forgot_password_view.dart';
+import '../features/authentication/presentation/views/phone_auth_view.dart';
+import '../features/onboarding/presentation/views/splash_view.dart';
 import '../features/onboarding/presentation/views/onboarding_view.dart';
 import '../features/dashboard/presentation/views/dashboard_view.dart';
 import '../features/home/presentation/views/home_view.dart';
@@ -30,6 +32,10 @@ class AppRouter {
         GoRoute(
           path: Routes.register,
           builder: (context, state) => const RegisterView(),
+        ),
+        GoRoute(
+          path: Routes.phoneAuth,
+          builder: (context, state) => const PhoneAuthView(),
         ),
         GoRoute(
           path: Routes.forgotPassword,
@@ -78,10 +84,10 @@ class AppRouter {
           builder: (context, state) => const _SettingsPlaceholder(),
         ),
 
-        // Placeholder for splash/onboarding
+        // Splash
         GoRoute(
           path: Routes.splash,
-          builder: (context, state) => const _SplashPlaceholder(),
+          builder: (context, state) => const SplashView(),
         ),
         GoRoute(
           path: Routes.onboarding,
@@ -157,29 +163,6 @@ class _AuthRefreshListenable extends ChangeNotifier {
 }
 
 /// Placeholder widgets for routes not yet implemented
-class _SplashPlaceholder extends StatelessWidget {
-  const _SplashPlaceholder();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text('Mayegue App', style: TextStyle(fontSize: 24)),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () => context.go(Routes.login),
-              child: const Text('Continuer'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class _GamesPlaceholder extends StatelessWidget {
   const _GamesPlaceholder();
 

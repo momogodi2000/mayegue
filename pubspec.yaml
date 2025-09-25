@@ -39,8 +39,10 @@ dependencies:
   # 🔐 Auth Providers
   google_sign_in: ^6.2.1
   flutter_facebook_auth: ^6.0.3
+  sign_in_with_apple: ^5.0.0
   # ✨ Autres
   flutter_lints: ^2.0.3
+  lottie: ^3.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

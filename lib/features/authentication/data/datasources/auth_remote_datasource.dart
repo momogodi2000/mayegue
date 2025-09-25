@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import '../../../../core/services/firebase_service.dart';
 import '../models/user_model.dart';
 import '../models/auth_response_model.dart';
@@ -86,9 +88,55 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override
   Future<AuthResponseModel> signInWithApple() async {
-    // TODO: Implement Apple sign-in using sign_in_with_apple package
-    // This requires adding the package to pubspec.yaml and configuring Apple developer account
-    throw UnimplementedError('Apple sign-in not implemented yet');
+    try {
+      final appleCredential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+      );
+
+      final oauthCredential = OAuthProvider('apple.com').credential(
+        idToken: appleCredential.identityToken,
+        accessToken: appleCredential.authorizationCode,
+      );
+
+      final userCredential = await firebaseService.auth.signInWithCredential(oauthCredential);
+
+      final user = userCredential.user;
+      if (user == null) {
+        throw Exception('Apple sign-in failed: No user returned');
+      }
+
+      // Create or update user profile
+      final userDoc = firebaseService.firestore.collection('users').doc(user.uid);
+      final userData = await userDoc.get();
+
+      if (!userData.exists) {
+        await userDoc.set({
+          'uid': user.uid,
+          'email': user.email,
+          'displayName': user.displayName ?? appleCredential.givenName ?? 'Apple User',
+          'photoURL': user.photoURL,
+          'role': 'learner', // Default role
+          'createdAt': FieldValue.serverTimestamp(),
+          'lastLoginAt': FieldValue.serverTimestamp(),
+          'authProvider': 'apple',
+        });
+      } else {
+        await userDoc.update({
+          'lastLoginAt': FieldValue.serverTimestamp(),
+        });
+      }
+
+      return AuthResponseModel(
+        success: true,
+        user: UserModel.fromFirebaseUser(user),
+        message: 'Connexion avec Apple réussie',
+      );
+    } catch (e) {
+      throw Exception('Échec de connexion avec Apple: $e');
+    }
   }
 
   @override

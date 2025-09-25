@@ -58,6 +58,16 @@ class _LoginViewState extends State<LoginView> {
     }
   }
 
+  Future<void> _handleAppleSignIn() async {
+    final authViewModel = context.read<AuthViewModel>();
+    final success = await authViewModel.signInWithApple();
+
+    if (success && mounted) {
+      // Navigation will be handled by the router based on auth state and role
+      authViewModel.navigateToRoleBasedDashboard(context);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final authViewModel = context.watch<AuthViewModel>();
@@ -214,6 +224,40 @@ class _LoginViewState extends State<LoginView> {
                 onPressed: authViewModel.isLoading ? null : _handleFacebookSignIn,
                 icon: const Icon(Icons.facebook),
                 label: const Text('Continuer avec Facebook'),
+              ),
+              const SizedBox(height: 10),
+
+              // Apple Sign In Button
+              ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.black,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  minimumSize: const Size(double.infinity, 48),
+                ),
+                onPressed: authViewModel.isLoading ? null : _handleAppleSignIn,
+                icon: const Icon(Icons.apple),
+                label: const Text('Continuer avec Apple'),
+              ),
+              const SizedBox(height: 10),
+
+              // Phone Auth Button
+              OutlinedButton.icon(
+                style: OutlinedButton.styleFrom(
+                  side: const BorderSide(color: Colors.green, width: 2),
+                  foregroundColor: Colors.green,
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  minimumSize: const Size(double.infinity, 48),
+                ),
+                onPressed: authViewModel.isLoading ? null : () => context.go(Routes.phoneAuth),
+                icon: const Icon(Icons.phone),
+                label: const Text('Connexion par SMS'),
               ),
               const SizedBox(height: 15),
 
