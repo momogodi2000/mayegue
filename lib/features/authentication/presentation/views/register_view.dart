@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../viewmodels/auth_viewmodel.dart';
+import '../../../../shared/themes/colors.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -51,13 +52,14 @@ class _RegisterViewState extends State<RegisterView> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Inscription"),
-        backgroundColor: Colors.redAccent,
+        backgroundColor: AppColors.primary,
+        foregroundColor: AppColors.onPrimary,
       ),
       body: Container(
         padding: const EdgeInsets.all(20),
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.green, Colors.yellow],
+            colors: [AppColors.primary, AppColors.secondary],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -66,7 +68,7 @@ class _RegisterViewState extends State<RegisterView> {
           key: _formKey,
           child: ListView(
             children: [
-              const Icon(Icons.school, size: 100, color: Colors.white),
+              Icon(Icons.school, size: 100, color: AppColors.onPrimary),
               const SizedBox(height: 20),
 
               // Error message display
@@ -74,13 +76,13 @@ class _RegisterViewState extends State<RegisterView> {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: Colors.red.shade100,
+                    color: AppColors.errorLight,
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.red.shade300),
+                    border: Border.all(color: AppColors.error),
                   ),
                   child: Text(
                     authViewModel.errorMessage!,
-                    style: const TextStyle(color: Colors.red),
+                    style: TextStyle(color: AppColors.error),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -97,7 +99,7 @@ class _RegisterViewState extends State<RegisterView> {
                     borderRadius: BorderRadius.circular(30),
                   ),
                   filled: true,
-                  fillColor: Colors.white,
+                  fillColor: AppColors.surface,
                 ),
                 validator: (value) =>
                     value == null || value.isEmpty ? "Entrez votre prénom" : null,
@@ -114,7 +116,7 @@ class _RegisterViewState extends State<RegisterView> {
                     borderRadius: BorderRadius.circular(30),
                   ),
                   filled: true,
-                  fillColor: Colors.white,
+                  fillColor: AppColors.surface,
                 ),
                 validator: (value) =>
                     value == null || value.isEmpty ? "Entrez votre nom" : null,
@@ -132,7 +134,7 @@ class _RegisterViewState extends State<RegisterView> {
                     borderRadius: BorderRadius.circular(30),
                   ),
                   filled: true,
-                  fillColor: Colors.white,
+                  fillColor: AppColors.surface,
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) return null; // Age is optional
@@ -156,7 +158,7 @@ class _RegisterViewState extends State<RegisterView> {
                     borderRadius: BorderRadius.circular(30),
                   ),
                   filled: true,
-                  fillColor: Colors.white,
+                  fillColor: AppColors.surface,
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -181,7 +183,7 @@ class _RegisterViewState extends State<RegisterView> {
                     borderRadius: BorderRadius.circular(30),
                   ),
                   filled: true,
-                  fillColor: Colors.white,
+                  fillColor: AppColors.surface,
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -198,7 +200,8 @@ class _RegisterViewState extends State<RegisterView> {
               // Register button
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.redAccent,
+                  backgroundColor: AppColors.primary,
+                  foregroundColor: AppColors.onPrimary,
                   padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
@@ -214,9 +217,9 @@ class _RegisterViewState extends State<RegisterView> {
                           valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                         ),
                       )
-                    : const Text(
+                    : Text(
                         "S'inscrire",
-                        style: TextStyle(fontSize: 18, color: Colors.white),
+                        style: TextStyle(fontSize: 18, color: AppColors.onPrimary),
                       ),
               ),
               const SizedBox(height: 15),
@@ -228,7 +231,7 @@ class _RegisterViewState extends State<RegisterView> {
                 },
                 child: Text(
                   "Déjà inscrit ? Se connecter",
-                  style: TextStyle(color: Colors.blue[700], fontSize: 16),
+                  style: TextStyle(color: AppColors.secondary, fontSize: 16),
                 ),
               ),
             ],

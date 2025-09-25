@@ -1,0 +1,185 @@
+// Firestore Security Rules for Mayegue App
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() &&
+             exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    function isTeacher() {
+      return isAuthenticated() &&
+             exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'teacher';
+    }
+
+    function isLearner() {
+      return isAuthenticated() &&
+             exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'learner';
+    }
+
+    function canAccessContent() {
+      return isAuthenticated() &&
+             (isAdmin() || isTeacher() || isLearner());
+    }
+
+    // Users collection
+    match /users/{userId} {
+      // Allow read/write for own profile
+      allow read, write: if isOwner(userId);
+
+      // Allow admins to read all users
+      allow read: if isAdmin();
+
+      // Allow teachers to read learner profiles (for progress tracking)
+      allow read: if isTeacher() && isLearner();
+
+      // Create user profile on signup
+      allow create: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Lessons collection
+    match /lessons/{lessonId} {
+      // Allow read for authenticated users
+      allow read: if canAccessContent();
+
+      // Allow teachers and admins to create/update lessons
+      allow create, update: if isAuthenticated() && (isTeacher() || isAdmin());
+
+      // Allow admins to delete lessons
+      allow delete: if isAdmin();
+    }
+
+    // Courses collection
+    match /courses/{courseId} {
+      // Allow read for authenticated users
+      allow read: if canAccessContent();
+
+      // Allow teachers and admins to manage courses
+      allow create, update: if isAuthenticated() && (isTeacher() || isAdmin());
+
+      // Allow admins to delete courses
+      allow delete: if isAdmin();
+    }
+
+    // Progress collection
+    match /progress/{progressId} {
+      // Allow users to read/write their own progress
+      allow read, write: if isAuthenticated() &&
+        exists(/databases/$(database)/documents/progress/$(progressId)) &&
+        get(/databases/$(database)/documents/progress/$(progressId)).data.userId == request.auth.uid;
+
+      // Allow teachers to read progress of their students
+      allow read: if isTeacher();
+
+      // Allow admins to read all progress
+      allow read: if isAdmin();
+
+      // Allow learners to create their own progress records
+      allow create: if isLearner() && request.auth.uid == resource.data.userId;
+    }
+
+    // Dictionary collection
+    match /dictionary/{wordId} {
+      // Allow read for all authenticated users
+      allow read: if canAccessContent();
+
+      // Allow teachers and admins to manage dictionary
+      allow create, update, delete: if isAuthenticated() && (isTeacher() || isAdmin());
+    }
+
+    // Chat messages collection
+    match /chat_messages/{messageId} {
+      // Allow read/write for authenticated users in the same conversation
+      allow read, write: if isAuthenticated() &&
+        exists(/databases/$(database)/documents/chat_messages/$(messageId)) &&
+        (get(/databases/$(database)/documents/chat_messages/$(messageId)).data.senderId == request.auth.uid ||
+         get(/databases/$(database)/documents/chat_messages/$(messageId)).data.receiverId == request.auth.uid);
+
+      // Allow creating messages
+      allow create: if isAuthenticated() && request.auth.uid == resource.data.senderId;
+    }
+
+    // Forums collection
+    match /forums/{forumId} {
+      // Allow read for authenticated users
+      allow read: if canAccessContent();
+
+      // Allow teachers and admins to manage forums
+      allow create, update, delete: if isAuthenticated() && (isTeacher() || isAdmin());
+    }
+
+    // Discussions collection
+    match /discussions/{discussionId} {
+      // Allow read for authenticated users
+      allow read: if canAccessContent();
+
+      // Allow authenticated users to create discussions
+      allow create: if isAuthenticated() && request.auth.uid == resource.data.authorId;
+
+      // Allow authors and admins to update/delete
+      allow update, delete: if isAuthenticated() &&
+        (request.auth.uid == resource.data.authorId || isAdmin());
+    }
+
+    // Payments collection
+    match /payments/{paymentId} {
+      // Allow users to read their own payments
+      allow read: if isAuthenticated() &&
+        exists(/databases/$(database)/documents/payments/$(paymentId)) &&
+        get(/databases/$(database)/documents/payments/$(paymentId)).data.userId == request.auth.uid;
+
+      // Allow admins to manage all payments
+      allow read, write: if isAdmin();
+
+      // Allow creating payment records
+      allow create: if isAuthenticated() && request.auth.uid == resource.data.userId;
+    }
+
+    // Subscriptions collection
+    match /subscriptions/{subscriptionId} {
+      // Allow users to read their own subscriptions
+      allow read: if isAuthenticated() &&
+        exists(/databases/$(database)/documents/subscriptions/$(subscriptionId)) &&
+        get(/databases/$(database)/documents/subscriptions/$(subscriptionId)).data.userId == request.auth.uid;
+
+      // Allow admins to manage all subscriptions
+      allow read, write: if isAdmin();
+
+      // Allow creating subscription records
+      allow create: if isAuthenticated() && request.auth.uid == resource.data.userId;
+    }
+
+    // Leaderboards collection
+    match /leaderboards/{leaderboardId} {
+      // Allow read for all authenticated users
+      allow read: if canAccessContent();
+
+      // Allow system to update leaderboards
+      allow write: if false; // Only allow through Cloud Functions
+    }
+
+    // Reports collection (admin only)
+    match /reports/{reportId} {
+      // Only admins can access reports
+      allow read, write: if isAdmin();
+    }
+
+    // Analytics collection (admin only)
+    match /analytics/{analyticsId} {
+      // Only admins can access analytics
+      allow read, write: if isAdmin();
+    }
+  }
+}

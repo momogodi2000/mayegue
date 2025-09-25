@@ -1,182 +1,274 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../viewmodels/dashboard_viewmodel.dart';
+import '../../../authentication/presentation/viewmodels/auth_viewmodel.dart';
 
 class DashboardView extends StatelessWidget {
   const DashboardView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Tableau de bord'),
-        backgroundColor: Colors.green,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Bienvenue sur Mayegue!',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            // User progress overview
-            const Card(
-              elevation: 2,
-              child: const ListTile(
-                leading: const Icon(Icons.emoji_events, color: Colors.orange),
-                title: const Text('Progression'),
-                subtitle: const Text('Votre niveau actuel : Débutant'),
-                trailing: const Text('45%'),
+    return Consumer2<AuthViewModel, DashboardViewModel>(
+      builder: (context, authViewModel, dashboardViewModel, child) {
+        final dashboardData = dashboardViewModel.getDashboardData();
+
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(dashboardData['title']),
+            backgroundColor: Colors.green,
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.notifications),
+                onPressed: () => Navigator.of(context).pushNamed('/notifications'),
               ),
-            ),
-            const SizedBox(height: 16),
-            // Quick access menu
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                const _DashboardShortcut(
-                  icon: Icons.menu_book,
-                  label: 'Leçons',
-                  route: '/lessons',
-                ),
-                const _DashboardShortcut(
-                  icon: Icons.translate,
-                  label: 'Dictionnaire',
-                  route: '/dictionary',
-                ),
-                const _DashboardShortcut(
-                  icon: Icons.videogame_asset,
-                  label: 'Jeux',
-                  route: '/games',
-                ),
-                const _DashboardShortcut(
-                  icon: Icons.forum,
-                  label: 'Communauté',
-                  route: '/community',
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-            // Achievements
-            const Text('Succès récents', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
-            const SizedBox(height: 8),
-            const Wrap(
-              spacing: 8,
-              children: [
-                Chip(label: const Text('Premier quiz réussi'), avatar: const Icon(Icons.check_circle, color: Colors.green)),
-                Chip(label: const Text('10 mots appris'), avatar: const Icon(Icons.star, color: Colors.yellow)),
-                Chip(label: const Text('Profil complété'), avatar: const Icon(Icons.person, color: Colors.blue)),
-              ],
-            ),
-            const SizedBox(height: 24),
-            // Recent activity
-            const Text('Activité récente', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
-            const SizedBox(height: 8),
-            Expanded(
-              child: ListView(
-                children: [
-                  ListTile(
-                    leading: Icon(Icons.menu_book, color: Colors.green),
-                    title: Text('Leçon Ewondo 1 terminée'),
-                    subtitle: Text('Aujourd’hui à 10:15'),
-                  ),
-                  ListTile(
-                    leading: Icon(Icons.videogame_asset, color: Colors.purple),
-                    title: Text('Jeu de vocabulaire joué'),
-                    subtitle: Text('Hier à 18:30'),
-                  ),
-                  ListTile(
-                    leading: Icon(Icons.translate, color: Colors.orange),
-                    title: Text('Mot ajouté aux favoris'),
-                    subtitle: Text('Hier à 14:05'),
-                  ),
-                ],
+              IconButton(
+                icon: const Icon(Icons.settings),
+                onPressed: () => Navigator.of(context).pushNamed('/settings'),
               ),
-            ),
-          ],
-        ),
-      ),
-      drawer: _DashboardDrawer(),
-    );
-  }
-}
-
-class _DashboardShortcut extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final String route;
-
-  const _DashboardShortcut({required this.icon, required this.label, required this.route});
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () => Navigator.of(context).pushNamed(route),
-      child: Column(
-        children: [
-          CircleAvatar(
-            backgroundColor: Colors.green.shade100,
-            child: Icon(icon, color: Colors.green, size: 28),
+            ],
           ),
-          const SizedBox(height: 4),
-          Text(label, style: const TextStyle(fontSize: 12)),
-        ],
-      ),
+          body: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Welcome section
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Colors.green, Colors.teal],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(15),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        dashboardData['welcomeMessage'],
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        dashboardData['subtitle'],
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
+
+                // Stats cards
+                SizedBox(
+                  height: 100,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: dashboardData['stats'].length,
+                    itemBuilder: (context, index) {
+                      final stat = dashboardData['stats'][index];
+                      return Container(
+                        width: 140,
+                        margin: const EdgeInsets.only(right: 12),
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.05),
+                              blurRadius: 4,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(stat['icon'], color: stat['color'], size: 24),
+                            const SizedBox(height: 8),
+                            Text(
+                              stat['value'],
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              stat['label'],
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: 24),
+
+                // Quick actions
+                const Text(
+                  'Actions rapides',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(height: 12),
+                SizedBox(
+                  height: 100,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: dashboardData['quickActions'].length,
+                    itemBuilder: (context, index) {
+                      final action = dashboardData['quickActions'][index];
+                      return Container(
+                        width: 80,
+                        margin: const EdgeInsets.only(right: 12),
+                        child: InkWell(
+                          onTap: () => Navigator.of(context).pushNamed(action['route']),
+                          child: Column(
+                            children: [
+                              CircleAvatar(
+                                backgroundColor: Colors.green.shade100,
+                                child: Icon(action['icon'], color: Colors.green, size: 28),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                action['label'],
+                                style: const TextStyle(fontSize: 12),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: 24),
+
+                // Recent activity
+                const Text(
+                  'Activité récente',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(height: 12),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: dashboardData['recentActivity'].length,
+                    itemBuilder: (context, index) {
+                      final activity = dashboardData['recentActivity'][index];
+                      return ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: activity['color'].withOpacity(0.1),
+                          child: Icon(activity['icon'], color: activity['color']),
+                        ),
+                        title: Text(activity['title']),
+                        subtitle: Text(activity['subtitle']),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+          drawer: _DashboardDrawer(),
+        );
+      },
     );
   }
 }
+
 
 class _DashboardDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
+    final user = authViewModel.currentUser;
+
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          DrawerHeader(
-            decoration: BoxDecoration(color: Colors.green),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                CircleAvatar(radius: 28, backgroundColor: Colors.white, child: Icon(Icons.person, size: 32)),
-                SizedBox(height: 8),
-                Text('Utilisateur', style: TextStyle(color: Colors.white, fontSize: 18)),
-                Text('Débutant', style: TextStyle(color: Colors.white70)),
-              ],
+          UserAccountsDrawerHeader(
+            decoration: const BoxDecoration(color: Colors.green),
+            accountName: Text(user?.displayName ?? 'Utilisateur'),
+            accountEmail: Text(user?.email ?? ''),
+            currentAccountPicture: CircleAvatar(
+              backgroundImage: user?.photoUrl != null
+                  ? NetworkImage(user!.photoUrl!)
+                  : const AssetImage('assets/images/default_avatar.png') as ImageProvider,
             ),
           ),
           ListTile(
-            leading: Icon(Icons.menu_book),
-            title: Text('Leçons'),
-            onTap: () => Navigator.of(context).pushNamed('/lessons'),
+            leading: const Icon(Icons.dashboard),
+            title: const Text('Tableau de bord'),
+            onTap: () => Navigator.of(context).pushReplacementNamed('/dashboard'),
           ),
           ListTile(
-            leading: Icon(Icons.translate),
-            title: Text('Dictionnaire'),
+            leading: const Icon(Icons.menu_book),
+            title: const Text('Leçons'),
+            onTap: () => Navigator.of(context).pushNamed('/courses'),
+          ),
+          ListTile(
+            leading: const Icon(Icons.translate),
+            title: const Text('Dictionnaire'),
             onTap: () => Navigator.of(context).pushNamed('/dictionary'),
           ),
           ListTile(
-            leading: Icon(Icons.videogame_asset),
-            title: Text('Jeux'),
+            leading: const Icon(Icons.videogame_asset),
+            title: const Text('Jeux'),
             onTap: () => Navigator.of(context).pushNamed('/games'),
           ),
           ListTile(
-            leading: Icon(Icons.forum),
-            title: Text('Communauté'),
+            leading: const Icon(Icons.forum),
+            title: const Text('Communauté'),
             onTap: () => Navigator.of(context).pushNamed('/community'),
           ),
-          Divider(),
           ListTile(
-            leading: Icon(Icons.settings),
-            title: Text('Paramètres'),
+            leading: const Icon(Icons.assessment),
+            title: const Text('Évaluations'),
+            onTap: () => Navigator.of(context).pushNamed('/assessments'),
+          ),
+          ListTile(
+            leading: const Icon(Icons.smart_toy),
+            title: const Text('IA Assistant'),
+            onTap: () => Navigator.of(context).pushNamed('/ai-assistant'),
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.person),
+            title: const Text('Profil'),
+            onTap: () => Navigator.of(context).pushNamed('/profile'),
+          ),
+          ListTile(
+            leading: const Icon(Icons.settings),
+            title: const Text('Paramètres'),
             onTap: () => Navigator.of(context).pushNamed('/settings'),
           ),
           ListTile(
-            leading: Icon(Icons.logout),
-            title: Text('Déconnexion'),
+            leading: const Icon(Icons.logout),
+            title: const Text('Déconnexion'),
             onTap: () {
-              // TODO: Call AuthViewModel.logout and redirect to login
+              authViewModel.logout();
               Navigator.of(context).pushReplacementNamed('/login');
             },
           ),

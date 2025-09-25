@@ -9,6 +9,7 @@ class Routes {
   static const String home = '/home';
   static const String profile = '/profile';
   static const String lessons = '/lessons';
+  static const String courses = '/courses';
   static const String lessonDetail = '/lessons/:id';
   static const String quiz = '/quiz';
   static const String dictionary = '/dictionary';

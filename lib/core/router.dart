@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import '../features/dashboard/presentation/views/dashboard_view.dart';
 import '../features/authentication/presentation/viewmodels/auth_viewmodel.dart';
 import '../features/authentication/presentation/views/login_view.dart';
 import '../features/authentication/presentation/views/register_view.dart';
@@ -9,7 +10,6 @@ import '../features/authentication/presentation/views/phone_auth_view.dart';
 import '../features/onboarding/presentation/views/splash_view.dart';
 import '../features/onboarding/presentation/views/onboarding_view.dart';
 import '../features/dashboard/presentation/views/dashboard_view.dart';
-import '../features/home/presentation/views/home_view.dart';
 import '../features/profile/presentation/views/profile_view.dart';
 import '../features/lessons/presentation/views/courses_view.dart';
 import '../features/dictionary/presentation/views/dictionary_view.dart';
@@ -57,10 +57,10 @@ class AppRouter {
           ),
         GoRoute(
           path: Routes.home,
-          builder: (context, state) => const HomePage(nomUtilisateur: 'User'),
+          redirect: (context, state) => Routes.dashboard, // Redirect home to dashboard
         ),
         GoRoute(
-          path: Routes.lessons,
+          path: Routes.courses,
           builder: (context, state) => const CoursesView(),
         ),
         GoRoute(

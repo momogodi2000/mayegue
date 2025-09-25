@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/constants/routes.dart';
 import '../viewmodels/auth_viewmodel.dart';
+import '../../../../shared/themes/colors.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -75,13 +76,14 @@ class _LoginViewState extends State<LoginView> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Connexion"),
-        backgroundColor: Colors.redAccent,
+        backgroundColor: AppColors.primary,
+        foregroundColor: AppColors.onPrimary,
       ),
       body: Container(
         padding: const EdgeInsets.all(20),
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.green, Colors.yellow],
+            colors: [AppColors.primary, AppColors.secondary],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -90,7 +92,7 @@ class _LoginViewState extends State<LoginView> {
           key: _formKey,
           child: ListView(
             children: [
-              const Icon(Icons.lock, size: 100, color: Colors.white),
+              Icon(Icons.lock, size: 100, color: AppColors.onPrimary),
               const SizedBox(height: 20),
 
               // Error message display
@@ -98,13 +100,13 @@ class _LoginViewState extends State<LoginView> {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: Colors.red.shade100,
+                    color: AppColors.errorLight,
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.red.shade300),
+                    border: Border.all(color: AppColors.error),
                   ),
                   child: Text(
                     authViewModel.errorMessage!,
-                    style: const TextStyle(color: Colors.red),
+                    style: TextStyle(color: AppColors.error),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -122,7 +124,7 @@ class _LoginViewState extends State<LoginView> {
                     borderRadius: BorderRadius.circular(30),
                   ),
                   filled: true,
-                  fillColor: Colors.white,
+                  fillColor: AppColors.surface,
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -147,7 +149,7 @@ class _LoginViewState extends State<LoginView> {
                     borderRadius: BorderRadius.circular(30),
                   ),
                   filled: true,
-                  fillColor: Colors.white,
+                  fillColor: AppColors.surface,
                 ),
                 validator: (value) =>
                     value == null || value.isEmpty ? "Entrez votre mot de passe" : null,
@@ -157,7 +159,8 @@ class _LoginViewState extends State<LoginView> {
               // Login button
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.redAccent,
+                  backgroundColor: AppColors.primary,
+                  foregroundColor: AppColors.onPrimary,
                   padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
@@ -173,17 +176,17 @@ class _LoginViewState extends State<LoginView> {
                           valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                         ),
                       )
-                    : const Text(
+                    : Text(
                         "Se connecter",
-                        style: TextStyle(fontSize: 18, color: Colors.white),
+                        style: TextStyle(fontSize: 18, color: AppColors.onPrimary),
                       ),
               ),
               const SizedBox(height: 15),
 
               // Social Sign In Buttons
-              const Text(
+              Text(
                 'Ou continuer avec',
-                style: TextStyle(color: Colors.white, fontSize: 14),
+                style: TextStyle(color: AppColors.onPrimary, fontSize: 14),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 10),
@@ -247,8 +250,8 @@ class _LoginViewState extends State<LoginView> {
               // Phone Auth Button
               OutlinedButton.icon(
                 style: OutlinedButton.styleFrom(
-                  side: const BorderSide(color: Colors.green, width: 2),
-                  foregroundColor: Colors.green,
+                  side: BorderSide(color: AppColors.secondary, width: 2),
+                  foregroundColor: AppColors.secondary,
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
@@ -266,9 +269,9 @@ class _LoginViewState extends State<LoginView> {
                 onPressed: () {
                   context.go(Routes.register);
                 },
-                child: const Text(
+                child: Text(
                   "Pas encore de compte ? S'inscrire",
-                  style: TextStyle(color: Colors.blue, fontSize: 16),
+                  style: TextStyle(color: AppColors.secondary, fontSize: 16),
                 ),
               ),
 
@@ -279,7 +282,7 @@ class _LoginViewState extends State<LoginView> {
                 },
                 child: Text(
                   "Mot de passe oublié ?",
-                  style: TextStyle(color: Colors.blue[700], fontSize: 14),
+                  style: TextStyle(color: AppColors.secondary, fontSize: 14),
                 ),
               ),
             ],

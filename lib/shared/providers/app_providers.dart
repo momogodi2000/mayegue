@@ -3,9 +3,12 @@ import 'package:provider/single_child_widget.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import '../../core/services/firebase_service.dart';
 import '../../core/services/storage_service.dart';
+import '../../core/services/database_helper.dart';
+import '../../core/services/sync_manager.dart';
 import '../../core/network/dio_client.dart';
 import '../../core/network/network_info.dart';
 import '../../features/authentication/data/datasources/auth_remote_datasource.dart';
+import '../../features/authentication/data/datasources/auth_local_datasource.dart';
 import '../../features/authentication/domain/repositories/auth_repository.dart';
 import '../../features/authentication/data/repositories/auth_repository_impl.dart';
 import '../../features/authentication/domain/usecases/login_usecase.dart';
@@ -27,6 +30,7 @@ import '../../features/onboarding/data/repositories/onboarding_repository_impl.d
 import '../../features/onboarding/domain/usecases/complete_onboarding_usecase.dart';
 import '../../features/onboarding/domain/usecases/get_onboarding_status_usecase.dart';
 import '../../features/onboarding/presentation/viewmodels/onboarding_viewmodel.dart';
+import '../../features/dashboard/presentation/viewmodels/dashboard_viewmodel.dart';
 import '../../features/lessons/data/datasources/course_local_datasource.dart';
 import '../../features/lessons/data/datasources/lesson_local_datasource.dart';
 import '../../features/lessons/data/datasources/progress_local_datasource.dart';
@@ -60,10 +64,16 @@ import '../../features/ai/data/repositories/ai_repository_impl.dart';
 import '../../features/ai/domain/repositories/ai_repository.dart';
 import '../../features/ai/domain/usecases/ai_usecases.dart';
 import '../../features/ai/presentation/viewmodels/ai_viewmodels.dart';
+import 'theme_provider.dart';
 
 /// List of all providers for the app
 List<SingleChildWidget> getProviders() {
   return [
+    // Theme provider
+    ChangeNotifierProvider<ThemeProvider>(
+      create: (_) => ThemeProvider(),
+    ),
+
     // Services
     Provider<FirebaseService>(
       create: (_) => FirebaseService()..initialize(),
@@ -71,21 +81,39 @@ List<SingleChildWidget> getProviders() {
     Provider<StorageService>(
       create: (_) => StorageService()..initialize(),
     ),
+    Provider<DatabaseHelper>(
+      create: (_) => DatabaseHelper.instance,
+    ),
+    Provider<SyncManager>(
+      create: (_) => SyncManager(),
+    ),
     Provider<DioClient>(
       create: (_) => DioClient(),
     ),
     Provider<NetworkInfo>(
       create: (_) => NetworkInfo(Connectivity()),
     ),
+    Provider<Connectivity>(
+      create: (_) => Connectivity(),
+    ),
 
     // Data sources
     ProxyProvider<FirebaseService, AuthRemoteDataSource>(
       update: (_, firebaseService, __) => AuthRemoteDataSourceImpl(firebaseService),
     ),
+    ProxyProvider<DatabaseHelper, AuthLocalDataSource>(
+      update: (_, dbHelper, __) => AuthLocalDataSourceImpl(),
+    ),
 
     // Repositories
-    ProxyProvider<AuthRemoteDataSource, AuthRepository>(
-      update: (_, dataSource, __) => AuthRepositoryImpl(dataSource),
+    ProxyProvider4<AuthRemoteDataSource, AuthLocalDataSource, Connectivity, SyncManager, AuthRepository>(
+      update: (_, remoteDataSource, localDataSource, connectivity, syncManager, __) =>
+        AuthRepositoryImpl(
+          remoteDataSource: remoteDataSource,
+          localDataSource: localDataSource,
+          connectivity: connectivity,
+          syncManager: syncManager,
+        ),
     ),
 
     // Use cases
@@ -453,6 +481,11 @@ List<SingleChildWidget> getProviders() {
       create: (context) => AiRecommendationsViewModel(
         getPersonalizedRecommendations: context.read<GetPersonalizedRecommendations>(),
       ),
+    ),
+
+    // Dashboard ViewModel
+    ProxyProvider<AuthViewModel, DashboardViewModel>(
+      update: (_, authViewModel, __) => DashboardViewModel(authViewModel),
     ),
 
     // TODO: Add more providers for other features

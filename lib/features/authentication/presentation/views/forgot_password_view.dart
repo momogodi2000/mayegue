@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../../shared/themes/colors.dart';
 import '../viewmodels/auth_viewmodel.dart';
 
 class ForgotPasswordView extends StatefulWidget {
@@ -32,9 +33,9 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
 
     if (success && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Email de réinitialisation envoyé avec succès'),
-          backgroundColor: Colors.green,
+        SnackBar(
+          content: const Text('Email de réinitialisation envoyé avec succès'),
+          backgroundColor: AppColors.success,
         ),
       );
       Navigator.of(context).pop(); // Go back to login
@@ -62,7 +63,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                 const Icon(
                   Icons.lock_reset,
                   size: 80,
-                  color: Colors.blue,
+                  color: AppColors.primary,
                 ),
                 const SizedBox(height: 32),
                 const Text(
@@ -106,19 +107,21 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.red.shade50,
+                      color: AppColors.error.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.red.shade200),
+                      border: Border.all(color: AppColors.error.withOpacity(0.3)),
                     ),
                     child: Text(
                       authViewModel.errorMessage!,
-                      style: TextStyle(color: Colors.red.shade800),
+                      style: TextStyle(color: AppColors.error),
                     ),
                   ),
                 const SizedBox(height: 24),
                 ElevatedButton(
                   onPressed: _isLoading ? null : _resetPassword,
                   style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.secondary,
+                    foregroundColor: AppColors.onSecondary,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
@@ -130,7 +133,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                           width: 20,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            valueColor: AlwaysStoppedAnimation<Color>(AppColors.onSecondary),
                           ),
                         )
                       : const Text(

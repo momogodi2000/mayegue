@@ -22,6 +22,9 @@ class AppConstants {
   // Languages
   static const String languageEwondo = 'ewondo';
   static const String languageBafang = 'bafang';
+  static const String languagePidginEnglish = 'pidgin';
+  static const String languageDuala = 'duala';
+  static const String languageFulfulde = 'fulfulde';
   static const String languageFrench = 'fr';
   static const String languageEnglish = 'en';
 

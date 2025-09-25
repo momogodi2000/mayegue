@@ -31,11 +31,14 @@ dependencies:
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   shared_preferences: ^2.2.2
+  sqflite: ^2.3.0
+  path: ^1.8.3
   # 🌍 Internationalization
   flutter_localizations:
     sdk: flutter
   intl: ^0.20.2
   dartz: ^0.10.1
+  file_picker: ^8.0.0
   # 🔐 Auth Providers
   google_sign_in: ^6.2.1
   flutter_facebook_auth: ^6.0.3
@@ -49,6 +52,10 @@ dev_dependencies:
   lints: ^2.1.1
   build_runner: ^2.4.8
   hive_generator: ^2.0.1
+  mockito: ^5.4.4
+  bloc_test: ^9.1.4
+  intl_utils: ^2.8.7
+  flutter_launcher_icons: ^0.13.1
 flutter:
   uses-material-design: true
   # 📂 Assets (images, sons, vidéos)
@@ -56,3 +63,17 @@ flutter:
     - assets/images/
     # - assets/audios/
     # - assets/videos/
+  generate: true
+  # 🌍 Internationalization
+  # flutter pub run intl_utils:generate
+  # flutter pub global activate intl_utils
+  # intl_utils:generate
+  # flutter gen-l10n
+  # flutter pub run intl_utils:generate
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/logo/logo.jpg"
+  adaptive_icon_background: "#4CAF50"
+  adaptive_icon_foreground: "assets/logo/logo.jpg"

@@ -6,8 +6,14 @@ class Validators {
     if (value == null || value.isEmpty) {
       return 'L\'email est requis';
     }
+    // Sanitize input
+    final sanitized = value.trim().toLowerCase();
     final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-    if (!emailRegex.hasMatch(value)) {
+    if (!emailRegex.hasMatch(sanitized)) {
+      return 'Format d\'email invalide';
+    }
+    // Check for suspicious patterns
+    if (sanitized.contains('..') || sanitized.startsWith('.') || sanitized.endsWith('.')) {
       return 'Format d\'email invalide';
     }
     return null;
@@ -17,8 +23,16 @@ class Validators {
     if (value == null || value.isEmpty) {
       return 'Le mot de passe est requis';
     }
-    if (value.length < 6) {
-      return 'Le mot de passe doit contenir au moins 6 caractères';
+    if (value.length < 8) {
+      return 'Le mot de passe doit contenir au moins 8 caractères';
+    }
+    // Check for at least one uppercase, one lowercase, one digit
+    final hasUpper = RegExp(r'[A-Z]').hasMatch(value);
+    final hasLower = RegExp(r'[a-z]').hasMatch(value);
+    final hasDigit = RegExp(r'[0-9]').hasMatch(value);
+    
+    if (!hasUpper || !hasLower || !hasDigit) {
+      return 'Le mot de passe doit contenir au moins une majuscule, une minuscule et un chiffre';
     }
     return null;
   }
@@ -27,8 +41,13 @@ class Validators {
     if (value == null || value.isEmpty) {
       return 'Ce champ est requis';
     }
-    if (value.length < 2) {
+    // Sanitize input - remove potentially dangerous characters
+    final sanitized = value.trim().replaceAll(RegExp(r'[<>"/\\|?*\x00-\x1f]'), '');
+    if (sanitized.length < 2) {
       return 'Doit contenir au moins 2 caractères';
+    }
+    if (sanitized.length > 50) {
+      return 'Ne doit pas dépasser 50 caractères';
     }
     return null;
   }
@@ -37,9 +56,37 @@ class Validators {
     if (value == null || value.isEmpty) {
       return 'Le numéro de téléphone est requis';
     }
-    final phoneRegex = RegExp(r'^\+?[0-9]{8,15}$');
-    if (!phoneRegex.hasMatch(value)) {
+    // Sanitize input - only allow numbers, spaces, hyphens, plus
+    final sanitized = value.replaceAll(RegExp(r'[^\d\s\-\+]'), '');
+    final phoneRegex = RegExp(r'^\+?[0-9\s\-]{8,15}$');
+    if (!phoneRegex.hasMatch(sanitized)) {
       return 'Format de numéro invalide';
+    }
+    return null;
+  }
+
+  static String? validateTextInput(String? value, {int minLength = 1, int maxLength = 1000, String fieldName = 'Ce champ'}) {
+    if (value == null || value.isEmpty) {
+      return '$fieldName est requis';
+    }
+    // Sanitize input - basic XSS prevention
+    final sanitized = value.trim().replaceAll(RegExp(r'<[^>]*>'), '');
+    if (sanitized.length < minLength) {
+      return '$fieldName doit contenir au moins $minLength caractères';
+    }
+    if (sanitized.length > maxLength) {
+      return '$fieldName ne doit pas dépasser $maxLength caractères';
+    }
+    return null;
+  }
+
+  static String? validateUrl(String? value) {
+    if (value == null || value.isEmpty) {
+      return null; // URL is optional
+    }
+    final urlRegex = RegExp(r'^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$');
+    if (!urlRegex.hasMatch(value)) {
+      return 'Format d\'URL invalide';
     }
     return null;
   }

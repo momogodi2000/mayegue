@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/constants/routes.dart';
+import '../../../../shared/themes/colors.dart';
 import '../viewmodels/auth_viewmodel.dart';
 
 class PhoneAuthView extends StatefulWidget {
@@ -60,7 +61,8 @@ class _PhoneAuthViewState extends State<PhoneAuthView> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Authentification Téléphone"),
-        backgroundColor: Colors.green,
+        backgroundColor: AppColors.primary,
+        foregroundColor: AppColors.onPrimary,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.go(Routes.login),
@@ -68,9 +70,9 @@ class _PhoneAuthViewState extends State<PhoneAuthView> {
       ),
       body: Container(
         padding: const EdgeInsets.all(20),
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.green, Colors.yellow],
+            colors: [AppColors.primaryLight, AppColors.surface],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -102,7 +104,7 @@ class _PhoneAuthViewState extends State<PhoneAuthView> {
           const Icon(
             Icons.phone_android,
             size: 64,
-            color: Colors.green,
+            color: AppColors.primary,
           ),
           const SizedBox(height: 20),
           const Text(
@@ -149,13 +151,13 @@ class _PhoneAuthViewState extends State<PhoneAuthView> {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.red.shade50,
+                color: AppColors.error.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.red.shade200),
+                border: Border.all(color: AppColors.error.withOpacity(0.3)),
               ),
               child: Text(
                 authViewModel.errorMessage!,
-                style: const TextStyle(color: Colors.red),
+                style: TextStyle(color: AppColors.error),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -163,8 +165,8 @@ class _PhoneAuthViewState extends State<PhoneAuthView> {
           ElevatedButton(
             onPressed: authViewModel.isLoading ? null : _sendOtp,
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green,
-              foregroundColor: Colors.white,
+              backgroundColor: AppColors.secondary,
+              foregroundColor: AppColors.onSecondary,
               padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -192,7 +194,7 @@ class _PhoneAuthViewState extends State<PhoneAuthView> {
           const Icon(
             Icons.sms,
             size: 64,
-            color: Colors.green,
+            color: AppColors.primary,
           ),
           const SizedBox(height: 20),
           const Text(
@@ -240,13 +242,13 @@ class _PhoneAuthViewState extends State<PhoneAuthView> {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.red.shade50,
+                color: AppColors.error.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.red.shade200),
+                border: Border.all(color: AppColors.error.withOpacity(0.3)),
               ),
               child: Text(
                 authViewModel.errorMessage!,
-                style: const TextStyle(color: Colors.red),
+                style: TextStyle(color: AppColors.error),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -254,8 +256,8 @@ class _PhoneAuthViewState extends State<PhoneAuthView> {
           ElevatedButton(
             onPressed: authViewModel.isLoading ? null : _verifyOtp,
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green,
-              foregroundColor: Colors.white,
+              backgroundColor: AppColors.secondary,
+              foregroundColor: AppColors.onSecondary,
               padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -276,9 +278,9 @@ class _PhoneAuthViewState extends State<PhoneAuthView> {
                 _isOtpSent = false;
               });
             },
-            child: const Text(
+            child: Text(
               'Changer de numéro',
-              style: TextStyle(color: Colors.green),
+              style: TextStyle(color: AppColors.primary),
             ),
           ),
         ],

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../domain/entities/word_entity.dart';
 import '../viewmodels/dictionary_viewmodel.dart';
+import '../../../../shared/themes/colors.dart';
 
 class DictionaryView extends StatefulWidget {
   const DictionaryView({super.key});
@@ -37,7 +38,8 @@ class _DictionaryViewState extends State<DictionaryView> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Dictionnaire'),
-        backgroundColor: Colors.green,
+        backgroundColor: AppColors.primary,
+        foregroundColor: AppColors.onPrimary,
         elevation: 0,
       ),
       body: Column(
@@ -46,7 +48,7 @@ class _DictionaryViewState extends State<DictionaryView> {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.green.shade50,
+              color: AppColors.primaryLight,
               borderRadius: const BorderRadius.only(
                 bottomLeft: Radius.circular(20),
                 bottomRight: Radius.circular(20),
@@ -57,10 +59,10 @@ class _DictionaryViewState extends State<DictionaryView> {
               focusNode: _searchFocusNode,
               decoration: InputDecoration(
                 hintText: 'Rechercher un mot...',
-                prefixIcon: const Icon(Icons.search, color: Colors.green),
+                prefixIcon: Icon(Icons.search, color: AppColors.primary),
                 suffixIcon: _searchController.text.isNotEmpty
                     ? IconButton(
-                        icon: const Icon(Icons.clear, color: Colors.green),
+                        icon: Icon(Icons.clear, color: AppColors.primary),
                         onPressed: () {
                           _searchController.clear();
                           viewModel.clearSearch();
@@ -96,7 +98,7 @@ class _DictionaryViewState extends State<DictionaryView> {
             child: viewModel.isLoading
                 ? const Center(
                     child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
+                      valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
                     ),
                   )
                 : viewModel.errorMessage != null
@@ -118,7 +120,7 @@ class _DictionaryViewState extends State<DictionaryView> {
           const Icon(
             Icons.error_outline,
             size: 64,
-            color: Colors.red,
+            color: AppColors.error,
           ),
           const SizedBox(height: 16),
           Text(
@@ -135,8 +137,8 @@ class _DictionaryViewState extends State<DictionaryView> {
               }
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green,
-              foregroundColor: Colors.white,
+              backgroundColor: AppColors.secondary,
+              foregroundColor: AppColors.onSecondary,
             ),
             child: const Text('Réessayer'),
           ),
@@ -153,18 +155,18 @@ class _DictionaryViewState extends State<DictionaryView> {
           Icon(
             Icons.search_off,
             size: 64,
-            color: Colors.grey.shade400,
+            color: AppColors.onSurface.withOpacity(0.4),
           ),
           const SizedBox(height: 16),
           Text(
             'Aucun résultat trouvé pour "${_searchController.text}"',
-            style: const TextStyle(fontSize: 16, color: Colors.grey),
+            style: TextStyle(fontSize: 16, color: AppColors.onSurface.withOpacity(0.7)),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8),
-          const Text(
+          Text(
             'Vérifiez l\'orthographe ou essayez un autre mot',
-            style: TextStyle(fontSize: 14, color: Colors.grey),
+            style: TextStyle(fontSize: 14, color: AppColors.onSurface.withOpacity(0.5)),
             textAlign: TextAlign.center,
           ),
         ],
@@ -195,27 +197,27 @@ class _DictionaryViewState extends State<DictionaryView> {
           Icon(
             Icons.book,
             size: 80,
-            color: Colors.green.shade200,
+            color: AppColors.primaryLight,
           ),
           const SizedBox(height: 24),
-          const Text(
+          Text(
             'Bienvenue dans le Dictionnaire',
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
-              color: Colors.green,
+              color: AppColors.primary,
             ),
           ),
           const SizedBox(height: 16),
-          const Text(
+          Text(
             'Recherchez des mots en français ou dans les langues locales',
-            style: TextStyle(fontSize: 16, color: Colors.grey),
+            style: TextStyle(fontSize: 16, color: AppColors.onSurface.withOpacity(0.7)),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 32),
-          const Text(
+          Text(
             '💡 Conseil: Tapez au moins 2 caractères pour commencer la recherche',
-            style: TextStyle(fontSize: 14, color: Colors.grey),
+            style: TextStyle(fontSize: 14, color: AppColors.onSurface.withOpacity(0.5)),
             textAlign: TextAlign.center,
           ),
         ],
@@ -251,25 +253,25 @@ class _DictionaryViewState extends State<DictionaryView> {
                   Expanded(
                     child: Text(
                       word.word,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
-                        color: Colors.green,
+                        color: AppColors.primary,
                       ),
                     ),
                   ),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: Colors.green.shade100,
+                      color: AppColors.secondaryLight,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
                       word.language.toUpperCase(),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
-                        color: Colors.green,
+                        color: AppColors.secondary,
                       ),
                     ),
                   ),
