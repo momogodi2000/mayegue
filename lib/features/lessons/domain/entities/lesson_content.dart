@@ -61,6 +61,7 @@ class LessonContent extends Equatable {
 /// Enum for content types
 enum ContentType {
   text, // Plain text content
+  phonetic, // Phonetic transcription
   audio, // Audio file
   video, // Video file
   image, // Image file

@@ -69,6 +69,7 @@ class MessageModel extends MessageEntity {
     };
   }
 
+  @override
   Map<String, dynamic> toJson() => toMap();
 }
 
@@ -90,5 +91,188 @@ class AiResponseModel {
       metadata: map['metadata'],
       timestamp: DateTime.parse(map['timestamp'] ?? DateTime.now().toIso8601String()),
     );
+  }
+}
+
+/// Translation model
+class TranslationModel extends TranslationEntity {
+  const TranslationModel({
+    required super.id,
+    required super.userId,
+    required super.sourceText,
+    required super.sourceLanguage,
+    required super.targetText,
+    required super.targetLanguage,
+    required super.confidence,
+    required super.createdAt,
+    super.metadata,
+  });
+
+  factory TranslationModel.fromJson(Map<String, dynamic> json) {
+    return TranslationModel(
+      id: json['id'] ?? '',
+      userId: json['userId'] ?? '',
+      sourceText: json['sourceText'] ?? '',
+      sourceLanguage: json['sourceLanguage'] ?? '',
+      targetText: json['targetText'] ?? '',
+      targetLanguage: json['targetLanguage'] ?? '',
+      confidence: (json['confidence'] ?? 0.0).toDouble(),
+      createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
+      metadata: json['metadata'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'userId': userId,
+      'sourceText': sourceText,
+      'sourceLanguage': sourceLanguage,
+      'targetText': targetText,
+      'targetLanguage': targetLanguage,
+      'confidence': confidence,
+      'createdAt': createdAt.toIso8601String(),
+      'metadata': metadata,
+    };
+  }
+}
+
+/// Pronunciation assessment model
+class PronunciationAssessmentModel extends PronunciationAssessmentEntity {
+  const PronunciationAssessmentModel({
+    required super.id,
+    required super.userId,
+    required super.word,
+    required super.language,
+    required super.audioUrl,
+    required super.score,
+    required super.feedback,
+    required super.issues,
+    required super.assessedAt,
+    super.metadata,
+  });
+
+  factory PronunciationAssessmentModel.fromJson(Map<String, dynamic> json) {
+    return PronunciationAssessmentModel(
+      id: json['id'] ?? '',
+      userId: json['userId'] ?? '',
+      word: json['word'] ?? '',
+      language: json['language'] ?? '',
+      audioUrl: json['audioUrl'] ?? '',
+      score: (json['score'] ?? 0.0).toDouble(),
+      feedback: json['feedback'] ?? '',
+      issues: (json['issues'] as List<dynamic>?)
+          ?.map((issue) => PronunciationIssue.fromJson(issue))
+          .toList() ?? [],
+      assessedAt: DateTime.parse(json['assessedAt'] ?? DateTime.now().toIso8601String()),
+      metadata: json['metadata'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'userId': userId,
+      'word': word,
+      'language': language,
+      'audioUrl': audioUrl,
+      'score': score,
+      'feedback': feedback,
+      'issues': issues.map((issue) => issue.toJson()).toList(),
+      'assessedAt': assessedAt.toIso8601String(),
+      'metadata': metadata,
+    };
+  }
+}
+
+/// Content generation model
+class ContentGenerationModel extends ContentGenerationEntity {
+  const ContentGenerationModel({
+    required super.id,
+    required super.userId,
+    required super.type,
+    required super.topic,
+    required super.language,
+    required super.difficulty,
+    required super.generatedContent,
+    required super.tags,
+    required super.generatedAt,
+    super.metadata,
+  });
+
+  factory ContentGenerationModel.fromJson(Map<String, dynamic> json) {
+    return ContentGenerationModel(
+      id: json['id'] ?? '',
+      userId: json['userId'] ?? '',
+      type: json['type'] ?? '',
+      topic: json['topic'] ?? '',
+      language: json['language'] ?? '',
+      difficulty: json['difficulty'] ?? '',
+      generatedContent: json['generatedContent'] ?? '',
+      tags: List<String>.from(json['tags'] ?? []),
+      generatedAt: DateTime.parse(json['generatedAt'] ?? DateTime.now().toIso8601String()),
+      metadata: json['metadata'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'userId': userId,
+      'type': type,
+      'topic': topic,
+      'language': language,
+      'difficulty': difficulty,
+      'generatedContent': generatedContent,
+      'tags': tags,
+      'generatedAt': generatedAt.toIso8601String(),
+      'metadata': metadata,
+    };
+  }
+}
+
+/// AI Learning Recommendation model
+class AiLearningRecommendationModel extends AiLearningRecommendationEntity {
+  const AiLearningRecommendationModel({
+    required super.id,
+    required super.userId,
+    required super.type,
+    required super.title,
+    required super.description,
+    required super.reason,
+    required super.priority,
+    required super.isCompleted,
+    required super.createdAt,
+    super.metadata,
+  });
+
+  factory AiLearningRecommendationModel.fromJson(Map<String, dynamic> json) {
+    return AiLearningRecommendationModel(
+      id: json['id'] ?? '',
+      userId: json['userId'] ?? '',
+      type: json['type'] ?? '',
+      title: json['title'] ?? '',
+      description: json['description'] ?? '',
+      reason: json['reason'] ?? '',
+      priority: json['priority'] ?? 1,
+      isCompleted: json['isCompleted'] ?? false,
+      createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
+      metadata: json['metadata'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'userId': userId,
+      'type': type,
+      'title': title,
+      'description': description,
+      'reason': reason,
+      'priority': priority,
+      'isCompleted': isCompleted,
+      'createdAt': createdAt.toIso8601String(),
+      'metadata': metadata,
+    };
   }
 }

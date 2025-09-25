@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../domain/entities/lesson.dart';
 import '../../domain/entities/lesson_content.dart';
 import '../viewmodels/lessons_viewmodel.dart';
+import '../widgets/media_player_widget.dart';
 
 class LessonsView extends StatefulWidget {
   final String courseId;
@@ -381,63 +382,114 @@ class LessonContentView extends StatelessWidget {
           ),
         );
 
-      case ContentType.audio:
+      case ContentType.phonetic:
         return Container(
           margin: const EdgeInsets.only(bottom: 16),
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.blue[50],
+            color: Colors.purple[50],
             borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: Colors.purple[200]!),
           ),
-          child: Row(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.audiotrack, color: Colors.blue[700]),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Text(
-                  content.title,
-                  style: TextStyle(
-                    color: Colors.blue[700],
-                    fontWeight: FontWeight.w500,
+              Row(
+                children: [
+                  Icon(Icons.record_voice_over, color: Colors.purple[700]),
+                  const SizedBox(width: 8),
+                  Text(
+                    content.title,
+                    style: TextStyle(
+                      color: Colors.purple[700],
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                    ),
                   ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Text(
+                content.content,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontFamily: 'Courier', // Monospace font for phonetic symbols
+                  color: Colors.purple[900],
+                  fontWeight: FontWeight.w500,
+                  height: 1.4,
                 ),
               ),
-              IconButton(
-                onPressed: () {
-                  // TODO: Play audio
-                },
-                icon: Icon(Icons.play_arrow, color: Colors.blue[700]),
-              ),
+              if (content.metadata?['translation'] != null) ...[
+                const SizedBox(height: 8),
+                Text(
+                  'Traduction: ${content.metadata!['translation']}',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey[600],
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+              ],
             ],
+          ),
+        );
+
+      case ContentType.audio:
+        return Container(
+          margin: const EdgeInsets.only(bottom: 16),
+          child: MediaPlayerWidget(
+            content: content,
+            onComplete: () {
+              // Handle audio completion if needed
+            },
           ),
         );
 
       case ContentType.video:
         return Container(
           margin: const EdgeInsets.only(bottom: 16),
+          child: MediaPlayerWidget(
+            content: content,
+            onComplete: () {
+              // Handle video completion if needed
+            },
+          ),
+        );
+
+      case ContentType.image:
+        return Container(
+          margin: const EdgeInsets.only(bottom: 16),
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.red[50],
+            color: Colors.grey[100],
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Row(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.videocam, color: Colors.red[700]),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Text(
-                  content.title,
-                  style: TextStyle(
-                    color: Colors.red[700],
-                    fontWeight: FontWeight.w500,
-                  ),
+              Text(
+                content.title,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
-              IconButton(
-                onPressed: () {
-                  // TODO: Play video
-                },
-                icon: Icon(Icons.play_arrow, color: Colors.red[700]),
+              const SizedBox(height: 12),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.network(
+                  content.content,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      height: 200,
+                      color: Colors.grey[300],
+                      child: const Center(
+                        child: Icon(Icons.broken_image, size: 48, color: Colors.grey),
+                      ),
+                    );
+                  },
+                ),
               ),
             ],
           ),

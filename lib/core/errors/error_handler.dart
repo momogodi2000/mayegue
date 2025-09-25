@@ -19,7 +19,7 @@ class ErrorHandler {
     } else if (exception is CacheException) {
       return CacheFailure(exception.message, code: exception.code);
     } else {
-      return ServerFailure('Une erreur inattendue s\'est produite');
+      return const ServerFailure('Une erreur inattendue s\'est produite');
     }
   }
 

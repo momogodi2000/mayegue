@@ -28,4 +28,44 @@ abstract class AiRepository {
 
   /// Get AI recommendations for user
   Future<Either<Failure, List<String>>> getRecommendations(String userId);
+
+  /// Translate text between languages
+  Future<Either<Failure, TranslationEntity>> translateText({
+    required String userId,
+    required String sourceText,
+    required String sourceLanguage,
+    required String targetLanguage,
+  });
+
+  /// Assess pronunciation from audio
+  Future<Either<Failure, PronunciationAssessmentEntity>> assessPronunciation({
+    required String userId,
+    required String word,
+    required String language,
+    required String audioUrl,
+  });
+
+  /// Generate learning content
+  Future<Either<Failure, ContentGenerationEntity>> generateContent({
+    required String userId,
+    required String type,
+    required String topic,
+    required String language,
+    required String difficulty,
+  });
+
+  /// Get personalized learning recommendations
+  Future<Either<Failure, List<AiLearningRecommendationEntity>>> getPersonalizedRecommendations(String userId);
+
+  /// Save translation history
+  Future<Either<Failure, bool>> saveTranslation(TranslationEntity translation);
+
+  /// Get translation history
+  Future<Either<Failure, List<TranslationEntity>>> getTranslationHistory(String userId);
+
+  /// Save pronunciation assessment
+  Future<Either<Failure, bool>> savePronunciationAssessment(PronunciationAssessmentEntity assessment);
+
+  /// Get pronunciation history
+  Future<Either<Failure, List<PronunciationAssessmentEntity>>> getPronunciationHistory(String userId);
 }

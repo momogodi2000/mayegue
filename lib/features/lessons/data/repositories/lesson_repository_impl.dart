@@ -3,6 +3,7 @@ import '../../../../core/errors/failures.dart';
 import '../../domain/entities/lesson.dart';
 import '../../domain/repositories/lesson_repository.dart';
 import '../datasources/lesson_local_datasource.dart';
+import '../models/lesson_model.dart';
 
 /// Lesson repository implementation
 class LessonRepositoryImpl implements LessonRepository {
@@ -75,6 +76,38 @@ class LessonRepositoryImpl implements LessonRepository {
   Future<Either<Failure, bool>> resetLesson(String lessonId) async {
     try {
       final result = await localDataSource.resetLesson(lessonId);
+      return Right(result);
+    } on CacheFailure catch (e) {
+      return Left(e);
+    }
+  }
+
+  @override
+  Future<Either<Failure, Lesson>> createLesson(Lesson lesson) async {
+    try {
+      final lessonModel = LessonModel.fromEntity(lesson);
+      final createdModel = await localDataSource.createLesson(lessonModel);
+      return Right(createdModel.toEntity());
+    } on CacheFailure catch (e) {
+      return Left(e);
+    }
+  }
+
+  @override
+  Future<Either<Failure, Lesson>> updateLesson(String lessonId, Lesson lesson) async {
+    try {
+      final lessonModel = LessonModel.fromEntity(lesson);
+      final updatedModel = await localDataSource.updateLesson(lessonId, lessonModel);
+      return Right(updatedModel.toEntity());
+    } on CacheFailure catch (e) {
+      return Left(e);
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> deleteLesson(String lessonId) async {
+    try {
+      final result = await localDataSource.deleteLesson(lessonId);
       return Right(result);
     } on CacheFailure catch (e) {
       return Left(e);

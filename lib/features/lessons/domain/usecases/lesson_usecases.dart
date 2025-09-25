@@ -79,3 +79,36 @@ class ResetLessonUsecase {
     return await repository.resetLesson(lessonId);
   }
 }
+
+/// Create lesson usecase (for teachers)
+class CreateLessonUsecase {
+  final LessonRepository repository;
+
+  CreateLessonUsecase(this.repository);
+
+  Future<Either<Failure, Lesson>> call(Lesson lesson) async {
+    return await repository.createLesson(lesson);
+  }
+}
+
+/// Update lesson usecase (for teachers)
+class UpdateLessonUsecase {
+  final LessonRepository repository;
+
+  UpdateLessonUsecase(this.repository);
+
+  Future<Either<Failure, Lesson>> call(String lessonId, Lesson lesson) async {
+    return await repository.updateLesson(lessonId, lesson);
+  }
+}
+
+/// Delete lesson usecase (for teachers)
+class DeleteLessonUsecase {
+  final LessonRepository repository;
+
+  DeleteLessonUsecase(this.repository);
+
+  Future<Either<Failure, bool>> call(String lessonId) async {
+    return await repository.deleteLesson(lessonId);
+  }
+}

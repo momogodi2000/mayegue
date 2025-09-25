@@ -24,4 +24,13 @@ abstract class LessonRepository {
 
   /// Reset lesson progress
   Future<Either<Failure, bool>> resetLesson(String lessonId);
+
+  /// Create a new lesson (for teachers)
+  Future<Either<Failure, Lesson>> createLesson(Lesson lesson);
+
+  /// Update an existing lesson (for teachers)
+  Future<Either<Failure, Lesson>> updateLesson(String lessonId, Lesson lesson);
+
+  /// Delete a lesson (for teachers)
+  Future<Either<Failure, bool>> deleteLesson(String lessonId);
 }

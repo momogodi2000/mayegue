@@ -11,6 +11,9 @@ class LessonsViewModel extends ChangeNotifier {
   final GetPreviousLessonUsecase getPreviousLessonUsecase;
   final CompleteLessonUsecase completeLessonUsecase;
   final ResetLessonUsecase resetLessonUsecase;
+  final CreateLessonUsecase createLessonUsecase;
+  final UpdateLessonUsecase updateLessonUsecase;
+  final DeleteLessonUsecase deleteLessonUsecase;
 
   LessonsViewModel({
     required this.getLessonsByCourseUsecase,
@@ -19,6 +22,9 @@ class LessonsViewModel extends ChangeNotifier {
     required this.getPreviousLessonUsecase,
     required this.completeLessonUsecase,
     required this.resetLessonUsecase,
+    required this.createLessonUsecase,
+    required this.updateLessonUsecase,
+    required this.deleteLessonUsecase,
   });
 
   // State
@@ -218,6 +224,94 @@ class LessonsViewModel extends ChangeNotifier {
         .firstOrNull;
 
     return previousLesson?.isCompleted ?? false;
+  }
+
+  /// Create a new lesson (Teacher functionality)
+  Future<Lesson?> createLesson(Lesson lesson) async {
+    _setLoading(true);
+    _clearError();
+
+    final result = await createLessonUsecase(lesson);
+
+    return result.fold(
+      (failure) {
+        _setError(_mapFailureToMessage(failure));
+        _setLoading(false);
+        return null;
+      },
+      (createdLesson) {
+        // Add to local lessons list
+        _lessons.add(createdLesson);
+        _lessons.sort((a, b) => a.order.compareTo(b.order));
+        notifyListeners();
+        _setLoading(false);
+        return createdLesson;
+      },
+    );
+  }
+
+  /// Update an existing lesson (Teacher functionality)
+  Future<Lesson?> updateLesson(String lessonId, Lesson lesson) async {
+    _setLoading(true);
+    _clearError();
+
+    final result = await updateLessonUsecase(lessonId, lesson);
+
+    return result.fold(
+      (failure) {
+        _setError(_mapFailureToMessage(failure));
+        _setLoading(false);
+        return null;
+      },
+      (updatedLesson) {
+        // Update in lessons list
+        final index = _lessons.indexWhere((l) => l.id == lessonId);
+        if (index != -1) {
+          _lessons[index] = updatedLesson;
+          _lessons.sort((a, b) => a.order.compareTo(b.order));
+        }
+
+        // Update current lesson if it's the one being updated
+        if (_currentLesson?.id == lessonId) {
+          _currentLesson = updatedLesson;
+        }
+
+        notifyListeners();
+        _setLoading(false);
+        return updatedLesson;
+      },
+    );
+  }
+
+  /// Delete a lesson (Teacher functionality)
+  Future<bool> deleteLesson(String lessonId) async {
+    _setLoading(true);
+    _clearError();
+
+    final result = await deleteLessonUsecase(lessonId);
+
+    return result.fold(
+      (failure) {
+        _setError(_mapFailureToMessage(failure));
+        _setLoading(false);
+        return false;
+      },
+      (success) {
+        if (success) {
+          // Remove from lessons list
+          _lessons.removeWhere((l) => l.id == lessonId);
+
+          // Clear current lesson if it's the one being deleted
+          if (_currentLesson?.id == lessonId) {
+            _currentLesson = null;
+          }
+
+          notifyListeners();
+        }
+        _setLoading(false);
+        return success;
+      },
+    );
   }
 
   // Helper methods

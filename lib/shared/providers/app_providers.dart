@@ -49,6 +49,17 @@ import '../../features/dictionary/domain/usecases/search_words_usecase.dart';
 import '../../features/dictionary/domain/usecases/get_word_usecase.dart';
 import '../../features/dictionary/domain/usecases/save_favorite_word_usecase.dart';
 import '../../features/dictionary/presentation/viewmodels/dictionary_viewmodel.dart';
+import '../../features/gamification/data/datasources/gamification_datasource.dart';
+import '../../features/gamification/data/datasources/gamification_local_datasource.dart';
+import '../../features/gamification/data/repositories/gamification_repository_impl.dart';
+import '../../features/gamification/domain/repositories/gamification_repository.dart';
+import '../../features/gamification/domain/usecases/gamification_usecases.dart' as gamification_usecases;
+import '../../features/gamification/presentation/viewmodels/gamification_viewmodel.dart';
+import '../../features/ai/data/datasources/ai_remote_datasource.dart';
+import '../../features/ai/data/repositories/ai_repository_impl.dart';
+import '../../features/ai/domain/repositories/ai_repository.dart';
+import '../../features/ai/domain/usecases/ai_usecases.dart';
+import '../../features/ai/presentation/viewmodels/ai_viewmodels.dart';
 
 /// List of all providers for the app
 List<SingleChildWidget> getProviders() {
@@ -229,6 +240,15 @@ List<SingleChildWidget> getProviders() {
     ProxyProvider<LessonRepository, ResetLessonUsecase>(
       update: (_, repository, __) => ResetLessonUsecase(repository),
     ),
+    ProxyProvider<LessonRepository, CreateLessonUsecase>(
+      update: (_, repository, __) => CreateLessonUsecase(repository),
+    ),
+    ProxyProvider<LessonRepository, UpdateLessonUsecase>(
+      update: (_, repository, __) => UpdateLessonUsecase(repository),
+    ),
+    ProxyProvider<LessonRepository, DeleteLessonUsecase>(
+      update: (_, repository, __) => DeleteLessonUsecase(repository),
+    ),
 
     // Progress usecases
     ProxyProvider<ProgressRepository, GetUserProgressUsecase>(
@@ -273,14 +293,57 @@ List<SingleChildWidget> getProviders() {
         unenrollFromCourseUsecase: unenroll,
       ),
     ),
-    ProxyProvider6<GetLessonsByCourseUsecase, GetLessonByIdUsecase, GetNextLessonUsecase, GetPreviousLessonUsecase, CompleteLessonUsecase, ResetLessonUsecase, LessonsViewModel>(
-      update: (_, getByCourse, getById, getNext, getPrev, complete, reset, __) => LessonsViewModel(
-        getLessonsByCourseUsecase: getByCourse,
-        getLessonByIdUsecase: getById,
-        getNextLessonUsecase: getNext,
-        getPreviousLessonUsecase: getPrev,
-        completeLessonUsecase: complete,
-        resetLessonUsecase: reset,
+    ChangeNotifierProvider<LessonsViewModel>(
+      create: (context) => LessonsViewModel(
+        getLessonsByCourseUsecase: context.read<GetLessonsByCourseUsecase>(),
+        getLessonByIdUsecase: context.read<GetLessonByIdUsecase>(),
+        getNextLessonUsecase: context.read<GetNextLessonUsecase>(),
+        getPreviousLessonUsecase: context.read<GetPreviousLessonUsecase>(),
+        completeLessonUsecase: context.read<CompleteLessonUsecase>(),
+        resetLessonUsecase: context.read<ResetLessonUsecase>(),
+        createLessonUsecase: context.read<CreateLessonUsecase>(),
+        updateLessonUsecase: context.read<UpdateLessonUsecase>(),
+        deleteLessonUsecase: context.read<DeleteLessonUsecase>(),
+      ),
+    ),
+
+    // Gamification providers
+    ProxyProvider<StorageService, GamificationDataSource>(
+      update: (_, storageService, __) => GamificationLocalDataSource()..initialize(),
+    ),
+    ProxyProvider<GamificationDataSource, GamificationRepository>(
+      update: (_, dataSource, __) => GamificationRepositoryImpl(dataSource),
+    ),
+    ProxyProvider<GamificationRepository, gamification_usecases.GetUserProgressUsecase>(
+      update: (_, repository, __) => gamification_usecases.GetUserProgressUsecase(repository),
+    ),
+    ProxyProvider<GamificationRepository, gamification_usecases.AddPointsUsecase>(
+      update: (_, repository, __) => gamification_usecases.AddPointsUsecase(repository),
+    ),
+    ProxyProvider<GamificationRepository, gamification_usecases.AwardAchievementUsecase>(
+      update: (_, repository, __) => gamification_usecases.AwardAchievementUsecase(repository),
+    ),
+    ProxyProvider<GamificationRepository, gamification_usecases.GetLeaderboardUsecase>(
+      update: (_, repository, __) => gamification_usecases.GetLeaderboardUsecase(repository),
+    ),
+    ProxyProvider<GamificationRepository, gamification_usecases.GetUserAchievementsUsecase>(
+      update: (_, repository, __) => gamification_usecases.GetUserAchievementsUsecase(repository),
+    ),
+    ProxyProvider<GamificationRepository, gamification_usecases.CheckAndUnlockAchievementsUsecase>(
+      update: (_, repository, __) => gamification_usecases.CheckAndUnlockAchievementsUsecase(repository),
+    ),
+    ProxyProvider<GamificationRepository, gamification_usecases.UpdateDailyStreakUsecase>(
+      update: (_, repository, __) => gamification_usecases.UpdateDailyStreakUsecase(repository),
+    ),
+    ChangeNotifierProvider<GamificationViewModel>(
+      create: (context) => GamificationViewModel(
+        getUserProgressUsecase: context.read<gamification_usecases.GetUserProgressUsecase>(),
+        addPointsUsecase: context.read<gamification_usecases.AddPointsUsecase>(),
+        awardAchievementUsecase: context.read<gamification_usecases.AwardAchievementUsecase>(),
+        getLeaderboardUsecase: context.read<gamification_usecases.GetLeaderboardUsecase>(),
+        getUserAchievementsUsecase: context.read<gamification_usecases.GetUserAchievementsUsecase>(),
+        checkAndUnlockAchievementsUsecase: context.read<gamification_usecases.CheckAndUnlockAchievementsUsecase>(),
+        updateDailyStreakUsecase: context.read<gamification_usecases.UpdateDailyStreakUsecase>(),
       ),
     ),
 
@@ -315,6 +378,80 @@ List<SingleChildWidget> getProviders() {
         searchWordsUsecase: search,
         getWordUsecase: getWord,
         saveFavoriteWordUsecase: saveFavorite,
+      ),
+    ),
+
+    // AI providers
+    Provider<AiRemoteDataSource>(
+      create: (_) => AiRemoteDataSourceImpl(
+        apiKey: 'your-openai-api-key', // TODO: Move to environment variables
+        baseUrl: 'https://api.openai.com/v1',
+      ),
+    ),
+    ProxyProvider2<AiRemoteDataSource, FirebaseService, AiRepository>(
+      update: (_, remoteDataSource, firebaseService, __) => AiRepositoryImpl(
+        remoteDataSource: remoteDataSource,
+        firestore: firebaseService.firestore,
+      ),
+    ),
+
+    // AI Use cases
+    ProxyProvider<AiRepository, SendMessageToAI>(
+      update: (_, repository, __) => SendMessageToAI(repository),
+    ),
+    ProxyProvider<AiRepository, StartConversation>(
+      update: (_, repository, __) => StartConversation(repository),
+    ),
+    ProxyProvider<AiRepository, GetUserConversations>(
+      update: (_, repository, __) => GetUserConversations(repository),
+    ),
+    ProxyProvider<AiRepository, TranslateText>(
+      update: (_, repository, __) => TranslateText(repository),
+    ),
+    ProxyProvider<AiRepository, AssessPronunciation>(
+      update: (_, repository, __) => AssessPronunciation(repository),
+    ),
+    ProxyProvider<AiRepository, GenerateContent>(
+      update: (_, repository, __) => GenerateContent(repository),
+    ),
+    ProxyProvider<AiRepository, GetPersonalizedRecommendations>(
+      update: (_, repository, __) => GetPersonalizedRecommendations(repository),
+    ),
+    ProxyProvider<AiRepository, GetTranslationHistory>(
+      update: (_, repository, __) => GetTranslationHistory(repository),
+    ),
+    ProxyProvider<AiRepository, GetPronunciationHistory>(
+      update: (_, repository, __) => GetPronunciationHistory(repository),
+    ),
+
+    // AI ViewModels
+    ChangeNotifierProvider<AiChatViewModel>(
+      create: (context) => AiChatViewModel(
+        sendMessageToAI: context.read<SendMessageToAI>(),
+        startConversation: context.read<StartConversation>(),
+        getUserConversations: context.read<GetUserConversations>(),
+      ),
+    ),
+    ChangeNotifierProvider<TranslationViewModel>(
+      create: (context) => TranslationViewModel(
+        translateText: context.read<TranslateText>(),
+        getTranslationHistory: context.read<GetTranslationHistory>(),
+      ),
+    ),
+    ChangeNotifierProvider<PronunciationViewModel>(
+      create: (context) => PronunciationViewModel(
+        assessPronunciation: context.read<AssessPronunciation>(),
+        getPronunciationHistory: context.read<GetPronunciationHistory>(),
+      ),
+    ),
+    ChangeNotifierProvider<ContentGenerationViewModel>(
+      create: (context) => ContentGenerationViewModel(
+        generateContent: context.read<GenerateContent>(),
+      ),
+    ),
+    ChangeNotifierProvider<AiRecommendationsViewModel>(
+      create: (context) => AiRecommendationsViewModel(
+        getPersonalizedRecommendations: context.read<GetPersonalizedRecommendations>(),
       ),
     ),
 
