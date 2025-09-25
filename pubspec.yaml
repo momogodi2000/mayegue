@@ -1,4 +1,4 @@
-﻿name: mayegue
+name: mayegue
 description: Application d'apprentissage des langues locales (Ewondo et Bafang)
 publish_to: 'none'
 version: 1.0.0+1
@@ -25,7 +25,7 @@ dependencies:
   go_router: ^14.0.0
   # 🌐 HTTP Client
   dio: ^5.4.0
-  http: ^1.2.1
+  http: ^0.13.6
   connectivity_plus: ^5.0.2
   # 💾 Local Storage
   hive: ^2.2.3

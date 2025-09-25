@@ -1,11 +1,11 @@
 {
-    "name": "Mayegue - Apprentissage des Langues Camerounaises",
-    "short_name": "Mayegue",
+    "name": "mayegue",
+    "short_name": "mayegue",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "Application d'apprentissage des langues locales camerounaises - Ewondo et Bafang",
+    "description": "A new Flutter project.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

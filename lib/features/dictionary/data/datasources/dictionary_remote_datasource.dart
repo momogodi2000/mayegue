@@ -61,7 +61,7 @@ class DictionaryRemoteDataSourceImpl implements DictionaryRemoteDataSource {
       // Search by word starting with query (case insensitive would need additional setup)
       queryRef = queryRef
           .where('word', isGreaterThanOrEqualTo: query)
-          .where('word', isLessThan: query + '\uf8ff')
+          .where('word', isLessThan: '${query}\uf8ff')
           .limit(20);
 
       final snapshot = await queryRef.get();

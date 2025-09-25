@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../../../../core/constants/app_constants.dart';
 
 /// AI Remote Data Source
 abstract class AiRemoteDataSource {

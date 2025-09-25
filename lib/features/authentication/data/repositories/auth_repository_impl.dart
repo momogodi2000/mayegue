@@ -2,7 +2,6 @@ import '../../domain/entities/user_entity.dart';
 import '../../domain/entities/auth_response_entity.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../models/user_model.dart';
-import '../models/auth_response_model.dart';
 import '../datasources/auth_remote_datasource.dart';
 
 /// Implementation of AuthRepository

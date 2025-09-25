@@ -71,7 +71,7 @@ class ProfilPage extends StatelessWidget {
                     icon: const Icon(Icons.edit, color: Colors.white),
                     label: const Text("Modifier le profil"),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white.withOpacity(0.2),
+                      backgroundColor: Colors.white.withValues(alpha: 0.2),
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),

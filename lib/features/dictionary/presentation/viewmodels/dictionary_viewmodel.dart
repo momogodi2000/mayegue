@@ -22,7 +22,7 @@ class DictionaryViewModel extends ChangeNotifier {
   String? _errorMessage;
   List<WordEntity> _searchResults = [];
   WordEntity? _selectedWord;
-  List<WordEntity> _favoriteWords = [];
+  final List<WordEntity> _favoriteWords = [];
 
   // Getters
   bool get isLoading => _isLoading;

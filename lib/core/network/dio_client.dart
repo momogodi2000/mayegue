@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 
 /// Dio HTTP client configuration
 class DioClient {
