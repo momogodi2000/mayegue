@@ -1,6 +1,5 @@
 import 'package:hive/hive.dart';
 import '../../../../core/errors/failures.dart';
-import '../../domain/entities/course.dart';
 import '../models/course_model.dart';
 
 /// Abstract data source for course operations

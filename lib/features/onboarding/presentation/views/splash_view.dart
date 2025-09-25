@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
-import 'package:go_router/go_router.dart';
-import '../../../../core/constants/routes.dart';
 import '../../../authentication/presentation/viewmodels/auth_viewmodel.dart';
 
 /// Splash screen with Lottie animation

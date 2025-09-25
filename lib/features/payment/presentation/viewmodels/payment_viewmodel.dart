@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import '../../../../core/usecases/usecase.dart';
 import '../../domain/usecases/process_payment_usecase.dart';
 
 /// Payment ViewModel

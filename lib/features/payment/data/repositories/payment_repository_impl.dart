@@ -117,7 +117,6 @@ class PaymentRepositoryImpl implements PaymentRepository {
 
         // If payment completed, create/update subscription
         if (status == 'completed') {
-          final payment = await remoteDataSource.getPaymentById(paymentId);
           // TODO: Create subscription based on payment amount
         }
 
