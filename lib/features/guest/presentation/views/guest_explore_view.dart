@@ -139,7 +139,7 @@ class _GuestExploreViewState extends State<GuestExploreView>
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
+                        color: Colors.black.withValues(alpha: 0.1),
                         blurRadius: 8,
                         offset: const Offset(0, 4),
                       ),
@@ -482,9 +482,9 @@ class _GuestExploreViewState extends State<GuestExploreView>
         title: Text('Fonctionnalité : $feature'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.lock_outline, size: 48, color: Colors.orange),
-            const SizedBox(height: 16),
+          children: const [
+            Icon(Icons.lock_outline, size: 48, color: Colors.orange),
+            SizedBox(height: 16),
             Text(
               'Cette fonctionnalité nécessite un compte utilisateur.',
               textAlign: TextAlign.center,

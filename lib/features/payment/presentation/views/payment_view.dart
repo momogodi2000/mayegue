@@ -140,7 +140,7 @@ class _PaymentViewState extends State<PaymentView> {
       method: _selectedMethod,
       phoneNumber: _phoneController.text,
     ).then((_) {
-      if (viewModel.successMessage != null) {
+      if (mounted && viewModel.successMessage != null) {
         // Navigate to success view
         Navigator.pushReplacementNamed(
           context,

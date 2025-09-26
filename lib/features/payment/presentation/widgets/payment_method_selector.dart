@@ -74,7 +74,7 @@ class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
             width: isSelected ? 2 : 1,
           ),
           borderRadius: BorderRadius.circular(12),
-          color: isSelected ? Theme.of(context).primaryColor.withOpacity(0.05) : null,
+          color: isSelected ? Theme.of(context).primaryColor.withValues(alpha: 0.05) : null,
         ),
         child: Row(
           children: [
@@ -83,7 +83,7 @@ class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: isSelected ? Theme.of(context).primaryColor.withOpacity(0.1) : Colors.grey.shade100,
+                color: isSelected ? Theme.of(context).primaryColor.withValues(alpha: 0.1) : Colors.grey.shade100,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: logo != null

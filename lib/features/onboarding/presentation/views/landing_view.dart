@@ -487,7 +487,7 @@ class _LandingViewState extends State<LandingView>
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
@@ -523,7 +523,7 @@ class _LandingViewState extends State<LandingView>
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
-              color: (language['color'] as Color).withOpacity(0.1),
+              color: (language['color'] as Color).withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
@@ -567,13 +567,13 @@ class _LandingViewState extends State<LandingView>
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
         ],
         border: Border.all(
-          color: Colors.green.withOpacity(0.1),
+          color: Colors.green.withValues(alpha: 0.1),
           width: 1,
         ),
       ),
@@ -644,7 +644,7 @@ class _LandingViewState extends State<LandingView>
         color: Colors.green.shade50,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: Colors.green.withOpacity(0.2),
+          color: Colors.green.withValues(alpha: 0.2),
           width: 1,
         ),
       ),

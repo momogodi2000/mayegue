@@ -110,7 +110,7 @@ class _WordDetailsViewState extends State<WordDetailsView> {
                     vertical: AppDimensions.spacing / 4,
                   ),
                   decoration: BoxDecoration(
-                    color: AppTheme.primaryColor.withOpacity(0.1),
+                    color: AppTheme.primaryColor.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(AppDimensions.borderRadius / 2),
                   ),
                   child: Text(
@@ -130,7 +130,7 @@ class _WordDetailsViewState extends State<WordDetailsView> {
             Text(
               word.translation,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: Theme.of(context).textTheme.titleLarge?.color?.withOpacity(0.8),
+                    color: Theme.of(context).textTheme.titleLarge?.color?.withValues(alpha: 0.8),
                   ),
             ),
 

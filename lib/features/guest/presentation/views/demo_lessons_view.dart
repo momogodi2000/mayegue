@@ -230,12 +230,12 @@ class _DemoLessonsViewState extends State<DemoLessonsView> {
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
+                    children: const [
+                      Text(
                         'Débloquez toutes les leçons',
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      const Text(
+                      Text(
                         'Plus de 100 leçons disponibles',
                         style: TextStyle(color: Colors.grey, fontSize: 12),
                       ),
@@ -269,7 +269,7 @@ class _DemoLessonsViewState extends State<DemoLessonsView> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.purple.withOpacity(0.3),
+            color: Colors.purple.withValues(alpha: 0.3),
             blurRadius: 12,
             offset: const Offset(0, 6),
           ),

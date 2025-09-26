@@ -52,7 +52,7 @@ class DictionaryWordCard extends StatelessWidget {
                             vertical: AppDimensions.spacing / 4,
                           ),
                           decoration: BoxDecoration(
-                            color: AppTheme.primaryColor.withOpacity(0.1),
+                            color: AppTheme.primaryColor.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(AppDimensions.borderRadius / 2),
                           ),
                           child: Text(
@@ -72,7 +72,7 @@ class DictionaryWordCard extends StatelessWidget {
                     Text(
                       word.translation,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.8),
+                            color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.8),
                           ),
                     ),
 
@@ -122,7 +122,7 @@ class DictionaryWordCard extends StatelessWidget {
                         '"${word.example}"',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                               fontStyle: FontStyle.italic,
-                              color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.6),
+                              color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.6),
                             ),
                       ),
                     ],

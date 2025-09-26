@@ -26,8 +26,8 @@ class _LessonExerciseViewState extends State<LessonExerciseView>
   late Animation<double> _progressAnimation;
 
   int _currentIndex = 0;
-  Map<int, String?> _userAnswers = {};
-  Map<int, bool> _answerResults = {};
+  final Map<int, String?> _userAnswers = {};
+  final Map<int, bool> _answerResults = {};
   int _correctAnswers = 0;
 
   @override

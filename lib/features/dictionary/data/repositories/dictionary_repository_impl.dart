@@ -416,7 +416,7 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
         final result = await remoteDataSource.getAutocompleteSuggestions(query, language, limit: limit);
         return Right(result);
       } else {
-        return Left(NetworkFailure('No internet connection'));
+        return const Left(NetworkFailure('No internet connection'));
       }
     } on Failure catch (failure) {
       return Left(failure);
