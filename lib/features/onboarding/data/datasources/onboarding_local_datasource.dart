@@ -8,6 +8,12 @@ abstract class OnboardingLocalDataSource {
   Future<void> resetOnboarding();
   Future<Map<String, dynamic>?> getOnboardingProgress();
   Future<void> saveOnboardingProgress(Map<String, dynamic> progress);
+
+  // Additional methods for repository compatibility
+  Future<void> saveOnboardingData(dynamic data);
+  Future<bool> getOnboardingStatus();
+  Future<Map<String, dynamic>?> getOnboardingData();
+  Future<void> clearOnboardingData();
 }
 
 /// Implementation of OnboardingLocalDataSource using SharedPreferences
@@ -49,5 +55,28 @@ class OnboardingLocalDataSourceImpl implements OnboardingLocalDataSource {
     final prefs = await SharedPreferences.getInstance();
     final progressJson = json.encode(progress);
     await prefs.setString(_keyOnboardingProgress, progressJson);
+  }
+
+  @override
+  Future<void> saveOnboardingData(dynamic data) async {
+    if (data is Map<String, dynamic>) {
+      await saveOnboardingProgress(data);
+    }
+    await markOnboardingComplete();
+  }
+
+  @override
+  Future<bool> getOnboardingStatus() async {
+    return await isOnboardingComplete();
+  }
+
+  @override
+  Future<Map<String, dynamic>?> getOnboardingData() async {
+    return await getOnboardingProgress();
+  }
+
+  @override
+  Future<void> clearOnboardingData() async {
+    await resetOnboarding();
   }
 }

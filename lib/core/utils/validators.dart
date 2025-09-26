@@ -8,7 +8,14 @@ class Validators {
       r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
     );
 
-    return emailRegex.hasMatch(email);
+    if (!emailRegex.hasMatch(email)) return false;
+
+    // Additional checks for suspicious patterns
+    if (email.contains('..') || email.startsWith('.') || email.contains('.@') || email.contains('@.')) {
+      return false;
+    }
+
+    return true;
   }
 
   /// Validate password strength

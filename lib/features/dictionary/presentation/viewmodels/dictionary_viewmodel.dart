@@ -45,6 +45,8 @@ class DictionaryViewModel extends ChangeNotifier {
   bool get isLoadingTranslations => _isLoadingTranslations;
   bool get isLoadingSuggestions => _isLoadingSuggestions;
   String? get error => _error;
+  bool get hasError => _error != null;
+  String? get errorMessage => _error;
   String get searchQuery => _searchQuery;
   String get selectedSourceLanguage => _selectedSourceLanguage;
   String get selectedTargetLanguage => _selectedTargetLanguage;

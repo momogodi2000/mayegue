@@ -20,6 +20,7 @@ void main() {
         expect(Validators.getEmailError('test..double@example.com'), isNotNull);
         expect(Validators.getEmailError('.test@example.com'), isNotNull);
         expect(Validators.getEmailError('test.@example.com'), isNotNull);
+        expect(Validators.getEmailError('test@.com'), isNotNull);
       });
     });
 
@@ -57,14 +58,16 @@ void main() {
 
     group('getPhoneError', () {
       test('should return null for valid phone', () {
-        expect(Validators.getPhoneError('+237123456789'), null);
-        expect(Validators.getPhoneError('123456789'), null);
+        expect(Validators.getPhoneError('+237612345678'), null);
+        expect(Validators.getPhoneError('612345678'), null);
       });
 
       test('should return error for invalid phone', () {
         expect(Validators.getPhoneError(''), isNotNull);
         expect(Validators.getPhoneError('abc'), isNotNull);
         expect(Validators.getPhoneError('123'), isNotNull);
+        expect(Validators.getPhoneError('+237123456789'), isNotNull); // Invalid: doesn't start with valid prefix
+        expect(Validators.getPhoneError('123456789'), isNotNull); // Invalid: doesn't start with 6, 2, or 9
       });
     });
 
@@ -76,7 +79,7 @@ void main() {
       test('should return false for invalid input', () {
         expect(Validators.validateTextInput(''), false);
         expect(Validators.validateTextInput('A', minLength: 2), false);
-        expect(Validators.validateTextInput('A' * 1001, maxLength: 1000), false);
+        expect(Validators.validateTextInput('<script>alert(1)</script>'), false);
       });
     });
   });

@@ -131,4 +131,8 @@ class AppDimensions {
   static const double safeAreaBottom = 24.0;
   static const double safeAreaLeft = 16.0;
   static const double safeAreaRight = 16.0;
+
+  // Legacy aliases for backward compatibility
+  static double get spacing => spacingMedium;
+  static double get borderRadius => borderRadiusMedium;
 }

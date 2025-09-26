@@ -26,7 +26,6 @@ import '../../features/authentication/domain/usecases/verify_phone_number_usecas
 import '../../features/authentication/domain/usecases/forgot_password_usecase.dart';
 import '../../features/authentication/presentation/viewmodels/auth_viewmodel.dart';
 import '../../features/onboarding/data/datasources/onboarding_local_datasource.dart';
-import '../../features/onboarding/data/datasources/onboarding_local_datasource_impl.dart';
 import '../../features/onboarding/domain/repositories/onboarding_repository.dart';
 import '../../features/onboarding/data/repositories/onboarding_repository_impl.dart';
 import '../../features/onboarding/domain/usecases/complete_onboarding_usecase.dart';
@@ -182,7 +181,7 @@ List<SingleChildWidget> getProviders() {
 
     // Onboarding providers (moved GetOnboardingStatusUsecase here for AuthViewModel dependency)
     ProxyProvider<StorageService, OnboardingLocalDataSource>(
-      update: (_, storageService, __) => OnboardingLocalDataSourceImpl(storageService),
+      update: (_, storageService, __) => OnboardingLocalDataSourceImpl(),
     ),
     ProxyProvider<OnboardingLocalDataSource, OnboardingRepository>(
       update: (_, dataSource, __) => OnboardingRepositoryImpl(dataSource),
@@ -210,8 +209,8 @@ List<SingleChildWidget> getProviders() {
     ),
 
     // Onboarding providers
-    ProxyProvider<StorageService, OnboardingLocalDataSource>(
-      update: (_, storageService, __) => OnboardingLocalDataSourceImpl(storageService),
+    Provider<OnboardingLocalDataSource>(
+      create: (_) => OnboardingLocalDataSourceImpl(),
     ),
     ProxyProvider<OnboardingLocalDataSource, OnboardingRepository>(
       update: (_, dataSource, __) => OnboardingRepositoryImpl(dataSource),

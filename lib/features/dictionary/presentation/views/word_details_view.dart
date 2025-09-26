@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../../../shared/themes/app_theme.dart';
 import '../../../../core/constants/app_dimensions.dart';
 import '../viewmodels/dictionary_viewmodel.dart';
+import '../../domain/entities/word_entity.dart';
 
 /// View for displaying detailed information about a word
 class WordDetailsView extends StatefulWidget {
@@ -37,13 +38,16 @@ class _WordDetailsViewState extends State<WordDetailsView> {
       body: Consumer<DictionaryViewModel>(
         builder: (context, viewModel, child) {
           // Find the word in search results or we need to load it
-          final word = viewModel.searchResults.firstWhere(
-            (w) => w.id == widget.wordId,
-            orElse: () => viewModel.favoriteWords.firstWhere(
-              (w) => w.id == widget.wordId,
-              orElse: () => null,
-            ),
-          );
+          WordEntity? word;
+          try {
+            word = viewModel.searchResults.firstWhere((w) => w.id == widget.wordId);
+          } catch (e) {
+            try {
+              word = viewModel.favoriteWords.firstWhere((w) => w.id == widget.wordId);
+            } catch (e) {
+              word = null;
+            }
+          }
 
           if (word == null) {
             return const Center(child: CircularProgressIndicator());
