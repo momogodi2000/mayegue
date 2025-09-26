@@ -56,8 +56,11 @@ void main() {
     });
 
     group('logError', () {
-      test('should not throw error when logging', () {
-        expect(() => ErrorHandler.logError('test error', StackTrace.current), returnsNormally);
+      test('should log error without throwing', () {
+        // logError prints to console in debug mode, but doesn't throw
+        ErrorHandler.logError('test error', StackTrace.current);
+        // If we get here, it didn't throw
+        expect(true, isTrue);
       });
     });
 
@@ -68,10 +71,12 @@ void main() {
       });
 
       test('should rethrow error when operation fails', () async {
-        expect(
-          () => ErrorHandler.handleAsyncError(() async => throw Exception('error')),
-          throwsA(isA<Exception>()),
-        );
+        try {
+          await ErrorHandler.handleAsyncError(() async => throw Exception('error'));
+          fail('Expected exception to be rethrown');
+        } catch (e) {
+          expect(e, isA<Exception>());
+        }
       });
     });
   });

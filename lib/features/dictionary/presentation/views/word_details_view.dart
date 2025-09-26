@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../shared/themes/app_theme.dart';
-import '../../../../shared/widgets/app_dimensions.dart';
+import '../../../../core/constants/app_dimensions.dart';
 import '../viewmodels/dictionary_viewmodel.dart';
 
 /// View for displaying detailed information about a word

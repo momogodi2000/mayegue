@@ -148,9 +148,9 @@ class SecurityUtils {
   static bool isSqlInjectionSafe(String input) {
     final sqlPatterns = [
       RegExp(r'(\bUNION\b|\bSELECT\b|\bINSERT\b|\bUPDATE\b|\bDELETE\b|\bDROP\b)', caseSensitive: false),
-      RegExp(r'(\-\-|\#|\/\*|\*\/)', caseSensitive: false),
+      RegExp(r'(\-\-|\#|/\*|\*/)', caseSensitive: false),
       RegExp(r'(\bOR\b|\bAND\b)\s+\d+\s*=\s*\d+', caseSensitive: false),
-      RegExp(r'\';\s*(\bDROP\b|\bDELETE\b|\bINSERT\b)', caseSensitive: false),
+      RegExp(r"';\s*(\bDROP\b|\bDELETE\b|\bINSERT\b)", caseSensitive: false),
     ];
 
     return !sqlPatterns.any((pattern) => pattern.hasMatch(input));

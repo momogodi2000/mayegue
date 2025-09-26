@@ -5,14 +5,14 @@ void main() {
   group('SecurityUtils', () {
     group('hashPassword', () {
       test('should return consistent hash for same input', () {
-        final hash1 = SecurityUtils.hashPassword('password123');
-        final hash2 = SecurityUtils.hashPassword('password123');
+        final hash1 = SecurityUtils.hashPassword('password123', 'salt123');
+        final hash2 = SecurityUtils.hashPassword('password123', 'salt123');
         expect(hash1, equals(hash2));
       });
 
       test('should return different hash for different input', () {
-        final hash1 = SecurityUtils.hashPassword('password123');
-        final hash2 = SecurityUtils.hashPassword('different123');
+        final hash1 = SecurityUtils.hashPassword('password123', 'salt123');
+        final hash2 = SecurityUtils.hashPassword('different123', 'salt123');
         expect(hash1, isNot(equals(hash2)));
       });
     });
@@ -52,7 +52,7 @@ void main() {
 
     group('generateSecureToken', () {
       test('should generate token of correct length', () {
-        final token = SecurityUtils.generateSecureToken(length: 16);
+        final token = SecurityUtils.generateSecureToken(16);
         expect(token.length, equals(16));
       });
 

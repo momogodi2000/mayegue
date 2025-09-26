@@ -1,30 +1,52 @@
-// This is a basic Flutter widget test.
+// Basic Flutter widget test for Mayegue app
 //
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
+// This test ensures the main app widget can be built without errors.
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
+import 'package:provider/provider.dart';
 import 'package:mayegue/main.dart';
+import 'package:mayegue/shared/providers/app_providers.dart';
+import 'package:mayegue/core/config/environment_config.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+  setUpAll(() async {
+    // Initialize environment config for tests
+    await EnvironmentConfig.init();
+  });
+
+  testWidgets('App builds and shows initial screen', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: getProviders(),
+        child: const MyApp(),
+      ),
+    );
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    // Wait for initialization
+    await tester.pumpAndSettle();
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    // Verify that the app builds without errors
+    expect(find.byType(MaterialApp), findsOneWidget);
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // Check for common UI elements that should be present
+    expect(find.byType(Scaffold), findsWidgets);
+  });
+
+  testWidgets('App supports localization', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: getProviders(),
+        child: const MyApp(),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    // Verify localization is set up
+    final materialApp = tester.widget<MaterialApp>(find.byType(MaterialApp));
+    expect(materialApp.localizationsDelegates, isNotNull);
+    expect(materialApp.supportedLocales, isNotEmpty);
   });
 }

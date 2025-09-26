@@ -67,7 +67,7 @@ class _GuestExploreViewState extends State<GuestExploreView>
           tabs: const [
             Tab(icon: Icon(Icons.explore), text: 'Découvrir'),
             Tab(icon: Icon(Icons.translate), text: 'Vocabulaire'),
-            Tab(icon: Icon(Icons.culture), text: 'Culture'),
+            Tab(icon: Icon(Icons.museum), text: 'Culture'),
           ],
         ),
       ),
@@ -329,7 +329,7 @@ class _GuestExploreViewState extends State<GuestExploreView>
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.culture, color: selectedLanguage['color']),
+                      Icon(Icons.museum, color: selectedLanguage['color']),
                       const SizedBox(width: 8),
                       const Text(
                         'Contexte culturel',

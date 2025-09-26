@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../shared/themes/app_theme.dart';
-import '../../../../shared/widgets/app_dimensions.dart';
+import '../../../../core/constants/app_dimensions.dart';
 import '../../domain/entities/word_entity.dart';
 
 /// Card widget for displaying dictionary words in search results
