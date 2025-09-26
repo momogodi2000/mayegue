@@ -45,7 +45,7 @@ class Validators {
   static bool isValidName(String name) {
     if (name.isEmpty || name.trim().length < 2) return false;
 
-    final nameRegex = RegExp(r'^[a-zA-ZÀ-ÿ\s\-\']+$');
+    final nameRegex = RegExp(r"^[a-zA-ZÀ-ÿ\s\-']+$");
     return nameRegex.hasMatch(name.trim());
   }
 

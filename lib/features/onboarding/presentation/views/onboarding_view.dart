@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
+import '../../../../core/constants/routes.dart';
 import '../viewmodels/onboarding_viewmodel.dart';
 
 class OnboardingView extends StatefulWidget {
@@ -56,8 +58,8 @@ class _OnboardingViewState extends State<OnboardingView> {
     final success = await viewModel.completeOnboarding();
 
     if (success && mounted) {
-      // Navigate to dashboard
-      Navigator.of(context).pushReplacementNamed('/dashboard');
+      // Navigate to dashboard using GoRouter
+      context.go(Routes.dashboard);
     }
   }
 
@@ -66,7 +68,7 @@ class _OnboardingViewState extends State<OnboardingView> {
     final success = await viewModel.skipOnboarding();
 
     if (success && mounted) {
-      Navigator.of(context).pushReplacementNamed('/dashboard');
+      context.go(Routes.dashboard);
     }
   }
 
