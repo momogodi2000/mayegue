@@ -63,7 +63,7 @@ class NotificationService {
   /// Configure Firebase messaging
   Future<void> _configureFirebaseMessaging() async {
     // Get FCM token
-    final token = await _firebaseMessaging.getToken();
+    // final token = await _firebaseMessaging.getToken();
     // TODO: Send token to server
 
     // Handle foreground messages
@@ -88,7 +88,7 @@ class NotificationService {
   /// Handle message opened app
   void _handleMessageOpenedApp(RemoteMessage message) {
     // Navigate to appropriate screen based on message data
-    final data = message.data;
+    // final data = message.data;
     // TODO: Implement navigation logic
   }
 

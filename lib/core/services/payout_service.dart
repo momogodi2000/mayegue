@@ -60,7 +60,6 @@ class PayoutService {
       await _checkAndProcessPayout(teacherId);
 
     } catch (e) {
-      print('Error processing subscription payment: $e');
       rethrow;
     }
   }
@@ -97,7 +96,6 @@ class PayoutService {
       await _checkAndProcessPayout(teacherId);
 
     } catch (e) {
-      print('Error processing course sale: $e');
       rethrow;
     }
   }
@@ -183,13 +181,11 @@ class PayoutService {
 
       final payoutMethod = teacherDoc.data()?['payoutMethod'];
       if (payoutMethod == null) {
-        print('No payout method configured for teacher $teacherId');
         return;
       }
 
       // For now, just mark as ready for manual processing
       // In production, this would integrate with payment processors like CamPay
-      print('Payout ready for teacher $teacherId: $amount FCFA via $payoutMethod');
 
       // Update teacher's balance
       await _firebaseService.firestore
@@ -213,8 +209,6 @@ class PayoutService {
           });
 
     } catch (e) {
-      print('Error processing payout for teacher $teacherId: $e');
-
       // Record failed payout
       await _firebaseService.firestore
           .collection('payouts')

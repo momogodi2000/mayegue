@@ -16,28 +16,15 @@ void main() async {
     // Create seeder instance
     final seeder = LanguageSeeder(FirebaseFirestore.instance);
 
-    print('🌍 Starting language seeding process...');
-
     // Optional: Clear existing data (uncomment if needed)
-    // print('🧹 Clearing existing languages...');
     // await seeder.clearLanguages();
 
     // Seed new data
-    print('📝 Seeding traditional Cameroonian languages...');
     await seeder.seedLanguages();
 
-    print('✅ Language seeding completed successfully!');
-    print('');
-    print('Seeded languages:');
-    print('  • Ewondo (Beti-Pahuin) - Centre region');
-    print('  • Duala (Coastal Bantu) - Littoral region');
-    print('  • Bafang/Fe\'efe\'e (Grassfields) - Ouest region');
-    print('  • Fufulde (Niger-Congo) - Nord region');
-    print('  • Bassa (A40 Bantu) - Centre-Littoral region');
-    print('  • Bamum (Grassfields) - Ouest region');
+    // Language seeding completed
 
   } catch (e) {
-    print('❌ Error during seeding: $e');
     exit(1);
   }
 }

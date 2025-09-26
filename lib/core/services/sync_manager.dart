@@ -357,7 +357,6 @@ class SyncManager {
       // Add sync for other collections as needed
     } catch (e) {
       // Handle sync errors
-      print('Sync from Firebase failed: $e');
     }
   }
 

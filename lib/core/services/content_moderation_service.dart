@@ -54,7 +54,6 @@ class ContentModerationService {
       );
 
     } catch (e) {
-      print('Content moderation error: $e');
       // Fallback: approve content if there's an error
       return ModerationResult(
         isApproved: true,

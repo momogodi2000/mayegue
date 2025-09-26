@@ -1,7 +1,6 @@
 import 'package:dartz/dartz.dart';
 import '../../../../core/errors/failures.dart';
 import '../entities/word_entity.dart';
-import '../entities/translation_entity.dart';
 import '../repositories/dictionary_repository.dart';
 
 /// Use case for searching words in the dictionary

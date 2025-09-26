@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../../shared/themes/app_theme.dart';
 import '../../../../core/constants/app_dimensions.dart';
 import '../../domain/entities/word_entity.dart';
 import '../viewmodels/dictionary_viewmodel.dart';

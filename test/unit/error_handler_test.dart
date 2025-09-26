@@ -71,12 +71,10 @@ void main() {
       });
 
       test('should rethrow error when operation fails', () async {
-        try {
-          await ErrorHandler.handleAsyncError(() async => throw Exception('error'));
-          fail('Expected exception to be rethrown');
-        } catch (e) {
-          expect(e, isA<Exception>());
-        }
+        expect(
+          () async => await ErrorHandler.handleAsyncError(() async => throw Exception('error')),
+          throwsA(isA<Exception>()),
+        );
       });
     });
   });

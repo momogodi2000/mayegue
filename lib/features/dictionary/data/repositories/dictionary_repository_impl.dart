@@ -396,7 +396,7 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
         final result = await remoteDataSource.getAllTranslations(wordId);
         return Right(result.map((model) => model.toEntity()).toList());
       } else {
-        return Left(NetworkFailure('No internet connection'));
+        return const Left(NetworkFailure('No internet connection'));
       }
     } on Failure catch (failure) {
       return Left(failure);
