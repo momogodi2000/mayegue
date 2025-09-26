@@ -143,6 +143,71 @@ class SecurityUtils {
     // For production, use proper decryption libraries
     return encryptedData; // Placeholder
   }
+
+  /// Check if input contains SQL injection patterns
+  static bool isSqlInjectionSafe(String input) {
+    final sqlPatterns = [
+      RegExp(r'(\bUNION\b|\bSELECT\b|\bINSERT\b|\bUPDATE\b|\bDELETE\b|\bDROP\b)', caseSensitive: false),
+      RegExp(r'(\-\-|\#|\/\*|\*\/)', caseSensitive: false),
+      RegExp(r'(\bOR\b|\bAND\b)\s+\d+\s*=\s*\d+', caseSensitive: false),
+      RegExp(r'\';\s*(\bDROP\b|\bDELETE\b|\bINSERT\b)', caseSensitive: false),
+    ];
+
+    return !sqlPatterns.any((pattern) => pattern.hasMatch(input));
+  }
+
+  /// Check if input contains suspicious patterns
+  static bool containsSuspiciousPatterns(String input) {
+    return containsMaliciousPatterns(input) || !isSqlInjectionSafe(input);
+  }
+
+  /// Validate input against common security threats
+  static bool isSecureInput(String input, {int maxLength = 1000}) {
+    if (input.length > maxLength) return false;
+    if (containsSuspiciousPatterns(input)) return false;
+    return true;
+  }
+
+  /// Generate secure random token with specified length
+  static String generateSecureTokenWithLength(int length) {
+    return generateSecureToken(length);
+  }
+
+  /// Hash data with salt using SHA-256
+  static String hashWithSalt(String data, String salt) {
+    return hashPassword(data, salt);
+  }
+
+  /// Validate API request signature
+  static bool validateSignature(String data, String signature, String secret) {
+    final expectedSignature = hashPassword(data, secret);
+    return expectedSignature == signature;
+  }
+
+  /// Check if file extension is allowed
+  static bool isAllowedFileExtension(String filename, List<String> allowedExtensions) {
+    final extension = filename.split('.').last.toLowerCase();
+    return allowedExtensions.contains(extension);
+  }
+
+  /// Sanitize filename for safe storage
+  static String sanitizeFilename(String filename) {
+    return filename
+        .replaceAll(RegExp(r'[<>:"/\\|?*]'), '_')
+        .replaceAll(RegExp(r'\.\.'), '_')
+        .replaceAll(RegExp(r'^\.|\.{2,}'), '_');
+  }
+
+  /// Check if URL is from allowed domain
+  static bool isAllowedDomain(String url, List<String> allowedDomains) {
+    try {
+      final uri = Uri.parse(url);
+      final domain = uri.host.toLowerCase();
+      return allowedDomains.any((allowed) => domain.endsWith(allowed.toLowerCase()));
+    } catch (e) {
+      return false;
+    }
+  }
 }
 
 /// Extension methods for String security utilities

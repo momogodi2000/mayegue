@@ -12,6 +12,7 @@ class CustomButton extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
   final BorderRadius? borderRadius;
   final bool isLoading;
+  final bool isCompact;
   final IconData? icon;
   final Widget? child;
 
@@ -27,6 +28,7 @@ class CustomButton extends StatelessWidget {
     this.padding,
     this.borderRadius,
     this.isLoading = false,
+    this.isCompact = false,
     this.icon,
     this.child,
   });
@@ -41,8 +43,8 @@ class CustomButton extends StatelessWidget {
         (backgroundColor == Colors.white ? theme.primaryColor : Colors.white);
 
     return SizedBox(
-      width: width ?? double.infinity,
-      height: height ?? 50,
+      width: isCompact ? null : (width ?? double.infinity),
+      height: height ?? (isCompact ? 36 : 50),
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(

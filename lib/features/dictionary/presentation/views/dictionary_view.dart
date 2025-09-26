@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../shared/themes/app_theme.dart';
-import '../../../../shared/widgets/app_dimensions.dart';
+import '../../../../shared/themes/dimensions.dart';
+import '../../domain/entities/word_entity.dart';
 import '../viewmodels/dictionary_viewmodel.dart';
 import '../widgets/dictionary_word_card.dart';
 import 'word_details_view.dart';

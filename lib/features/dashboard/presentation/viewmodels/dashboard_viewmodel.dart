@@ -18,6 +18,11 @@ class DashboardViewModel extends ChangeNotifier {
 
   // Dashboard data based on role
   Map<String, dynamic> getDashboardData() {
+    // Check if user is guest (not authenticated)
+    if (currentUser == null) {
+      return _getGuestDashboardData();
+    }
+
     switch (userRole) {
       case 'admin':
         return _getAdminDashboardData();
@@ -29,6 +34,35 @@ class DashboardViewModel extends ChangeNotifier {
       default:
         return _getLearnerDashboardData();
     }
+  }
+
+  Map<String, dynamic> _getGuestDashboardData() {
+    return {
+      'title': 'Exploration Mayegue',
+      'welcomeMessage': 'Bienvenue, Visiteur !',
+      'subtitle': 'Découvrez les langues traditionnelles camerounaises en mode invité',
+      'stats': [
+        {'label': 'Langues disponibles', 'value': '6', 'icon': Icons.language, 'color': Colors.green},
+        {'label': 'Leçons découvertes', 'value': '3', 'icon': Icons.menu_book, 'color': Colors.blue},
+        {'label': 'Mots explorés', 'value': '25', 'icon': Icons.translate, 'color': Colors.orange},
+        {'label': 'Temps passé', 'value': '15m', 'icon': Icons.timer, 'color': Colors.purple},
+      ],
+      'quickActions': [
+        {'icon': Icons.explore, 'label': 'Explorer', 'route': '/guest-explore'},
+        {'icon': Icons.translate, 'label': 'Dictionnaire', 'route': '/dictionary'},
+        {'icon': Icons.menu_book, 'label': 'Leçons démo', 'route': '/demo-lessons'},
+        {'icon': Icons.videogame_asset, 'label': 'Mini-jeux', 'route': '/guest-games'},
+        {'icon': Icons.info, 'label': 'À propos', 'route': '/about'},
+        {'icon': Icons.login, 'label': 'S\'inscrire', 'route': '/register'},
+      ],
+      'recentActivity': [
+        {'icon': Icons.visibility, 'title': 'Mode invité activé', 'subtitle': 'Bienvenue ! Explorez nos fonctionnalités', 'color': Colors.green},
+        {'icon': Icons.explore, 'title': 'Découvrez l\'Ewondo', 'subtitle': 'Commencez par les salutations', 'color': Colors.blue},
+        {'icon': Icons.info, 'title': 'Fonctionnalités limitées', 'subtitle': 'Inscrivez-vous pour plus d\'options', 'color': Colors.orange},
+        {'icon': Icons.star, 'title': 'Préservation culturelle', 'subtitle': 'Rejoignez notre mission', 'color': Colors.purple},
+      ],
+      'isGuest': true,
+    };
   }
 
   Map<String, dynamic> _getLearnerDashboardData() {

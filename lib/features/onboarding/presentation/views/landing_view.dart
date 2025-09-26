@@ -70,6 +70,56 @@ class _LandingViewState extends State<LandingView>
     },
   ];
 
+  final List<Map<String, dynamic>> _testimonials = [
+    {
+      'name': 'Marie Nkomo',
+      'location': 'Paris, France',
+      'language': 'Ewondo',
+      'message': 'Mayegue m\'a permis de reconnecter avec mes racines. Mes enfants parlent maintenant Ewondo !',
+      'rating': 5,
+      'avatar': Icons.person,
+    },
+    {
+      'name': 'Jean-Pierre Douala',
+      'location': 'Toronto, Canada',
+      'language': 'Duala',
+      'message': 'Fantastique pour apprendre le Duala. L\'IA s\'adapte parfaitement à mon rythme d\'apprentissage.',
+      'rating': 5,
+      'avatar': Icons.person_2,
+    },
+    {
+      'name': 'Fatima Adamou',
+      'location': 'Berlin, Allemagne',
+      'language': 'Fulfulde',
+      'message': 'Enfin une app qui respecte notre culture ! Mon Fulfulde s\'améliore chaque jour.',
+      'rating': 5,
+      'avatar': Icons.person_3,
+    },
+  ];
+
+  final List<Map<String, dynamic>> _benefits = [
+    {
+      'icon': Icons.family_restroom,
+      'title': 'Préservation Culturelle',
+      'description': 'Transmettez vos langues ancestrales aux générations futures',
+    },
+    {
+      'icon': Icons.psychology_alt,
+      'title': 'IA Personnalisée',
+      'description': 'Apprentissage adaptatif basé sur votre progression et style',
+    },
+    {
+      'icon': Icons.groups,
+      'title': 'Communauté Active',
+      'description': 'Connectez-vous avec d\'autres apprenants et locuteurs natifs',
+    },
+    {
+      'icon': Icons.verified,
+      'title': 'Contenu Authentique',
+      'description': 'Créé avec des experts linguistiques camerounais',
+    },
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -124,195 +174,303 @@ class _LandingViewState extends State<LandingView>
         opacity: _fadeAnimation,
         child: SlideTransition(
           position: _slideAnimation,
-          child: Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Colors.green, Colors.teal],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
-            ),
-            child: SafeArea(
-              child: Column(
-                children: [
-                  // Header
-                  Container(
-                    padding: const EdgeInsets.all(24),
-                    child: const Column(
-                      children: [
-                        Icon(
-                          Icons.language,
-                          size: 80,
-                          color: Colors.white,
-                        ),
-                        SizedBox(height: 16),
-                        Text(
-                          'Mayegue',
-                          style: TextStyle(
-                            fontSize: 42,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                        SizedBox(height: 8),
-                        Text(
-                          'Découvrez les langues traditionnelles du Cameroun',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w300,
-                          ),
-                        ),
-                      ],
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                // Hero Section
+                Container(
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Colors.green, Colors.teal],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
                     ),
                   ),
-
-                  // Languages showcase
-                  Expanded(
-                    flex: 2,
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Column(
-                        children: [
-                          const Text(
-                            'Explorez 6 langues authentiques',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-                          Expanded(
-                            child: PageView.builder(
-                              controller: _pageController,
-                              onPageChanged: (index) {
-                                setState(() {
-                                  _currentPage = index;
-                                });
-                              },
-                              itemCount: _languages.length,
-                              itemBuilder: (context, index) {
-                                final language = _languages[index];
-                                return _buildLanguageCard(language);
-                              },
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-                          // Page indicator
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: List.generate(
-                              _languages.length,
-                              (index) => Container(
-                                width: 8,
-                                height: 8,
-                                margin: const EdgeInsets.symmetric(horizontal: 4),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: _currentPage == index
-                                      ? Colors.white
-                                      : Colors.white54,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  // Action buttons
-                  Container(
-                    padding: const EdgeInsets.all(24),
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(24),
-                        topRight: Radius.circular(24),
-                      ),
-                    ),
+                  child: SafeArea(
                     child: Column(
                       children: [
-                        // Features preview
-                        Row(
-                          children: [
-                            _buildFeatureItem(Icons.school, 'Leçons\nInteractives'),
-                            _buildFeatureItem(Icons.mic, 'Prononciation\nGuide'),
-                            _buildFeatureItem(Icons.psychology, 'IA\nPersonnalisée'),
-                            _buildFeatureItem(Icons.groups, 'Communauté\nActive'),
-                          ],
-                        ),
-                        const SizedBox(height: 24),
-
-                        // Primary actions
-                        CustomButton(
-                          text: 'Créer un Compte',
-                          onPressed: _onRegisterPressed,
-                          backgroundColor: Colors.green,
-                        ),
-                        const SizedBox(height: 12),
-
-                        CustomButton(
-                          text: 'Se Connecter',
-                          onPressed: _onLoginPressed,
-                          backgroundColor: Colors.white,
-                          textColor: Colors.green,
-                          borderColor: Colors.green,
-                        ),
-                        const SizedBox(height: 12),
-
-                        // Guest option
-                        TextButton(
-                          onPressed: _onExploreAsGuest,
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                        // Header
+                        Container(
+                          padding: const EdgeInsets.all(24),
+                          child: const Column(
                             children: [
-                              Icon(Icons.visibility, color: Colors.grey),
-                              SizedBox(width: 8),
+                              Icon(
+                                Icons.language,
+                                size: 80,
+                                color: Colors.white,
+                              ),
+                              SizedBox(height: 16),
                               Text(
-                                'Explorer en tant qu\'invité',
+                                'Mayegue',
                                 style: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 16,
+                                  fontSize: 42,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              SizedBox(height: 8),
+                              Text(
+                                'Découvrez les langues traditionnelles du Cameroun',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w300,
                                 ),
                               ),
                             ],
                           ),
                         ),
 
-                        const SizedBox(height: 8),
-
-                        // Cultural message
+                        // Languages showcase
                         Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: Colors.green.shade50,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: const Row(
+                          height: 300,
+                          margin: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Column(
                             children: [
-                              Icon(Icons.favorite, color: Colors.green, size: 20),
-                              SizedBox(width: 8),
+                              const Text(
+                                'Explorez 6 langues authentiques',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              const SizedBox(height: 16),
                               Expanded(
-                                child: Text(
-                                  'Préservons ensemble notre héritage linguistique',
-                                  style: TextStyle(
-                                    color: Colors.green,
-                                    fontSize: 14,
-                                    fontStyle: FontStyle.italic,
+                                child: PageView.builder(
+                                  controller: _pageController,
+                                  onPageChanged: (index) {
+                                    setState(() {
+                                      _currentPage = index;
+                                    });
+                                  },
+                                  itemCount: _languages.length,
+                                  itemBuilder: (context, index) {
+                                    final language = _languages[index];
+                                    return _buildLanguageCard(language);
+                                  },
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              // Page indicator
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: List.generate(
+                                  _languages.length,
+                                  (index) => Container(
+                                    width: 8,
+                                    height: 8,
+                                    margin: const EdgeInsets.symmetric(horizontal: 4),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: _currentPage == index
+                                          ? Colors.white
+                                          : Colors.white54,
+                                    ),
                                   ),
                                 ),
                               ),
                             ],
                           ),
                         ),
+                        const SizedBox(height: 32),
                       ],
                     ),
                   ),
-                ],
-              ),
+                ),
+
+                // Value Proposition Section
+                Container(
+                  padding: const EdgeInsets.all(24),
+                  color: Colors.white,
+                  child: Column(
+                    children: [
+                      const Text(
+                        'Pourquoi choisir Mayegue ?',
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'La première plateforme dédiée à la préservation et l\'apprentissage des langues camerounaises',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      const SizedBox(height: 32),
+
+                      // Benefits Grid
+                      GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 1.2,
+                          crossAxisSpacing: 16,
+                          mainAxisSpacing: 16,
+                        ),
+                        itemCount: _benefits.length,
+                        itemBuilder: (context, index) => _buildBenefitCard(_benefits[index]),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Statistics Section
+                Container(
+                  padding: const EdgeInsets.all(24),
+                  color: Colors.green.shade50,
+                  child: Column(
+                    children: [
+                      const Text(
+                        'Rejoignez notre communauté grandissante',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green,
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      Row(
+                        children: [
+                          _buildStatItem('15,000+', 'Utilisateurs actifs'),
+                          _buildStatItem('6', 'Langues disponibles'),
+                          _buildStatItem('500+', 'Leçons créées'),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Testimonials Section
+                Container(
+                  padding: const EdgeInsets.all(24),
+                  color: Colors.white,
+                  child: Column(
+                    children: [
+                      const Text(
+                        'Ce que disent nos utilisateurs',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green,
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      SizedBox(
+                        height: 200,
+                        child: PageView.builder(
+                          itemCount: _testimonials.length,
+                          itemBuilder: (context, index) => _buildTestimonialCard(_testimonials[index]),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // CTA Section
+                Container(
+                  padding: const EdgeInsets.all(24),
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                  ),
+                  child: Column(
+                    children: [
+                      // Features preview
+                      Row(
+                        children: [
+                          _buildFeatureItem(Icons.school, 'Leçons\nInteractives'),
+                          _buildFeatureItem(Icons.mic, 'Prononciation\nGuide'),
+                          _buildFeatureItem(Icons.psychology, 'IA\nPersonnalisée'),
+                          _buildFeatureItem(Icons.groups, 'Communauté\nActive'),
+                        ],
+                      ),
+                      const SizedBox(height: 32),
+
+                      const Text(
+                        'Commencez votre voyage linguistique dès maintenant',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green,
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+
+                      // Primary actions
+                      CustomButton(
+                        text: 'Créer un Compte Gratuit',
+                        onPressed: _onRegisterPressed,
+                        backgroundColor: Colors.green,
+                      ),
+                      const SizedBox(height: 12),
+
+                      CustomButton(
+                        text: 'Se Connecter',
+                        onPressed: _onLoginPressed,
+                        backgroundColor: Colors.white,
+                        textColor: Colors.green,
+                        borderColor: Colors.green,
+                      ),
+                      const SizedBox(height: 12),
+
+                      // Guest option
+                      TextButton(
+                        onPressed: _onExploreAsGuest,
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.visibility, color: Colors.grey),
+                            SizedBox(width: 8),
+                            Text(
+                              'Explorer en tant qu\'invité',
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // Cultural message
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Colors.green.shade50,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Row(
+                          children: [
+                            Icon(Icons.favorite, color: Colors.green, size: 24),
+                            SizedBox(width: 12),
+                            Expanded(
+                              child: Text(
+                                'Préservons ensemble notre héritage linguistique pour les générations futures',
+                                style: TextStyle(
+                                  color: Colors.green,
+                                  fontSize: 16,
+                                  fontStyle: FontStyle.italic,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -395,6 +553,157 @@ class _LandingViewState extends State<LandingView>
               fontSize: 12,
               color: Colors.grey,
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBenefitCard(Map<String, dynamic> benefit) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+        border: Border.all(
+          color: Colors.green.withOpacity(0.1),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            benefit['icon'] as IconData,
+            color: Colors.green,
+            size: 32,
+          ),
+          const SizedBox(height: 12),
+          Text(
+            benefit['title'] as String,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.green,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Expanded(
+            child: Text(
+              benefit['description'] as String,
+              style: const TextStyle(
+                fontSize: 12,
+                color: Colors.grey,
+                height: 1.4,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatItem(String number, String label) {
+    return Expanded(
+      child: Column(
+        children: [
+          Text(
+            number,
+            style: const TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Colors.green,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 14,
+              color: Colors.grey,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTestimonialCard(Map<String, dynamic> testimonial) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.green.shade50,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: Colors.green.withOpacity(0.2),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              CircleAvatar(
+                backgroundColor: Colors.green,
+                child: Icon(
+                  testimonial['avatar'] as IconData,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      testimonial['name'] as String,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.green,
+                      ),
+                    ),
+                    Text(
+                      '${testimonial['location']} • ${testimonial['language']}',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Row(
+                children: List.generate(
+                  testimonial['rating'] as int,
+                  (index) => const Icon(
+                    Icons.star,
+                    color: Colors.orange,
+                    size: 16,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(
+            testimonial['message'] as String,
+            style: const TextStyle(
+              fontSize: 14,
+              color: Colors.green,
+              fontStyle: FontStyle.italic,
+              height: 1.4,
+            ),
+            textAlign: TextAlign.center,
           ),
         ],
       ),

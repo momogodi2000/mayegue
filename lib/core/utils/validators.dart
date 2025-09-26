@@ -110,4 +110,122 @@ class Validators {
     if (!isValidName(name)) return 'Name can only contain letters, spaces, and hyphens';
     return null;
   }
+
+  /// Validate email (alias for backward compatibility)
+  static bool validateEmail(String email) {
+    return isValidEmail(email);
+  }
+
+  /// Validate password (alias for backward compatibility)
+  static bool validatePassword(String password) {
+    return isValidPassword(password);
+  }
+
+  /// Validate name (alias for backward compatibility)
+  static bool validateName(String name) {
+    return isValidName(name);
+  }
+
+  /// Validate phone (alias for backward compatibility)
+  static bool validatePhone(String phone) {
+    return isValidPhoneNumber(phone);
+  }
+
+  /// Validate text input for security and length
+  static bool validateTextInput(String text, {int minLength = 0, int maxLength = 1000}) {
+    if (text.length < minLength || text.length > maxLength) return false;
+
+    // Check for malicious patterns
+    final maliciousPatterns = [
+      RegExp(r'<script[^>]*>.*?<\/script>', caseSensitive: false),
+      RegExp(r'javascript:', caseSensitive: false),
+      RegExp(r'on\w+\s*=', caseSensitive: false),
+      RegExp(r'<iframe[^>]*>.*?<\/iframe>', caseSensitive: false),
+    ];
+
+    return !maliciousPatterns.any((pattern) => pattern.hasMatch(text));
+  }
+
+  /// Validate URL format
+  static bool isValidUrl(String url) {
+    try {
+      final uri = Uri.parse(url);
+      return uri.hasScheme && (uri.scheme == 'http' || uri.scheme == 'https');
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /// Validate date format (YYYY-MM-DD)
+  static bool isValidDate(String date) {
+    try {
+      final dateRegex = RegExp(r'^\d{4}-\d{2}-\d{2}$');
+      if (!dateRegex.hasMatch(date)) return false;
+
+      final parts = date.split('-');
+      final year = int.parse(parts[0]);
+      final month = int.parse(parts[1]);
+      final day = int.parse(parts[2]);
+
+      final dateTime = DateTime(year, month, day);
+      return dateTime.year == year && dateTime.month == month && dateTime.day == day;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /// Validate credit card number using Luhn algorithm
+  static bool isValidCreditCard(String cardNumber) {
+    final cleanNumber = cardNumber.replaceAll(RegExp(r'[^0-9]'), '');
+    if (cleanNumber.length < 13 || cleanNumber.length > 19) return false;
+
+    int sum = 0;
+    bool alternate = false;
+
+    for (int i = cleanNumber.length - 1; i >= 0; i--) {
+      int n = int.parse(cleanNumber[i]);
+
+      if (alternate) {
+        n *= 2;
+        if (n > 9) {
+          n = (n % 10) + 1;
+        }
+      }
+
+      sum += n;
+      alternate = !alternate;
+    }
+
+    return (sum % 10) == 0;
+  }
+
+  /// Validate age (minimum age requirement)
+  static bool isValidAge(String birthDate, {int minAge = 13}) {
+    try {
+      final birth = DateTime.parse(birthDate);
+      final now = DateTime.now();
+      final age = now.year - birth.year;
+
+      if (now.month < birth.month || (now.month == birth.month && now.day < birth.day)) {
+        return age - 1 >= minAge;
+      }
+
+      return age >= minAge;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /// Validate postal code (generic format)
+  static bool isValidPostalCode(String postalCode) {
+    // Basic postal code validation - can be customized per country
+    final cleanCode = postalCode.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '');
+    return cleanCode.length >= 3 && cleanCode.length <= 10;
+  }
+
+  /// Validate file size (in bytes)
+  static bool isValidFileSize(int fileSizeBytes, {int maxSizeMB = 10}) {
+    final maxSizeBytes = maxSizeMB * 1024 * 1024;
+    return fileSizeBytes <= maxSizeBytes;
+  }
 }

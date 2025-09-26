@@ -515,4 +515,9 @@ class AppTheme {
       }),
     ),
   );
+
+  // Static color getters for convenience
+  static Color get primaryColor => AppColors.primary;
+  static Color get primaryColorLight => AppColors.primaryLight;
+  static Color get primaryColorDark => AppColors.primaryDark;
 }

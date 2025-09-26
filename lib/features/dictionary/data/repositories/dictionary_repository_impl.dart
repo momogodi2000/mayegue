@@ -7,6 +7,8 @@ import '../../domain/entities/translation_entity.dart';
 import '../../domain/repositories/dictionary_repository.dart';
 import '../datasources/dictionary_local_datasource.dart';
 import '../datasources/dictionary_remote_datasource.dart';
+import '../models/word_model.dart';
+import '../models/translation_model.dart';
 
 /// Implementation of DictionaryRepository
 class DictionaryRepositoryImpl implements DictionaryRepository {
@@ -372,38 +374,6 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
   }
 
   @override
-  Future<Either<Failure, bool>> saveToFavorites(String wordId, String userId) async {
-    try {
-      if (await networkInfo.isConnected) {
-        await remoteDataSource.saveToFavorites(wordId, userId);
-        return const Right(true);
-      } else {
-        return const Left(NetworkFailure('No internet connection'));
-      }
-    } on Failure catch (failure) {
-      return Left(failure);
-    } catch (e) {
-      return Left(ServerFailure('Unexpected error: ${e.toString()}'));
-    }
-  }
-
-  @override
-  Future<Either<Failure, bool>> removeFromFavorites(String wordId, String userId) async {
-    try {
-      if (await networkInfo.isConnected) {
-        await remoteDataSource.removeFromFavorites(wordId, userId);
-        return const Right(true);
-      } else {
-        return const Left(NetworkFailure('No internet connection'));
-      }
-    } on Failure catch (failure) {
-      return Left(failure);
-    } catch (e) {
-      return Left(ServerFailure('Unexpected error: ${e.toString()}'));
-    }
-  }
-
-  @override
   Future<Either<Failure, void>> reportIncorrectTranslation(String translationId, String userId, String reason) async {
     try {
       if (await networkInfo.isConnected) {
@@ -426,9 +396,9 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
         final result = await remoteDataSource.getAllTranslations(wordId);
         return Right(result.map((model) => model.toEntity()).toList());
       } else {
-        return const Left(ConnectionFailure('No internet connection'));
+        return Left(NetworkFailure('No internet connection'));
       }
-    } on Exception catch (failure) {
+    } on Failure catch (failure) {
       return Left(failure);
     } catch (e) {
       return Left(ServerFailure('Unexpected error: ${e.toString()}'));
@@ -446,9 +416,9 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
         final result = await remoteDataSource.getAutocompleteSuggestions(query, language, limit: limit);
         return Right(result);
       } else {
-        return const Left(ConnectionFailure('No internet connection'));
+        return Left(NetworkFailure('No internet connection'));
       }
-    } on Exception catch (failure) {
+    } on Failure catch (failure) {
       return Left(failure);
     } catch (e) {
       return Left(ServerFailure('Unexpected error: ${e.toString()}'));
@@ -462,9 +432,29 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
         final result = await remoteDataSource.getDictionaryStatistics();
         return Right(result);
       } else {
-        return const Left(ConnectionFailure('No internet connection'));
+        return Left(NetworkFailure('No internet connection'));
       }
-    } on Exception catch (failure) {
+    } on Failure catch (failure) {
+      return Left(failure);
+    } catch (e) {
+      return Left(ServerFailure('Unexpected error: ${e.toString()}'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<WordEntity>>> getWordsByDifficulty(
+    int difficulty, {
+    String? language,
+    int limit = 50,
+  }) async {
+    try {
+      if (await networkInfo.isConnected) {
+        final result = await remoteDataSource.getWordsByDifficulty(difficulty, language: language, limit: limit);
+        return Right(result.map((model) => model.toEntity()).toList());
+      } else {
+        return Left(NetworkFailure('No internet connection'));
+      }
+    } on Failure catch (failure) {
       return Left(failure);
     } catch (e) {
       return Left(ServerFailure('Unexpected error: ${e.toString()}'));
@@ -481,9 +471,25 @@ class DictionaryRepositoryImpl implements DictionaryRepository {
         final result = await remoteDataSource.getPopularWords(limit: limit, language: language);
         return Right(result.map((model) => model.toEntity()).toList());
       } else {
-        return const Left(ConnectionFailure('No internet connection'));
+        return Left(NetworkFailure('No internet connection'));
       }
-    } on Exception catch (failure) {
+    } on Failure catch (failure) {
+      return Left(failure);
+    } catch (e) {
+      return Left(ServerFailure('Unexpected error: ${e.toString()}'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> incrementUsageCount(String wordId) async {
+    try {
+      if (await networkInfo.isConnected) {
+        await remoteDataSource.incrementUsageCount(wordId);
+        return const Right(null);
+      } else {
+        return Left(NetworkFailure('No internet connection'));
+      }
+    } on Failure catch (failure) {
       return Left(failure);
     } catch (e) {
       return Left(ServerFailure('Unexpected error: ${e.toString()}'));

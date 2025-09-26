@@ -44,6 +44,9 @@ class AppDimensions {
   static const EdgeInsets marginXL = EdgeInsets.all(spacingXL);
   static const EdgeInsets marginXXL = EdgeInsets.all(spacingXXL);
 
+  // Default spacing (alias for spacingM)
+  static const double spacing = spacingM;
+
   // Border radius
   static const double borderRadiusXS = 4.0;
   static const double borderRadiusS = 8.0;
@@ -51,6 +54,9 @@ class AppDimensions {
   static const double borderRadiusL = 16.0;
   static const double borderRadiusXL = 20.0;
   static const double borderRadiusXXL = 24.0;
+
+  // Default border radius (alias for borderRadiusM)
+  static const double borderRadius = borderRadiusM;
 
   // Border radius objects
   static const BorderRadius borderRadiusXSObj = BorderRadius.all(Radius.circular(borderRadiusXS));

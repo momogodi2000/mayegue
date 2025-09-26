@@ -219,7 +219,11 @@ class DictionaryViewModel extends ChangeNotifier {
   /// Translate text using AI (for complex phrases)
   Future<String?> translateWithAI(String text, String sourceLang, String targetLang) async {
     try {
-      return await aiService.translateText(text, sourceLang, targetLang);
+      return await aiService.translateText(
+        text: text,
+        sourceLanguage: sourceLang,
+        targetLanguage: targetLang,
+      );
     } catch (e) {
       _error = 'Translation failed: ${e.toString()}';
       notifyListeners();
@@ -302,7 +306,7 @@ class DictionaryViewModel extends ChangeNotifier {
 
     // For now, we'll get the word from search results
     // In a real implementation, you'd have a separate usecase for this
-    final word = _searchResults.firstWhere(
+    _searchResults.firstWhere(
       (w) => w.id == wordId,
       orElse: () => throw Exception('Word not found'),
     );
@@ -342,37 +346,6 @@ class DictionaryViewModel extends ChangeNotifier {
     );
   }
 
-  /// Load favorite words
-  Future<void> loadFavoriteWords(String userId) async {
-    _isLoading = true;
-    _error = null;
-    notifyListeners();
-
-    final result = await getFavoriteWords(userId);
-
-    result.fold(
-      (failure) {
-        _error = failure.message;
-        _favoriteWords = [];
-      },
-      (words) {
-        _favoriteWords = words;
-      },
-    );
-
-    _isLoading = false;
-    notifyListeners();
-  }
-
-  /// Toggle favorite status
-  Future<bool> toggleFavorite(String wordId, String userId, bool isCurrentlyFavorite) async {
-    if (isCurrentlyFavorite) {
-      return await removeFromFavoritesMethod(wordId, userId);
-    } else {
-      return await saveToFavoritesMethod(wordId, userId);
-    }
-  }
-
   /// Increment usage count for a word
   Future<void> incrementUsageCountMethod(String wordId) async {
     await incrementUsageCount(wordId);
@@ -390,29 +363,6 @@ class DictionaryViewModel extends ChangeNotifier {
     if (categories != null) _selectedCategories = categories;
     if (maxDifficulty != null) _maxDifficulty = maxDifficulty;
     notifyListeners();
-  }
-
-  /// Clear search results
-  void clearSearch() {
-    _searchResults = [];
-    _searchQuery = '';
-    _error = null;
-    notifyListeners();
-  }
-
-  /// Clear error
-  void clearError() {
-    _error = null;
-    notifyListeners();
-  }
-
-  /// Get supported language name
-  String getLanguageName(String code) {
-    final lang = supportedLanguages.firstWhere(
-      (lang) => lang['code'] == code,
-      orElse: () => {'name': code, 'nativeName': code},
-    );
-    return lang['name'] ?? code;
   }
 
   /// Get supported language native name
