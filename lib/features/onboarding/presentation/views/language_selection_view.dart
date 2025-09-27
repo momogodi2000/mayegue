@@ -480,7 +480,7 @@ class _LanguageSelectionViewState extends State<LanguageSelectionView>
               width: 2,
             ),
             color: isSelected
-                ? AppColors.primary.withOpacity(0.1)
+                ? AppColors.primary.withValues(alpha: 0.1 * 255)
                 : Colors.transparent,
           ),
           child: Row(
@@ -492,7 +492,7 @@ class _LanguageSelectionViewState extends State<LanguageSelectionView>
                   shape: BoxShape.circle,
                   color: isSelected
                       ? AppColors.primary
-                      : AppColors.primary.withOpacity(0.1),
+                      : AppColors.primary.withValues(alpha: 0.1 * 255),
                 ),
                 child: Center(
                   child: Text(

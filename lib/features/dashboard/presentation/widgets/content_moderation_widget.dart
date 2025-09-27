@@ -82,7 +82,7 @@ class ContentModerationWidget extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: color.withOpacity(0.1),
+          color: color.withValues(alpha: 0.1 * 255),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Column(
@@ -149,7 +149,7 @@ class ContentModerationWidget extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
-                  color: priorityColor.withOpacity(0.1),
+                  color: priorityColor.withValues(alpha: 0.1 * 255),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(

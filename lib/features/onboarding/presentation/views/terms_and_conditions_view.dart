@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../core/constants/routes.dart';
 import '../../../../shared/widgets/custom_button.dart';
 
 /// Terms and Conditions page that users must accept before proceeding

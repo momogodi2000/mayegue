@@ -560,7 +560,7 @@ class _GuestDashboardViewState extends State<GuestDashboardView>
 
           // Call to action
           Card(
-            color: AppColors.primary.withOpacity(0.1),
+            color: AppColors.primary.withValues(alpha: 0.1 * 255),
             child: Padding(
               padding: const EdgeInsets.all(20),
               child: Column(

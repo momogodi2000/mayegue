@@ -1,8 +1,5 @@
-import 'dart:convert';
 import 'package:sqflite/sqflite.dart';
-import 'package:hive/hive.dart';
 import '../../features/dictionary/data/models/dictionary_entry_model.dart';
-import '../../features/dictionary/data/datasources/lexicon_local_datasource.dart';
 import '../../features/lessons/data/models/lesson_model.dart';
 import '../../features/lessons/data/datasources/lesson_local_datasource.dart';
 import 'database_helper.dart';

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/constants/app_dimensions.dart';
-import '../../../../shared/themes/colors.dart';
 import '../../../../core/constants/supported_languages.dart';
 import '../viewmodels/teacher_dashboard_viewmodel.dart';
 import '../widgets/teacher_stats_widget.dart';
@@ -488,7 +487,7 @@ class _TeacherDashboardViewState extends State<TeacherDashboardView>
             ...viewModel.languageDistribution.entries.map(
               (entry) {
                 final language = entry.key;
-                final count = entry.value as int;
+                final count = entry.value;
                 final info = SupportedLanguages.getLanguageInfo(language);
 
                 return Padding(
@@ -1085,24 +1084,6 @@ class _TeacherDashboardViewState extends State<TeacherDashboardView>
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             Text('Aucune révision en attente'),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildAnalyticsCard(TeacherDashboardViewModel viewModel) {
-    return Card(
-      child: Padding(
-        padding: EdgeInsets.all(AppDimensions.paddingLarge),
-        child: const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Analytics',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            Text('Analytics data here'),
           ],
         ),
       ),

@@ -529,7 +529,7 @@ class _GamesViewState extends State<GamesView> with SingleTickerProviderStateMix
           width: 60,
           height: height,
           decoration: BoxDecoration(
-            color: color.withOpacity(0.3),
+            color: color.withValues(alpha: 0.3 * 255),
             borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(8),
               topRight: Radius.circular(8),

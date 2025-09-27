@@ -765,33 +765,6 @@ class StudentDashboardViewModel extends ChangeNotifier {
     return _notifications.where((n) => !(n['isRead'] ?? true)).length;
   }
 
-  /// Calculate level from experience
-  String _calculateLevel(int experience) {
-    if (experience < 500) return 'Débutant';
-    if (experience < 1500) return 'Intermédiaire';
-    if (experience < 3000) return 'Avancé';
-    return 'Expert';
-  }
-
-  /// Update level based on experience
-  void _updateLevel() {
-    final newLevel = _calculateLevel(_totalExperience);
-    if (newLevel != _currentLevel) {
-      _currentLevel = newLevel;
-
-      // Add level up activity
-      _recentActivities.insert(0, {
-        'id': DateTime.now().millisecondsSinceEpoch.toString(),
-        'type': 'level_up',
-        'title': 'Niveau supérieur!',
-        'description': 'Félicitations! Vous êtes maintenant $_currentLevel',
-        'time': 'Maintenant',
-        'timestamp': DateTime.now(),
-        'experience': 200,
-      });
-    }
-  }
-
   /// Refresh dashboard data
   Future<void> refreshDashboard() async {
     await loadStudentDashboard();

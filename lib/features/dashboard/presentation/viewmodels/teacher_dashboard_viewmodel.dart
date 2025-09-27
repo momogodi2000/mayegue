@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import '../../../../core/constants/supported_languages.dart';
 
 /// ViewModel for Teacher Dashboard
 class TeacherDashboardViewModel extends ChangeNotifier {
