@@ -2,6 +2,7 @@ import '../../domain/entities/game_entity.dart';
 import '../../domain/repositories/games_repository.dart';
 import '../datasources/games_local_datasource.dart';
 import '../models/game_model.dart';
+import 'package:flutter/foundation.dart';
 
 /// Games repository implementation
 class GamesRepositoryImpl implements GamesRepository {
@@ -207,11 +208,11 @@ class GamesRepositoryImpl implements GamesRepository {
     try {
       // In a real implementation, this would send the report to a backend service
       // For now, we'll just log it locally or store it for later sync
-      print('Game Issue Reported:');
-      print('Game ID: $gameId');
-      print('User ID: $userId');
-      print('Issue Type: $issueType');
-      print('Description: $description');
+      debugPrint('Game Issue Reported:');
+      debugPrint('Game ID: $gameId');
+      debugPrint('User ID: $userId');
+      debugPrint('Issue Type: $issueType');
+      debugPrint('Description: $description');
     } catch (e) {
       throw Exception('Failed to report game issue: $e');
     }

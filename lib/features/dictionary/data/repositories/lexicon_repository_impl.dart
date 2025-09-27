@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:flutter/foundation.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/network/network_info.dart';
@@ -505,7 +506,7 @@ class LexiconRepositoryImpl implements LexiconRepository {
             await localDataSource.markAsSynced(entry.id);
           } catch (e) {
             // Log error but continue with other entries
-            print('Failed to sync entry ${entry.id}: $e');
+            debugPrint('Failed to sync entry ${entry.id}: $e');
           }
         }
 
@@ -519,7 +520,7 @@ class LexiconRepositoryImpl implements LexiconRepository {
             await localDataSource.removeDeletionFromQueue(entryId);
           } catch (e) {
             // Log error but continue
-            print('Failed to sync deletion $entryId: $e');
+            debugPrint('Failed to sync deletion $entryId: $e');
           }
         }
 

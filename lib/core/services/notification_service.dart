@@ -1,9 +1,16 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:timezone/timezone.dart' as tz;
 
-/// Service for handling push notifications
-class NotificationService {
+/// Comprehensive notification service for learning reminders and app engagement
+class NotificationService extends ChangeNotifier {
   static final NotificationService _instance = NotificationService._internal();
   factory NotificationService() => _instance;
   NotificationService._internal();
@@ -12,6 +19,28 @@ class NotificationService {
   late final FlutterLocalNotificationsPlugin _localNotifications;
 
   bool _initialized = false;
+  String? _fcmToken;
+  StreamSubscription<RemoteMessage>? _firebaseSubscription;
+
+  // Notification preferences
+  bool _dailyRemindersEnabled = true;
+  bool _studyStreakRemindersEnabled = true;
+  bool _pronunciationPracticeRemindersEnabled = true;
+  bool _weeklyProgressRemindersEnabled = true;
+  bool _communityNotificationsEnabled = true;
+  bool _achievementNotificationsEnabled = true;
+
+  // Notification channel constants
+  static const String _channelId = 'mayegue_learning';
+  static const String _channelName = 'Mayegue Learning Notifications';
+  static const String _channelDescription = 'Notifications for language learning reminders and progress updates';
+
+  // Scheduled notification IDs
+  static const int dailyStudyReminderId = 1001;
+  static const int streakMaintenanceId = 1002;
+  static const int pronunciationPracticeId = 1003;
+  static const int weeklyProgressId = 1004;
+  static const int overdueReviewId = 1005;
 
   /// Initialize notification services
   Future<void> initialize() async {

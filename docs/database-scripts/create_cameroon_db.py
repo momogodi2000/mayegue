@@ -17,6 +17,7 @@ def create_database():
     insert_languages(cursor)
     insert_categories(cursor)
     insert_translations(cursor)
+    insert_lessons(cursor)
     
     # Commit changes and close connection
     conn.commit()
@@ -64,11 +65,29 @@ def create_tables(cursor):
     )
     ''')
     
+    # Lessons table
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS lessons (
+        lesson_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        language_id VARCHAR(10) NOT NULL,
+        title TEXT NOT NULL,
+        content TEXT NOT NULL,
+        level TEXT CHECK(level IN ('beginner', 'intermediate', 'advanced')) NOT NULL,
+        order_index INTEGER NOT NULL,
+        audio_url TEXT,
+        video_url TEXT,
+        created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (language_id) REFERENCES languages(language_id)
+    )
+    ''')
+    
     # Create indexes for better performance
     cursor.execute('CREATE INDEX IF NOT EXISTS idx_translations_language ON translations(language_id)')
     cursor.execute('CREATE INDEX IF NOT EXISTS idx_translations_category ON translations(category_id)')
     cursor.execute('CREATE INDEX IF NOT EXISTS idx_translations_difficulty ON translations(difficulty_level)')
     cursor.execute('CREATE INDEX IF NOT EXISTS idx_translations_french ON translations(french_text)')
+    cursor.execute('CREATE INDEX IF NOT EXISTS idx_lessons_language ON lessons(language_id)')
+    cursor.execute('CREATE INDEX IF NOT EXISTS idx_lessons_level ON lessons(level)')
 
 def insert_languages(cursor):
     languages_data = [
@@ -1575,6 +1594,260 @@ def insert_translations(cursor):
     INSERT INTO translations (french_text, language_id, translation, category_id, pronunciation, usage_notes, difficulty_level)
     VALUES (?, ?, ?, ?, ?, ?, ?)
     ''', translations_data)
+
+def insert_lessons(cursor):
+    lessons_data = [
+        # Ewondo Lessons - Enhanced with detailed content
+        ('EWO', 'Salutations de base en Ewondo', 
+         'Découvrez les salutations essentielles utilisées dans la région du Centre au Cameroun. Le Ewondo est la langue principale des Beti-Pahuin.',
+         'beginner', 1, 'audio/ewondo/greetings.mp3', 'video/ewondo/greetings.mp4'),
+        
+        ('EWO', 'Les nombres 1-10 en Ewondo', 
+         'Maîtrisez les nombres de base en Ewondo. Comptez de 1 à 10 avec la prononciation correcte des Beti.',
+         'beginner', 2, 'audio/ewondo/numbers.mp3', 'video/ewondo/numbers.mp4'),
+        
+        ('EWO', 'La famille en Ewondo', 
+         'Apprenez les termes désignant les membres de la famille en Ewondo. Découvrez les relations familiales traditionnelles.',
+         'beginner', 3, 'audio/ewondo/family.mp3', 'video/ewondo/family.mp4'),
+        
+        ('EWO', 'La nourriture traditionnelle', 
+         'Découvrez les aliments courants et les plats traditionnels du Centre Cameroun en Ewondo.',
+         'beginner', 4, 'audio/ewondo/food.mp3', 'video/ewondo/food.mp4'),
+        
+        ('EWO', 'Le corps humain', 
+         'Les parties du corps en Ewondo. Apprenez l\'anatomie de base dans la langue des Beti.',
+         'intermediate', 5, 'audio/ewondo/body.mp3', 'video/ewondo/body.mp4'),
+        
+        ('EWO', 'Les couleurs en Ewondo', 
+         'Apprenez les couleurs de base en Ewondo avec des exemples contextuels de la vie quotidienne.',
+         'intermediate', 6, 'audio/ewondo/colors.mp3', 'video/ewondo/colors.mp4'),
+        
+        ('EWO', 'Les animaux domestiques', 
+         'Découvrez les noms des animaux de la ferme et domestiques en Ewondo.',
+         'intermediate', 7, 'audio/ewondo/animals.mp3', 'video/ewondo/animals.mp4'),
+        
+        ('EWO', 'La nature et l\'environnement', 
+         'Les éléments naturels, plantes et paysages en Ewondo de la région centrale.',
+         'intermediate', 8, 'audio/ewondo/nature.mp3', 'video/ewondo/nature.mp4'),
+        
+        ('EWO', 'Les émotions et sentiments', 
+         'Exprimez vos émotions en Ewondo. Découvrez comment communiquer vos sentiments.',
+         'advanced', 9, 'audio/ewondo/emotions.mp3', 'video/ewondo/emotions.mp4'),
+        
+        ('EWO', 'Les professions et métiers', 
+         'Découvrez les différentes professions en Ewondo et leur importance dans la société Beti.',
+         'advanced', 10, 'audio/ewondo/professions.mp3', 'video/ewondo/professions.mp4'),
+        
+        # Duala Lessons - Enhanced
+        ('DUA', 'Salutations de base en Duala', 
+         'Les salutations traditionnelles en Duala, langue historique du commerce côtier camerounais.',
+         'beginner', 1, 'audio/duala/greetings.mp3', 'video/duala/greetings.mp4'),
+        
+        ('DUA', 'Les nombres 1-10 en Duala', 
+         'Maîtrisez le système numérique en Duala, essentiel pour le commerce et les échanges.',
+         'beginner', 2, 'audio/duala/numbers.mp3', 'video/duala/numbers.mp4'),
+        
+        ('DUA', 'La famille en Duala', 
+         'Les relations familiales et les termes de parenté en Duala de la région côtière.',
+         'beginner', 3, 'audio/duala/family.mp3', 'video/duala/family.mp4'),
+        
+        ('DUA', 'La nourriture traditionnelle', 
+         'Les plats et ingrédients traditionnels du Littoral Cameroun en Duala.',
+         'beginner', 4, 'audio/duala/food.mp3', 'video/duala/food.mp4'),
+        
+        ('DUA', 'Le corps humain', 
+         'L\'anatomie et les parties du corps en Duala avec prononciation authentique.',
+         'intermediate', 5, 'audio/duala/body.mp3', 'video/duala/body.mp4'),
+        
+        ('DUA', 'Les couleurs en Duala', 
+         'Les couleurs et leurs utilisations dans la culture côtière en Duala.',
+         'intermediate', 6, 'audio/duala/colors.mp3', 'video/duala/colors.mp4'),
+        
+        ('DUA', 'Le commerce et les échanges', 
+         'Vocabulaire commercial essentiel en Duala, langue historique du commerce.',
+         'intermediate', 7, 'audio/duala/trade.mp3', 'video/duala/trade.mp4'),
+        
+        ('DUA', 'La navigation et la mer', 
+         'Termes maritimes et de navigation en Duala, langue des côtes camerounaises.',
+         'intermediate', 8, 'audio/duala/navigation.mp3', 'video/duala/navigation.mp4'),
+        
+        ('DUA', 'Les émotions et sentiments', 
+         'Exprimez vos émotions en Duala avec authenticité culturelle.',
+         'advanced', 9, 'audio/duala/emotions.mp3', 'video/duala/emotions.mp4'),
+        
+        ('DUA', 'Les arts et la musique', 
+         'Découvrez le vocabulaire des arts traditionnels et de la musique en Duala.',
+         'advanced', 10, 'audio/duala/arts.mp3', 'video/duala/arts.mp4'),
+        
+        # Fe'efe'e Lessons - Enhanced
+        ('FEF', 'Salutations de base en Fe\'efe\'e', 
+         'Les salutations traditionnelles des Bafang et de l\'Ouest Cameroun en Fe\'efe\'e.',
+         'beginner', 1, 'audio/fefee/greetings.mp3', 'video/fefee/greetings.mp4'),
+        
+        ('FEF', 'Les nombres 1-10 en Fe\'efe\'e', 
+         'Le système numérique en Fe\'efe\'e, langue des hauts plateaux de l\'Ouest.',
+         'beginner', 2, 'audio/fefee/numbers.mp3', 'video/fefee/numbers.mp4'),
+        
+        ('FEF', 'La famille en Fe\'efe\'e', 
+         'Les relations familiales complexes dans la culture Bamiléké en Fe\'efe\'e.',
+         'beginner', 3, 'audio/fefee/family.mp3', 'video/fefee/family.mp4'),
+        
+        ('FEF', 'L\'agriculture et la terre', 
+         'Vocabulaire agricole traditionnel des Bamiléké en Fe\'efe\'e.',
+         'beginner', 4, 'audio/fefee/agriculture.mp3', 'video/fefee/agriculture.mp4'),
+        
+        ('FEF', 'Le corps humain', 
+         'L\'anatomie dans la tradition Bamiléké en Fe\'efe\'e.',
+         'intermediate', 5, 'audio/fefee/body.mp3', 'video/fefee/body.mp4'),
+        
+        ('FEF', 'Les couleurs en Fe\'efe\'e', 
+         'Les couleurs et leur symbolisme dans la culture Bamiléké.',
+         'intermediate', 6, 'audio/fefee/colors.mp3', 'video/fefee/colors.mp4'),
+        
+        ('FEF', 'L\'artisanat traditionnel', 
+         'Découvrez l\'artisanat Bamiléké : poterie, tissage, sculpture en Fe\'efe\'e.',
+         'intermediate', 7, 'audio/fefee/crafts.mp3', 'video/fefee/crafts.mp4'),
+        
+        ('FEF', 'Les cérémonies et rites', 
+         'Vocabulaire des cérémonies traditionnelles Bamiléké en Fe\'efe\'e.',
+         'intermediate', 8, 'audio/fefee/ceremonies.mp3', 'video/fefee/ceremonies.mp4'),
+        
+        ('FEF', 'Les émotions et sentiments', 
+         'Expression des émotions dans la culture Bamiléké en Fe\'efe\'e.',
+         'advanced', 9, 'audio/fefee/emotions.mp3', 'video/fefee/emotions.mp4'),
+        
+        ('FEF', 'La royauté et le pouvoir', 
+         'Termes liés à la chefferie et aux structures sociales Bamiléké.',
+         'advanced', 10, 'audio/fefee/royalty.mp3', 'video/fefee/royalty.mp4'),
+        
+        # Fulfulde Lessons - Enhanced
+        ('FUL', 'Salutations de base en Fulfulde', 
+         'Les salutations nomades et pastorales en Fulfulde, langue des Peuls du Nord.',
+         'beginner', 1, 'audio/fulfulde/greetings.mp3', 'video/fulfulde/greetings.mp4'),
+        
+        ('FUL', 'Les nombres 1-10 en Fulfulde', 
+         'Le système numérique en Fulfulde, essentiel pour le commerce pastoral.',
+         'beginner', 2, 'audio/fulfulde/numbers.mp3', 'video/fulfulde/numbers.mp4'),
+        
+        ('FUL', 'La famille en Fulfulde', 
+         'Les relations familiales étendues dans la société Peule en Fulfulde.',
+         'beginner', 3, 'audio/fulfulde/family.mp3', 'video/fulfulde/family.mp4'),
+        
+        ('FUL', 'L\'élevage et le pastoralisme', 
+         'Vocabulaire essentiel de l\'élevage traditionnel Peul en Fulfulde.',
+         'beginner', 4, 'audio/fulfulde/livestock.mp3', 'video/fulfulde/livestock.mp4'),
+        
+        ('FUL', 'Le corps humain', 
+         'L\'anatomie dans la culture Peule en Fulfulde.',
+         'intermediate', 5, 'audio/fulfulde/body.mp3', 'video/fulfulde/body.mp4'),
+        
+        ('FUL', 'Les couleurs en Fulfulde', 
+         'Les couleurs et leur signification dans la culture nomade Peule.',
+         'intermediate', 6, 'audio/fulfulde/colors.mp3', 'video/fulfulde/colors.mp4'),
+        
+        ('FUL', 'La nature et les saisons', 
+         'Découvrez les saisons, la météo et l\'environnement sahélien en Fulfulde.',
+         'intermediate', 7, 'audio/fulfulde/nature.mp3', 'video/fulfulde/nature.mp4'),
+        
+        ('FUL', 'Les instruments de musique', 
+         'La musique traditionnelle Peule : hoddu, flute, tambours en Fulfulde.',
+         'intermediate', 8, 'audio/fulfulde/music.mp3', 'video/fulfulde/music.mp4'),
+        
+        ('FUL', 'Les émotions et sentiments', 
+         'Expression des émotions dans la poésie et culture Peule en Fulfulde.',
+         'advanced', 9, 'audio/fulfulde/emotions.mp3', 'video/fulfulde/emotions.mp4'),
+        
+        ('FUL', 'La poésie et l\'oralité', 
+         'Découvrez la tradition orale et poétique des Peuls en Fulfulde.',
+         'advanced', 10, 'audio/fulfulde/poetry.mp3', 'video/fulfulde/poetry.mp4'),
+        
+        # Bassa Lessons - Enhanced
+        ('BAS', 'Salutations de base en Bassa', 
+         'Les salutations traditionnelles Bassa du Centre-Littoral Cameroun.',
+         'beginner', 1, 'audio/bassa/greetings.mp3', 'video/bassa/greetings.mp4'),
+        
+        ('BAS', 'Les nombres 1-10 en Bassa', 
+         'Le système numérique en Bassa, langue des forêts équatoriales.',
+         'beginner', 2, 'audio/bassa/numbers.mp3', 'video/bassa/numbers.mp4'),
+        
+        ('BAS', 'La famille en Bassa', 
+         'Les relations familiales dans la société Bassa en Bassa.',
+         'beginner', 3, 'audio/bassa/family.mp3', 'video/bassa/family.mp4'),
+        
+        ('BAS', 'La chasse et la forêt', 
+         'Vocabulaire de la chasse traditionnelle et de la forêt équatoriale en Bassa.',
+         'beginner', 4, 'audio/bassa/hunting.mp3', 'video/bassa/hunting.mp4'),
+        
+        ('BAS', 'Le corps humain', 
+         'L\'anatomie dans la culture Bassa en Bassa.',
+         'intermediate', 5, 'audio/bassa/body.mp3', 'video/bassa/body.mp4'),
+        
+        ('BAS', 'Les couleurs en Bassa', 
+         'Les couleurs et leur symbolisme dans la culture Bassa.',
+         'intermediate', 6, 'audio/bassa/colors.mp3', 'video/bassa/colors.mp4'),
+        
+        ('BAS', 'Les plantes médicinales', 
+         'La pharmacopée traditionnelle Bassa et les plantes médicinales.',
+         'intermediate', 7, 'audio/bassa/medicinal.mp3', 'video/bassa/medicinal.mp4'),
+        
+        ('BAS', 'Les rites et cérémonies', 
+         'Vocabulaire des cérémonies traditionnelles Bassa.',
+         'intermediate', 8, 'audio/bassa/ceremonies.mp3', 'video/bassa/ceremonies.mp4'),
+        
+        ('BAS', 'Les émotions et sentiments', 
+         'Expression des émotions dans la culture Bassa.',
+         'advanced', 9, 'audio/bassa/emotions.mp3', 'video/bassa/emotions.mp4'),
+        
+        ('BAS', 'Les contes et légendes', 
+         'Découvrez l\'oralité et les contes traditionnels Bassa.',
+         'advanced', 10, 'audio/bassa/stories.mp3', 'video/bassa/stories.mp4'),
+        
+        # Bamum Lessons - Enhanced
+        ('BAM', 'Salutations de base en Bamum', 
+         'Les salutations royales et traditionnelles Bamum de l\'Ouest Cameroun.',
+         'beginner', 1, 'audio/bamum/greetings.mp3', 'video/bamum/greetings.mp4'),
+        
+        ('BAM', 'Les nombres 1-10 en Bamum', 
+         'Le système numérique Bamum, langue de l\'ancien royaume Bamum.',
+         'beginner', 2, 'audio/bamum/numbers.mp3', 'video/bamum/numbers.mp4'),
+        
+        ('BAM', 'La famille en Bamum', 
+         'Les relations familiales dans la société Bamum en Bamum.',
+         'beginner', 3, 'audio/bamum/family.mp3', 'video/bamum/family.mp4'),
+        
+        ('BAM', 'L\'agriculture Bamum', 
+         'Les techniques agricoles traditionnelles du royaume Bamum.',
+         'beginner', 4, 'audio/bamum/agriculture.mp3', 'video/bamum/agriculture.mp4'),
+        
+        ('BAM', 'Le corps humain', 
+         'L\'anatomie dans la culture royale Bamum.',
+         'intermediate', 5, 'audio/bamum/body.mp3', 'video/bamum/body.mp4'),
+        
+        ('BAM', 'Les couleurs en Bamum', 
+         'Les couleurs et leur symbolisme royal Bamum.',
+         'intermediate', 6, 'audio/bamum/colors.mp3', 'video/bamum/colors.mp4'),
+        
+        ('BAM', 'L\'écriture Bamum', 
+         'Découvrez l\'écriture syllabique inventée par le roi Njoya.',
+         'intermediate', 7, 'audio/bamum/writing.mp3', 'video/bamum/writing.mp4'),
+        
+        ('BAM', 'Les arts et sculptures', 
+         'L\'art traditionnel Bamum : masques, statues, architecture.',
+         'intermediate', 8, 'audio/bamum/arts.mp3', 'video/bamum/arts.mp4'),
+        
+        ('BAM', 'Les émotions et sentiments', 
+         'Expression des émotions dans la culture Bamum.',
+         'advanced', 9, 'audio/bamum/emotions.mp3', 'video/bamum/emotions.mp4'),
+        
+        ('BAM', 'L\'histoire et la royauté', 
+         'Découvrez l\'histoire du royaume Bamum et ses souverains.',
+         'advanced', 10, 'audio/bamum/history.mp3', 'video/bamum/history.mp4'),
+    ]
+    
+    cursor.executemany('''
+    INSERT INTO lessons (language_id, title, content, level, order_index, audio_url, video_url)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+    ''', lessons_data)
 
 def query_examples():
     """Example queries to test the database"""

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../shared/widgets/custom_button.dart';
+import '../../../../shared/widgets/forms/custom_button.dart';
 
 /// Terms and Conditions page that users must accept before proceeding
 class TermsAndConditionsView extends StatefulWidget {

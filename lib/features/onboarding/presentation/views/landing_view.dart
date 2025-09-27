@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/constants/routes.dart';
-import '../../../../shared/widgets/custom_button.dart';
+import '../../../../shared/widgets/forms/custom_button.dart';
 
 /// Landing page for guests/visitors after accepting terms and conditions
 class LandingView extends StatefulWidget {
@@ -415,9 +415,9 @@ class _LandingViewState extends State<LandingView>
                       CustomButton(
                         text: 'Se Connecter',
                         onPressed: _onLoginPressed,
-                        backgroundColor: Colors.white,
-                        textColor: Colors.green,
-                        borderColor: Colors.green,
+                        backgroundColor: Colors.green,
+                        foregroundColor: Colors.white,
+                        isOutlined: true,
                       ),
                       const SizedBox(height: 12),
 

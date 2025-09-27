@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../shared/widgets/custom_button.dart';
+import '../../../../shared/widgets/forms/custom_button.dart';
 
 /// Demo lessons view for guest users with limited free content
 class DemoLessonsView extends StatefulWidget {
@@ -246,7 +246,6 @@ class _DemoLessonsViewState extends State<DemoLessonsView> {
                   text: 'S\'inscrire',
                   onPressed: () => Navigator.of(context).pushNamed('/register'),
                   backgroundColor: Colors.orange,
-                  isCompact: true,
                 ),
               ],
             ),
@@ -305,7 +304,7 @@ class _DemoLessonsViewState extends State<DemoLessonsView> {
                   text: 'Créer un compte',
                   onPressed: () => Navigator.of(context).pushNamed('/register'),
                   backgroundColor: Colors.white,
-                  textColor: Colors.purple,
+                  foregroundColor: Colors.purple,
                 ),
               ),
               const SizedBox(width: 12),
@@ -313,9 +312,9 @@ class _DemoLessonsViewState extends State<DemoLessonsView> {
                 child: CustomButton(
                   text: 'Se connecter',
                   onPressed: () => Navigator.of(context).pushNamed('/login'),
-                  backgroundColor: Colors.transparent,
-                  textColor: Colors.white,
-                  borderColor: Colors.white,
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.white,
+                  isOutlined: true,
                 ),
               ),
             ],

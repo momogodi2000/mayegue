@@ -5,7 +5,9 @@
       "Bash(tree:*)",
       "Bash(flutter analyze:*)",
       "Bash(flutter pub:*)",
-      "Read(//e/project/**)"
+      "Read(//e/project/**)",
+      "Bash(find:*)",
+      "Bash(rm:*)"
     ],
     "deny": [],
     "ask": []

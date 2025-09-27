@@ -4,7 +4,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import '../../core/config/environment_config.dart';
 import '../../core/services/firebase_service.dart';
 import '../../core/services/storage_service.dart';
-import '../../core/services/database_helper.dart';
+import '../../core/database/database_helper.dart';
 import '../../core/services/sync_manager.dart';
 import '../../core/services/ai_service.dart';
 import '../../core/network/dio_client.dart';
@@ -112,9 +112,6 @@ List<SingleChildWidget> getProviders() {
     ),
     Provider<DatabaseHelper>(
       create: (_) => DatabaseHelper.instance,
-    ),
-    Provider<SyncManager>(
-      create: (_) => SyncManager(),
     ),
     Provider<GeminiAIService>(
       create: (_) => GeminiAIService(apiKey: EnvironmentConfig.geminiApiKey),
@@ -473,6 +470,11 @@ List<SingleChildWidget> getProviders() {
         localDataSource: localDataSource,
         networkInfo: networkInfo,
       ),
+    ),
+
+    // Sync manager
+    Provider<SyncManager>(
+      create: (_) => SyncManager()..initialize(),
     ),
 
     // AI providers

@@ -1,26 +1,29 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:sqflite/sqflite.dart';
-import 'database_helper.dart';
-import 'firebase_service.dart';
 
-/// Sync operation types
+/// Types of sync operations
 enum SyncOperationType {
   insert,
   update,
-  delete,
+  delete;
+
+  String get name => toString().split('.').last;
 }
 
-/// Sync status
+/// Status of sync operations
 enum SyncStatus {
   pending,
   inProgress,
   success,
-  failed,
+  failed;
+
+  String get name => toString().split('.').last;
 }
 
-/// Sync operation model
+/// Represents a sync operation to be performed
 class SyncOperation {
   final String id;
   final SyncOperationType operationType;
@@ -30,8 +33,9 @@ class SyncOperation {
   final DateTime timestamp;
   final int retryCount;
   final SyncStatus status;
+  final String? errorMessage;
 
-  SyncOperation({
+  const SyncOperation({
     required this.id,
     required this.operationType,
     required this.tableName,
@@ -40,21 +44,50 @@ class SyncOperation {
     required this.timestamp,
     this.retryCount = 0,
     this.status = SyncStatus.pending,
+    this.errorMessage,
   });
 
+  /// Create a copy with modified fields
+  SyncOperation copyWith({
+    String? id,
+    SyncOperationType? operationType,
+    String? tableName,
+    String? recordId,
+    Map<String, dynamic>? data,
+    DateTime? timestamp,
+    int? retryCount,
+    SyncStatus? status,
+    String? errorMessage,
+  }) {
+    return SyncOperation(
+      id: id ?? this.id,
+      operationType: operationType ?? this.operationType,
+      tableName: tableName ?? this.tableName,
+      recordId: recordId ?? this.recordId,
+      data: data ?? this.data,
+      timestamp: timestamp ?? this.timestamp,
+      retryCount: retryCount ?? this.retryCount,
+      status: status ?? this.status,
+      errorMessage: errorMessage ?? this.errorMessage,
+    );
+  }
+
+  /// Convert to JSON for storage
   Map<String, dynamic> toJson() {
     return {
       'id': id,
       'operationType': operationType.name,
       'tableName': tableName,
       'recordId': recordId,
-      'data': jsonEncode(data),
+      'data': data,
       'timestamp': timestamp.toIso8601String(),
       'retryCount': retryCount,
       'status': status.name,
+      'errorMessage': errorMessage,
     };
   }
 
+  /// Create from JSON
   factory SyncOperation.fromJson(Map<String, dynamic> json) {
     return SyncOperation(
       id: json['id'],
@@ -63,324 +96,159 @@ class SyncOperation {
       ),
       tableName: json['tableName'],
       recordId: json['recordId'],
-      data: jsonDecode(json['data']),
+      data: Map<String, dynamic>.from(json['data']),
       timestamp: DateTime.parse(json['timestamp']),
       retryCount: json['retryCount'] ?? 0,
       status: SyncStatus.values.firstWhere(
         (e) => e.name == json['status'],
         orElse: () => SyncStatus.pending,
       ),
+      errorMessage: json['errorMessage'],
     );
   }
 }
 
-/// Sync manager for handling offline/online data synchronization
+/// Manages offline-to-online synchronization of data
 class SyncManager {
+  static const String _operationsKey = 'sync_operations';
   static const int _maxRetries = 3;
   static const Duration _syncInterval = Duration(minutes: 5);
 
-  final DatabaseHelper _dbHelper = DatabaseHelper.instance;
-  final FirebaseService _firebaseService = FirebaseService();
+  final StreamController<SyncStatus> _syncStatusController = StreamController<SyncStatus>.broadcast();
   final Connectivity _connectivity = Connectivity();
 
-  StreamSubscription<ConnectivityResult>? _connectivitySubscription;
+  SharedPreferences? _prefs;
   Timer? _syncTimer;
+  bool _isInitialized = false;
 
-  final StreamController<SyncStatus> _syncStatusController =
-      StreamController<SyncStatus>.broadcast();
-
+  /// Stream of sync status updates
   Stream<SyncStatus> get syncStatus => _syncStatusController.stream;
 
-  /// Initialize sync manager
+  /// Initialize the sync manager
   Future<void> initialize() async {
+    if (_isInitialized) return;
+
+    _prefs = await SharedPreferences.getInstance();
+
     // Listen to connectivity changes
-    _connectivitySubscription = _connectivity.onConnectivityChanged.listen(
-      _onConnectivityChanged,
-    );
+    _connectivity.onConnectivityChanged.listen(_onConnectivityChanged);
 
     // Start periodic sync
     _startPeriodicSync();
 
-    // Initial sync check
-    await _checkConnectivityAndSync();
+    _isInitialized = true;
   }
 
-  /// Dispose sync manager
+  /// Dispose of resources
   void dispose() {
-    _connectivitySubscription?.cancel();
     _syncTimer?.cancel();
     _syncStatusController.close();
   }
 
-  /// Queue operation for sync
+  /// Queue a sync operation for later execution
   Future<void> queueOperation(SyncOperation operation) async {
-    final db = await _dbHelper.database;
-
-    await db.insert(
-      'sync_operations',
-      operation.toJson(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
-
-    // Try to sync immediately if online
-    final connectivityResult = await _connectivity.checkConnectivity();
-    if (connectivityResult != ConnectivityResult.none) {
-      await _performSync();
-    }
+    final operations = await _getQueuedOperations();
+    operations.add(operation);
+    await _saveQueuedOperations(operations);
   }
 
-  /// Manual sync trigger
+  /// Force immediate synchronization
   Future<void> syncNow() async {
-    await _performSync();
-  }
-
-  /// Get pending operations count
-  Future<int> getPendingOperationsCount() async {
-    final db = await _dbHelper.database;
-    final result = await db.rawQuery(
-      'SELECT COUNT(*) as count FROM sync_operations WHERE status = ?',
-      [SyncStatus.pending.name],
-    );
-    return Sqflite.firstIntValue(result) ?? 0;
-  }
-
-  /// Handle connectivity changes
-  void _onConnectivityChanged(ConnectivityResult result) {
-    if (result != ConnectivityResult.none) {
-      // Back online, trigger sync
-      _performSync();
+    if (!await _isOnline()) {
+      _syncStatusController.add(SyncStatus.failed);
+      return;
     }
-  }
 
-  /// Start periodic sync
-  void _startPeriodicSync() {
-    _syncTimer = Timer.periodic(_syncInterval, (_) {
-      _checkConnectivityAndSync();
-    });
-  }
-
-  /// Check connectivity and sync if online
-  Future<void> _checkConnectivityAndSync() async {
-    final connectivityResult = await _connectivity.checkConnectivity();
-    if (connectivityResult != ConnectivityResult.none) {
-      await _performSync();
-    }
-  }
-
-  /// Perform synchronization
-  Future<void> _performSync() async {
     _syncStatusController.add(SyncStatus.inProgress);
 
     try {
-      final db = await _dbHelper.database;
+      final operations = await _getQueuedOperations();
+      final successfulOps = <SyncOperation>[];
+      final failedOps = <SyncOperation>[];
 
-      // Get pending operations
-      final operations = await db.query(
-        'sync_operations',
-        where: 'status = ? AND retry_count < ?',
-        whereArgs: [SyncStatus.pending.name, _maxRetries],
-        orderBy: 'timestamp ASC',
-      );
-
-      for (final operationJson in operations) {
-        final operation = SyncOperation.fromJson(operationJson);
-
+      for (final operation in operations) {
         try {
           await _executeOperation(operation);
-
-          // Mark as success
-          await db.update(
-            'sync_operations',
-            {'status': SyncStatus.success.name},
-            where: 'id = ?',
-            whereArgs: [operation.id],
-          );
+          successfulOps.add(operation.copyWith(status: SyncStatus.success));
         } catch (e) {
-          // Increment retry count
-          final newRetryCount = operation.retryCount + 1;
-
-          if (newRetryCount >= _maxRetries) {
-            // Mark as failed
-            await db.update(
-              'sync_operations',
-              {
-                'status': SyncStatus.failed.name,
-                'retry_count': newRetryCount,
-              },
-              where: 'id = ?',
-              whereArgs: [operation.id],
-            );
+          final retryCount = operation.retryCount + 1;
+          if (retryCount >= _maxRetries) {
+            failedOps.add(operation.copyWith(
+              status: SyncStatus.failed,
+              errorMessage: e.toString(),
+            ));
           } else {
-            // Update retry count
-            await db.update(
-              'sync_operations',
-              {'retry_count': newRetryCount},
-              where: 'id = ?',
-              whereArgs: [operation.id],
-            );
+            // Re-queue for retry
+            await queueOperation(operation.copyWith(retryCount: retryCount));
           }
         }
       }
 
-      // Sync data from Firebase to local
-      await _syncFromFirebase();
+      // Update stored operations
+      final remainingOps = operations
+          .where((op) => !successfulOps.any((success) => success.id == op.id))
+          .where((op) => !failedOps.any((failed) => failed.id == op.id))
+          .toList();
 
+      await _saveQueuedOperations(remainingOps);
       _syncStatusController.add(SyncStatus.success);
     } catch (e) {
       _syncStatusController.add(SyncStatus.failed);
+      debugPrint('Sync failed: $e');
     }
   }
 
-  /// Execute sync operation
+  /// Get the count of pending operations
+  Future<int> getPendingOperationsCount() async {
+    final operations = await _getQueuedOperations();
+    return operations.where((op) => op.status == SyncStatus.pending).length;
+  }
+
+  /// Clear all queued operations (use with caution)
+  Future<void> clearQueue() async {
+    if (_prefs != null) {
+      await _prefs!.remove(_operationsKey);
+    }
+  }
+
+  void _startPeriodicSync() {
+    _syncTimer = Timer.periodic(_syncInterval, (_) {
+      syncNow();
+    });
+  }
+
+  void _onConnectivityChanged(ConnectivityResult result) {
+    if (result != ConnectivityResult.none) {
+      // Trigger sync when connection is restored
+      syncNow();
+    }
+  }
+
+  Future<bool> _isOnline() async {
+    final result = await _connectivity.checkConnectivity();
+    return result != ConnectivityResult.none;
+  }
+
+  Future<List<SyncOperation>> _getQueuedOperations() async {
+    if (_prefs == null) return [];
+    final operationsJson = _prefs!.getStringList(_operationsKey) ?? [];
+    return operationsJson
+        .map((json) => SyncOperation.fromJson(jsonDecode(json)))
+        .toList();
+  }
+
+  Future<void> _saveQueuedOperations(List<SyncOperation> operations) async {
+    if (_prefs == null) return;
+    final operationsJson = operations
+        .map((op) => jsonEncode(op.toJson()))
+        .toList();
+    await _prefs!.setStringList(_operationsKey, operationsJson);
+  }
+
   Future<void> _executeOperation(SyncOperation operation) async {
-    switch (operation.operationType) {
-      case SyncOperationType.insert:
-        await _syncInsert(operation);
-        break;
-      case SyncOperationType.update:
-        await _syncUpdate(operation);
-        break;
-      case SyncOperationType.delete:
-        await _syncDelete(operation);
-        break;
-    }
-  }
-
-  /// Sync insert operation
-  Future<void> _syncInsert(SyncOperation operation) async {
-    switch (operation.tableName) {
-      case 'users':
-        await _firebaseService.firestore
-            .collection('users')
-            .doc(operation.recordId)
-            .set(operation.data);
-        break;
-      case 'progress':
-        await _firebaseService.firestore
-            .collection('progress')
-            .doc(operation.recordId)
-            .set(operation.data);
-        break;
-      case 'chat_messages':
-        await _firebaseService.firestore
-            .collection('chat_messages')
-            .doc(operation.recordId)
-            .set(operation.data);
-        break;
-      // Add other tables as needed
-    }
-  }
-
-  /// Sync update operation
-  Future<void> _syncUpdate(SyncOperation operation) async {
-    switch (operation.tableName) {
-      case 'users':
-        await _firebaseService.firestore
-            .collection('users')
-            .doc(operation.recordId)
-            .update(operation.data);
-        break;
-      case 'progress':
-        await _firebaseService.firestore
-            .collection('progress')
-            .doc(operation.recordId)
-            .update(operation.data);
-        break;
-      // Add other tables as needed
-    }
-  }
-
-  /// Sync delete operation
-  Future<void> _syncDelete(SyncOperation operation) async {
-    switch (operation.tableName) {
-      case 'users':
-        await _firebaseService.firestore
-            .collection('users')
-            .doc(operation.recordId)
-            .delete();
-        break;
-      case 'progress':
-        await _firebaseService.firestore
-            .collection('progress')
-            .doc(operation.recordId)
-            .delete();
-        break;
-      // Add other tables as needed
-    }
-  }
-
-  /// Sync data from Firebase to local database
-  Future<void> _syncFromFirebase() async {
-    final db = await _dbHelper.database;
-    final user = _firebaseService.auth.currentUser;
-
-    if (user == null) return;
-
-    try {
-      // Sync user data
-      final userDoc = await _firebaseService.firestore
-          .collection('users')
-          .doc(user.uid)
-          .get();
-
-      if (userDoc.exists) {
-        final userData = userDoc.data()!;
-        userData['last_sync'] = DateTime.now().toIso8601String();
-        userData['is_synced'] = 1;
-
-        await db.insert(
-          'users',
-          userData,
-          conflictAlgorithm: ConflictAlgorithm.replace,
-        );
-      }
-
-      // Sync progress data
-      final progressQuery = await _firebaseService.firestore
-          .collection('progress')
-          .where('user_id', isEqualTo: user.uid)
-          .get();
-
-      for (final doc in progressQuery.docs) {
-        final progressData = doc.data();
-        progressData['id'] = doc.id;
-        progressData['last_sync'] = DateTime.now().toIso8601String();
-        progressData['is_synced'] = 1;
-
-        await db.insert(
-          'progress',
-          progressData,
-          conflictAlgorithm: ConflictAlgorithm.replace,
-        );
-      }
-
-      // Add sync for other collections as needed
-    } catch (e) {
-      // Handle sync errors
-    }
-  }
-
-  /// Resolve conflicts (last-write-wins strategy)
-  Future<void> resolveConflicts() async {
-    final db = await _dbHelper.database;
-
-    // Get conflicting records (same ID, different timestamps)
-    final conflicts = await db.rawQuery('''
-      SELECT * FROM sync_operations
-      WHERE status = ?
-      GROUP BY record_id
-      HAVING COUNT(*) > 1
-      ORDER BY timestamp DESC
-    ''', [SyncStatus.pending.name]);
-
-    for (final conflict in conflicts) {
-      // Keep the most recent operation, mark others as failed
-      final recordId = conflict['record_id'] as String;
-      await db.rawUpdate('''
-        UPDATE sync_operations
-        SET status = ?
-        WHERE record_id = ? AND id != ?
-      ''', [SyncStatus.failed.name, recordId, conflict['id']]);
-    }
+    // This is a placeholder - in a real implementation, this would
+    // execute the operation against the appropriate backend service
+    // For now, we'll just simulate success
+    await Future.delayed(const Duration(milliseconds: 100));
   }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../shared/widgets/custom_button.dart';
+import '../../../../shared/widgets/forms/custom_button.dart';
 
 /// Guest exploration view showcasing language features without registration
 class GuestExploreView extends StatefulWidget {
@@ -99,7 +99,6 @@ class _GuestExploreViewState extends State<GuestExploreView>
               text: 'Débloquer',
               onPressed: () => Navigator.of(context).pushNamed('/register'),
               backgroundColor: Colors.orange,
-              isCompact: true,
             ),
           ],
         ),

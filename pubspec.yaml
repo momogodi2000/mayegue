@@ -10,6 +10,10 @@ dependencies:
   # 🎵 Multimédia
   audioplayers: ^3.0.1
   video_player: ^2.5.1
+  record: ^5.0.4
+  path_provider: ^2.1.2
+  image_picker: ^1.0.4
+  flutter_image_compress: ^2.2.0
   # 🔥 Firebase
   firebase_core: ^2.32.0
   firebase_auth: ^4.20.0
@@ -19,6 +23,7 @@ dependencies:
   firebase_analytics: ^10.8.0
   firebase_crashlytics: ^3.4.9
   flutter_local_notifications: ^17.1.0
+  timezone: ^0.9.2
   # ��️ Architecture & State Management
   provider: ^6.1.1
   equatable: ^2.0.5
@@ -43,6 +48,7 @@ dependencies:
   permission_handler: ^11.3.0
   # 🔒 Security
   crypto: ^3.0.3
+  encrypt: ^5.0.3
   # 🔐 Auth Providers
   google_sign_in: ^6.2.1
   flutter_facebook_auth: ^6.0.4
@@ -62,6 +68,8 @@ dev_dependencies:
   bloc_test: ^9.1.4
   intl_utils: ^2.8.7
   flutter_launcher_icons: ^0.13.1
+  integration_test:
+    sdk: flutter
 flutter:
   uses-material-design: true
   # 📂 Assets (images, sons, vidéos)

@@ -150,6 +150,21 @@ enum DifficultyLevel {
   expert,
 }
 
+/// Parts of speech for dictionary entries
+enum PartOfSpeech {
+  noun,
+  verb,
+  adjective,
+  adverb,
+  pronoun,
+  preposition,
+  conjunction,
+  interjection,
+  article,
+  determiner,
+  particle,
+}
+
 /// Extension for ReviewStatus display
 extension ReviewStatusExtension on ReviewStatus {
   String get displayName {
@@ -186,4 +201,36 @@ extension DifficultyLevelExtension on DifficultyLevel {
   }
 
   int get level => index + 1;
+}
+
+/// Extension for PartOfSpeech display
+extension PartOfSpeechExtension on PartOfSpeech {
+  String get displayName {
+    switch (this) {
+      case PartOfSpeech.noun:
+        return 'Nom';
+      case PartOfSpeech.verb:
+        return 'Verbe';
+      case PartOfSpeech.adjective:
+        return 'Adjectif';
+      case PartOfSpeech.adverb:
+        return 'Adverbe';
+      case PartOfSpeech.pronoun:
+        return 'Pronom';
+      case PartOfSpeech.preposition:
+        return 'Préposition';
+      case PartOfSpeech.conjunction:
+        return 'Conjonction';
+      case PartOfSpeech.interjection:
+        return 'Interjection';
+      case PartOfSpeech.article:
+        return 'Article';
+      case PartOfSpeech.determiner:
+        return 'Déterminant';
+      case PartOfSpeech.particle:
+        return 'Particule';
+    }
+  }
+
+  String get englishName => name;
 }

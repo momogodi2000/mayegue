@@ -208,14 +208,14 @@ class TeacherReviewViewModel extends ChangeNotifier {
             try {
               final result = await lexiconRepository.markAsVerified(entry.id, user.id);
               result.fold(
-                (failure) => print('Failed to approve ${entry.canonicalForm}: ${failure.message}'),
+                (failure) => debugPrint('Failed to approve ${entry.canonicalForm}: ${failure.message}'),
                 (_) {
                   approvedCount++;
                   _aiSuggestedEntries.removeWhere((e) => e.id == entry.id);
                 },
               );
             } catch (e) {
-              print('Error approving ${entry.canonicalForm}: $e');
+              debugPrint('Error approving ${entry.canonicalForm}: $e');
             }
           }
 
@@ -253,7 +253,7 @@ class TeacherReviewViewModel extends ChangeNotifier {
 
           final result = await aiEnrichVocabularyUsecase(params);
           result.fold(
-            (failure) => print('Failed to generate for $languageCode: ${failure.message}'),
+            (failure) => debugPrint('Failed to generate for $languageCode: ${failure.message}'),
             (newEntries) {
               _aiSuggestedEntries.addAll(newEntries);
               totalGenerated += newEntries.length;
@@ -263,7 +263,7 @@ class TeacherReviewViewModel extends ChangeNotifier {
           // Small delay to avoid rate limiting
           await Future.delayed(const Duration(milliseconds: 500));
         } catch (e) {
-          print('Error generating vocabulary for $languageCode: $e');
+          debugPrint('Error generating vocabulary for $languageCode: $e');
         }
       }
 
@@ -303,7 +303,7 @@ class TeacherReviewViewModel extends ChangeNotifier {
     try {
       final result = await lexiconRepository.getStatistics();
       result.fold(
-        (failure) => print('Failed to load statistics: ${failure.message}'),
+        (failure) => debugPrint('Failed to load statistics: ${failure.message}'),
         (stats) {
           _totalVerified = stats.verifiedEntries;
           _totalPending = stats.pendingEntries;
@@ -325,7 +325,7 @@ class TeacherReviewViewModel extends ChangeNotifier {
         },
       );
     } catch (e) {
-      print('Error loading statistics: $e');
+      debugPrint('Error loading statistics: $e');
     }
   }
 
@@ -351,7 +351,7 @@ class TeacherReviewViewModel extends ChangeNotifier {
 
   void _showSuccess(String message) {
     // In a real app, this would show a snackbar or toast
-    print('Success: $message');
+    debugPrint('Success: $message');
     notifyListeners();
   }
 }

@@ -6,6 +6,7 @@ class UserEntity {
   final String? phoneNumber;
   final String? photoUrl;
   final String role;
+  final List<String> languages;
   final DateTime createdAt;
   final DateTime? lastLoginAt;
   final bool isEmailVerified;
@@ -18,6 +19,7 @@ class UserEntity {
     this.phoneNumber,
     this.photoUrl,
     this.role = 'learner',
+    this.languages = const [],
     required this.createdAt,
     this.lastLoginAt,
     this.isEmailVerified = false,
@@ -47,6 +49,7 @@ class UserEntity {
       phoneNumber: json['phoneNumber'] as String?,
       photoUrl: json['photoUrl'] as String?,
       role: json['role'] as String? ?? 'learner',
+      languages: List<String>.from(json['languages'] ?? []),
       createdAt: DateTime.parse(json['createdAt'] as String),
       lastLoginAt: json['lastLoginAt'] != null
           ? DateTime.parse(json['lastLoginAt'] as String)
@@ -65,6 +68,7 @@ class UserEntity {
       'phoneNumber': phoneNumber,
       'photoUrl': photoUrl,
       'role': role,
+      'languages': languages,
       'createdAt': createdAt.toIso8601String(),
       'lastLoginAt': lastLoginAt?.toIso8601String(),
       'isEmailVerified': isEmailVerified,
@@ -78,6 +82,7 @@ class UserEntity {
     String? phoneNumber,
     String? photoUrl,
     String? role,
+    List<String>? languages,
     DateTime? lastLoginAt,
     bool? isEmailVerified,
     Map<String, dynamic>? preferences,
@@ -89,6 +94,7 @@ class UserEntity {
       phoneNumber: phoneNumber ?? this.phoneNumber,
       photoUrl: photoUrl ?? this.photoUrl,
       role: role ?? this.role,
+      languages: languages ?? this.languages,
       createdAt: createdAt,
       lastLoginAt: lastLoginAt ?? this.lastLoginAt,
       isEmailVerified: isEmailVerified ?? this.isEmailVerified,

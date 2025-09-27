@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:flutter/foundation.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/usecases/usecase.dart';
 import '../../../../core/services/ai_service.dart';
@@ -45,7 +46,7 @@ class AiEnrichVocabularyUsecase implements UseCase<List<DictionaryEntryEntity>, 
           entries.add(entry);
         } catch (e) {
           // Skip invalid suggestions but continue processing others
-          print('Skipped invalid AI suggestion: $e');
+          debugPrint('Skipped invalid AI suggestion: $e');
         }
       }
 

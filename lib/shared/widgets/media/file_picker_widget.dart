@@ -320,9 +320,9 @@ class _FileUploadCardState extends State<FileUploadCard> {
                     ),
                     subtitle: Text(
                       _formatFileSize(file.size),
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 12,
-                        color: AppColors.onSurface.withValues(alpha: 153),
+                        color: AppColors.textSecondary,
                       ),
                     ),
                     trailing: IconButton(

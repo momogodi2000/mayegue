@@ -37,38 +37,42 @@ class CameroonLanguagesDatabaseHelper {
     );
   }
 
-  /// Search translations
-  static Future<List<Map<String, dynamic>>> searchTranslations({
-    String? query,
-    String? languageId,
-    String? categoryId,
-  }) async {
+  /// Get lessons by language
+  static Future<List<Map<String, dynamic>>> getLessonsByLanguage(String languageId) async {
     final db = await database;
-    String whereClause = '';
-    List<String> whereArgs = [];
-
-    if (query != null && query.isNotEmpty) {
-      whereClause += '(french_text LIKE ? OR translation LIKE ?)';
-      whereArgs.add('%$query%');
-      whereArgs.add('%$query%');
-    }
-
-    if (languageId != null) {
-      if (whereClause.isNotEmpty) whereClause += ' AND ';
-      whereClause += 'language_id = ?';
-      whereArgs.add(languageId);
-    }
-
-    if (categoryId != null) {
-      if (whereClause.isNotEmpty) whereClause += ' AND ';
-      whereClause += 'category_id = ?';
-      whereArgs.add(categoryId);
-    }
-
     return await db.query(
-      'translations',
-      where: whereClause.isNotEmpty ? whereClause : null,
-      whereArgs: whereArgs.isNotEmpty ? whereArgs : null,
+      'lessons',
+      where: 'language_id = ?',
+      whereArgs: [languageId],
+      orderBy: 'order_index',
+    );
+  }
+
+  /// Get all lessons
+  static Future<List<Map<String, dynamic>>> getAllLessons() async {
+    final db = await database;
+    return await db.query('lessons', orderBy: 'language_id, order_index');
+  }
+
+  /// Get lesson by ID
+  static Future<Map<String, dynamic>?> getLessonById(int lessonId) async {
+    final db = await database;
+    final results = await db.query(
+      'lessons',
+      where: 'lesson_id = ?',
+      whereArgs: [lessonId],
+    );
+    return results.isNotEmpty ? results.first : null;
+  }
+
+  /// Get lessons by level
+  static Future<List<Map<String, dynamic>>> getLessonsByLevel(String level) async {
+    final db = await database;
+    return await db.query(
+      'lessons',
+      where: 'level = ?',
+      whereArgs: [level],
+      orderBy: 'language_id, order_index',
     );
   }
 

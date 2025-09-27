@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/router.dart';
 import '../../../../core/constants/routes.dart';
+import '../../../../core/models/user_role.dart';
 import '../../domain/entities/user_entity.dart';
 import '../../domain/usecases/login_usecase.dart';
 import '../../domain/usecases/register_usecase.dart';
@@ -361,20 +362,31 @@ class AuthViewModel extends ChangeNotifier {
     _errorMessage = null;
   }
 
+  // Get current user role
+  UserRole get currentUserRole {
+    if (_currentUser == null) return UserRole.visitor;
+    return UserRoleExtension.fromString(_currentUser!.role);
+  }
+
+  // Check if user has permission
+  bool hasPermission(Permission permission) {
+    return currentUserRole.hasPermission(permission);
+  }
+
+  // Check if user can access feature
+  bool canAccess(Feature feature) {
+    return currentUserRole.canAccess(feature);
+  }
+
   // Get appropriate route based on user role
   String getRoleBasedRoute() {
     if (_currentUser == null) return Routes.login;
+    return currentUserRole.defaultDashboardRoute;
+  }
 
-    switch (_currentUser!.role) {
-      case 'admin':
-        return Routes.adminDashboard;
-      case 'teacher':
-      case 'instructor':
-        return Routes.teacherDashboard;
-      case 'learner':
-      default:
-        return Routes.dashboard;
-    }
+  // Get navigation items for current user
+  List<NavigationItem> getNavigationItems() {
+    return currentUserRole.navigationItems;
   }
 
   // Navigate to role-based dashboard

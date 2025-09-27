@@ -57,7 +57,7 @@ class DictionaryMigration {
       partOfSpeech: _inferPartOfSpeech(wordModel.category),
       translations: translationMap,
       exampleSentences: exampleSentences,
-      tags: wordModel.category != null ? [wordModel.category] : [],
+      tags: [wordModel.category],
       difficultyLevel: difficultyLevel,
       contributorId: null, // Legacy system didn't track contributors
       reviewStatus: ReviewStatus.humanVerified, // Assume legacy entries are verified

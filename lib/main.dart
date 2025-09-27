@@ -32,7 +32,7 @@ void main() async {
     await DataSeedingService.seedDatabase();
   } catch (e) {
     // Log error but don't crash the app
-    print('Error initializing databases: $e');
+    debugPrint('Error initializing databases: $e');
   }
 
   runApp(const MyApp());

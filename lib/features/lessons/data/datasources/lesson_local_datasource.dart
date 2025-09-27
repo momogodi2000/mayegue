@@ -1,10 +1,9 @@
-import 'package:hive/hive.dart';
+﻿import '../../../../core/database/cameroon_languages_database_helper.dart';
 import '../../../../core/errors/failures.dart';
 import '../../domain/entities/lesson.dart';
 import '../../domain/entities/lesson_content.dart';
 import '../models/lesson_model.dart';
 import '../models/lesson_content_model.dart';
-
 /// Abstract data source for lesson operations
 abstract class LessonDataSource {
   Future<List<LessonModel>> getLessonsByCourse(String courseId);
@@ -18,332 +17,227 @@ abstract class LessonDataSource {
   Future<LessonModel> updateLesson(String lessonId, LessonModel lesson);
   Future<bool> deleteLesson(String lessonId);
 }
-
-/// Local data source implementation using Hive
+/// Local data source implementation using SQLite
 class LessonLocalDataSource implements LessonDataSource {
-  static const String _lessonsBoxName = 'lessons';
-  static const String _lessonContentsBoxName = 'lesson_contents';
-
-  late Box<LessonModel> _lessonsBox;
-  late Box<List<LessonContentModel>> _lessonContentsBox;
-
   Future<void> initialize() async {
-    _lessonsBox = await Hive.openBox<LessonModel>(_lessonsBoxName);
-    _lessonContentsBox = await Hive.openBox<List<LessonContentModel>>(_lessonContentsBoxName);
-
-    // Initialize with sample data if empty
-    if (_lessonsBox.isEmpty) {
-      await _initializeSampleData();
-    }
-  }
-
-  Future<void> _initializeSampleData() async {
-    final now = DateTime.now();
-
-    // Sample lesson contents
-    final ewondoBasicsContents1 = [
-      LessonContentModel(
-        id: 'ewondo-greetings-1',
-        lessonId: 'ewondo-lesson-1',
-        type: ContentType.text,
-        title: 'Salutations de base',
-        content: 'Bonjour se dit "Mbolo" en Ewondo.\nComment allez-vous ? se dit "Osezeye ?"\nJe vais bien se dit "Mezeye".',
-        order: 1,
-        createdAt: now,
-      ),
-      LessonContentModel(
-        id: 'ewondo-greetings-phonetic',
-        lessonId: 'ewondo-lesson-1',
-        type: ContentType.phonetic,
-        title: 'Transcription phonétique',
-        content: '[m.bɔ.lɔ] - Bonjour\n[ɔ.sɛ.zɛ.jɛ] - Comment allez-vous ?\n[mɛ.zɛ.jɛ] - Je vais bien',
-        order: 2,
-        metadata: const {'translation': 'Mbolo - Bonjour\nOsezeye - Comment allez-vous ?\nMezeye - Je vais bien'},
-        createdAt: now,
-      ),
-      LessonContentModel(
-        id: 'ewondo-greetings-2',
-        lessonId: 'ewondo-lesson-1',
-        type: ContentType.audio,
-        title: 'Écoutez la prononciation',
-        content: 'assets/audio/ewondo_greetings.mp3',
-        order: 3,
-        metadata: const {'duration': 45},
-        createdAt: now,
-      ),
-    ];
-
-    final ewondoBasicsContents2 = [
-      LessonContentModel(
-        id: 'ewondo-numbers-1',
-        lessonId: 'ewondo-lesson-2',
-        type: ContentType.text,
-        title: 'Les chiffres de 1 à 10',
-        content: '1 = Óse\n2 = Ibá\n3 = Ilá\n4 = Iné\n5 = Itán\n6 = Isám\n7 = Indám\n8 = Imóm\n9 = Ibwóm\n10 = Awóm',
-        order: 1,
-        createdAt: now,
-      ),
-      LessonContentModel(
-        id: 'ewondo-numbers-phonetic',
-        lessonId: 'ewondo-lesson-2',
-        type: ContentType.phonetic,
-        title: 'Prononciation des chiffres',
-        content: '[ó.sɛ] - 1\n[í.bá] - 2\n[í.lá] - 3\n[í.né] - 4\n[í.tán] - 5\n[í.sám] - 6\n[í.ndám] - 7\n[í.móm] - 8\n[í.bwóm] - 9\n[á.wɔm] - 10',
-        order: 2,
-        metadata: const {'translation': 'Óse, Ibá, Ilá, Iné, Itán, Isám, Indám, Imóm, Ibwóm, Awóm'},
-        createdAt: now,
-      ),
-    ];
-
-    // Sample lessons
-    final sampleLessons = [
-      LessonModel(
-        id: 'ewondo-lesson-1',
-        courseId: 'ewondo-basics-1',
-        title: 'Salutations et présentations',
-        description: 'Apprenez les salutations de base et comment vous présenter en Ewondo.',
-        order: 1,
-        type: LessonType.text,
-        status: LessonStatus.available,
-        estimatedDuration: 15,
-        thumbnailUrl: 'assets/images/lessons/greetings.jpg',
-        contents: ewondoBasicsContents1,
-        createdAt: now,
-        updatedAt: now,
-      ),
-      LessonModel(
-        id: 'ewondo-lesson-2',
-        courseId: 'ewondo-basics-1',
-        title: 'Les chiffres',
-        description: 'Maîtrisez les chiffres de 1 à 10 en Ewondo.',
-        order: 2,
-        type: LessonType.interactive,
-        status: LessonStatus.locked,
-        estimatedDuration: 20,
-        thumbnailUrl: 'assets/images/lessons/numbers.jpg',
-        contents: ewondoBasicsContents2,
-        createdAt: now,
-        updatedAt: now,
-      ),
-      LessonModel(
-        id: 'bafang-lesson-1',
-        courseId: 'bafang-basics-1',
-        title: 'Introduction au Bafang',
-        description: 'Découvrez les bases de la langue Bafang.',
-        order: 1,
-        type: LessonType.text,
-        status: LessonStatus.available,
-        estimatedDuration: 10,
-        thumbnailUrl: 'assets/images/lessons/bafang_intro.jpg',
-        contents: const [],
-        createdAt: now,
-        updatedAt: now,
-      ),
-    ];
-
-    for (final lesson in sampleLessons) {
-      await _lessonsBox.put(lesson.id, lesson);
-      if (lesson.contents.isNotEmpty) {
-        await _lessonContentsBox.put(lesson.id, lesson.contents as List<LessonContentModel>);
-      }
-    }
+    // SQLite initialization is handled by DatabaseHelper
+    // No additional initialization needed for this data source
   }
 
   @override
   Future<List<LessonModel>> getLessonsByCourse(String courseId) async {
     try {
-      return _lessonsBox.values
-          .where((lesson) => lesson.courseId == courseId)
-          .toList()
-        ..sort((a, b) => a.order.compareTo(b.order));
+      // courseId maps to language_id in the database
+      final lessonsData = await CameroonLanguagesDatabaseHelper.getLessonsByLanguage(courseId);
+      return lessonsData.map((data) => _mapDbToLessonModel(data)).toList();
     } catch (e) {
-      throw CacheFailure('Failed to load lessons by course: $e');
+      throw CacheFailure('Failed to get lessons: $e');
     }
   }
-
   @override
   Future<LessonModel> getLessonById(String lessonId) async {
     try {
-      final lesson = _lessonsBox.get(lessonId);
-      if (lesson == null) {
+      final lessonData = await CameroonLanguagesDatabaseHelper.getLessonById(int.parse(lessonId));
+      if (lessonData == null) {
         throw CacheFailure('Lesson not found: $lessonId');
       }
-
-      // Load contents
-      final contents = _lessonContentsBox.get(lessonId) ?? [];
-      return LessonModel(
-        id: lesson.id,
-        courseId: lesson.courseId,
-        title: lesson.title,
-        description: lesson.description,
-        order: lesson.order,
-        type: lesson.type,
-        status: lesson.status,
-        estimatedDuration: lesson.estimatedDuration,
-        thumbnailUrl: lesson.thumbnailUrl,
-        contents: contents,
-        createdAt: lesson.createdAt,
-        updatedAt: lesson.updatedAt,
-      );
+      return _mapDbToLessonModel(lessonData);
     } catch (e) {
-      throw CacheFailure('Failed to load lesson: $e');
+      throw CacheFailure('Failed to get lesson: $e');
     }
   }
-
   @override
   Future<LessonModel?> getNextLesson(String courseId, int currentOrder) async {
     try {
-      final courseLessons = await getLessonsByCourse(courseId);
-      final nextLesson = courseLessons
-          .where((lesson) => lesson.order > currentOrder)
-          .toList()
-        ..sort((a, b) => a.order.compareTo(b.order));
-
-      return nextLesson.isNotEmpty ? nextLesson.first : null;
+      final allLessons = await getLessonsByCourse(courseId);
+      final nextLessons = allLessons.where((lesson) => lesson.order > currentOrder);
+      if (nextLessons.isEmpty) return null;
+      return nextLessons.reduce((a, b) => a.order < b.order ? a : b);
     } catch (e) {
       throw CacheFailure('Failed to get next lesson: $e');
     }
   }
-
   @override
   Future<LessonModel?> getPreviousLesson(String courseId, int currentOrder) async {
     try {
-      final courseLessons = await getLessonsByCourse(courseId);
-      final previousLesson = courseLessons
-          .where((lesson) => lesson.order < currentOrder)
-          .toList()
-        ..sort((a, b) => b.order.compareTo(a.order));
-
-      return previousLesson.isNotEmpty ? previousLesson.first : null;
+      final allLessons = await getLessonsByCourse(courseId);
+      final prevLessons = allLessons.where((lesson) => lesson.order < currentOrder);
+      if (prevLessons.isEmpty) return null;
+      return prevLessons.reduce((a, b) => a.order > b.order ? a : b);
     } catch (e) {
       throw CacheFailure('Failed to get previous lesson: $e');
     }
   }
-
   @override
   Future<bool> updateLessonStatus(String lessonId, LessonStatus status) async {
-    try {
-      final lesson = _lessonsBox.get(lessonId);
-      if (lesson == null) {
-        throw CacheFailure('Lesson not found: $lessonId');
-      }
-
-      final updatedLesson = LessonModel(
-        id: lesson.id,
-        courseId: lesson.courseId,
-        title: lesson.title,
-        description: lesson.description,
-        order: lesson.order,
-        type: lesson.type,
-        status: status,
-        estimatedDuration: lesson.estimatedDuration,
-        thumbnailUrl: lesson.thumbnailUrl,
-        contents: lesson.contents,
-        createdAt: lesson.createdAt,
-        updatedAt: DateTime.now(),
-      );
-
-      await _lessonsBox.put(lessonId, updatedLesson);
-      return true;
-    } catch (e) {
-      throw CacheFailure('Failed to update lesson status: $e');
-    }
+    // User progress is stored in Firebase, not SQLite
+    // This is a placeholder for compatibility - progress tracking happens at app level
+    return true;
   }
-
   @override
   Future<bool> completeLesson(String lessonId) async {
-    return await updateLessonStatus(lessonId, LessonStatus.completed);
+    // User progress is stored in Firebase, not SQLite
+    // This is a placeholder for compatibility - progress tracking happens at app level
+    return true;
   }
-
   @override
   Future<bool> resetLesson(String lessonId) async {
-    return await updateLessonStatus(lessonId, LessonStatus.available);
+    // User progress is stored in Firebase, not SQLite
+    // This is a placeholder for compatibility - progress tracking happens at app level
+    return true;
   }
-
   @override
   Future<LessonModel> createLesson(LessonModel lesson) async {
-    try {
-      // Generate ID if not provided
-      final lessonId = lesson.id.isEmpty ? 'lesson_${DateTime.now().millisecondsSinceEpoch}' : lesson.id;
-
-      final newLesson = LessonModel(
-        id: lessonId,
-        courseId: lesson.courseId,
-        title: lesson.title,
-        description: lesson.description,
-        order: lesson.order,
-        type: lesson.type,
-        status: lesson.status,
-        estimatedDuration: lesson.estimatedDuration,
-        thumbnailUrl: lesson.thumbnailUrl,
-        contents: lesson.contents,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      );
-
-      await _lessonsBox.put(lessonId, newLesson);
-
-      // Save contents if any
-      if (newLesson.contents.isNotEmpty) {
-        await _lessonContentsBox.put(lessonId, newLesson.contents as List<LessonContentModel>);
-      }
-
-      return newLesson;
-    } catch (e) {
-      throw CacheFailure('Failed to create lesson: $e');
-    }
+    // SQLite database is read-only for lessons - they come from the seed data
+    // This is a placeholder for compatibility
+    throw CacheFailure('Cannot create lessons in read-only database');
   }
-
   @override
   Future<LessonModel> updateLesson(String lessonId, LessonModel lesson) async {
-    try {
-      final existingLesson = _lessonsBox.get(lessonId);
-      if (existingLesson == null) {
-        throw CacheFailure('Lesson not found: $lessonId');
-      }
-
-      final updatedLesson = LessonModel(
-        id: lessonId,
-        courseId: lesson.courseId,
-        title: lesson.title,
-        description: lesson.description,
-        order: lesson.order,
-        type: lesson.type,
-        status: lesson.status,
-        estimatedDuration: lesson.estimatedDuration,
-        thumbnailUrl: lesson.thumbnailUrl,
-        contents: lesson.contents,
-        createdAt: existingLesson.createdAt,
-        updatedAt: DateTime.now(),
-      );
-
-      await _lessonsBox.put(lessonId, updatedLesson);
-
-      // Update contents if any
-      if (updatedLesson.contents.isNotEmpty) {
-        await _lessonContentsBox.put(lessonId, updatedLesson.contents as List<LessonContentModel>);
-      }
-
-      return updatedLesson;
-    } catch (e) {
-      throw CacheFailure('Failed to update lesson: $e');
-    }
+    // SQLite database is read-only for lessons - they come from the seed data
+    // This is a placeholder for compatibility
+    throw CacheFailure('Cannot update lessons in read-only database');
   }
-
   @override
   Future<bool> deleteLesson(String lessonId) async {
-    try {
-      final lesson = _lessonsBox.get(lessonId);
-      if (lesson == null) {
-        throw CacheFailure('Lesson not found: $lessonId');
-      }
-
-      await _lessonsBox.delete(lessonId);
-      await _lessonContentsBox.delete(lessonId);
-
-      return true;
-    } catch (e) {
-      throw CacheFailure('Failed to delete lesson: $e');
+    // SQLite database is read-only for lessons - they come from the seed data
+    // This is a placeholder for compatibility
+    throw CacheFailure('Cannot delete lessons in read-only database');
+  }
+  /// Map database row to LessonModel
+  LessonModel _mapDbToLessonModel(Map<String, dynamic> data) {
+    final lessonId = data['lesson_id']?.toString() ?? 'unknown';
+    final languageId = data['language_id'] as String? ?? 'unknown';
+    final title = data['title'] as String? ?? 'Untitled Lesson';
+    final content = data['content'] as String? ?? '';
+    final level = data['level'] as String? ?? 'beginner';
+    final orderIndex = data['order_index'] as int? ?? 0;
+    final audioUrl = data['audio_url'] as String?;
+    final videoUrl = data['video_url'] as String?;
+    final createdDate = data['created_date'] as String?;
+    // Map level to LessonType
+    LessonType lessonType;
+    switch (level.toLowerCase()) {
+      case 'beginner':
+        lessonType = LessonType.text;
+        break;
+      case 'intermediate':
+        lessonType = LessonType.interactive;
+        break;
+      case 'advanced':
+        lessonType = LessonType.quiz;
+        break;
+      default:
+        lessonType = LessonType.text;
     }
+    // Create lesson contents from the content field
+    final contents = <LessonContentModel>[];
+    // Parse content into different content types
+    if (content.isNotEmpty) {
+      // Add text content
+      contents.add(LessonContentModel(
+        id: '${lessonId}_text',
+        lessonId: lessonId,
+        type: ContentType.text,
+        title: 'Contenu de la leçon',
+        content: content,
+        order: 1,
+        createdAt: createdDate != null ? DateTime.parse(createdDate) : DateTime.now(),
+      ));
+      // Add audio content if available
+      if (audioUrl != null && audioUrl.isNotEmpty) {
+        contents.add(LessonContentModel(
+          id: '${lessonId}_audio',
+          lessonId: lessonId,
+          type: ContentType.audio,
+          title: 'Audio de la leçon',
+          content: audioUrl,
+          order: 2,
+          metadata: const {'duration': 300}, // Default 5 minutes
+          createdAt: createdDate != null ? DateTime.parse(createdDate) : DateTime.now(),
+        ));
+      }
+      // Add video content if available
+      if (videoUrl != null && videoUrl.isNotEmpty) {
+        contents.add(LessonContentModel(
+          id: '${lessonId}_video',
+          lessonId: lessonId,
+          type: ContentType.video,
+          title: 'Vidéo de la leçon',
+          content: videoUrl,
+          order: 3,
+          createdAt: createdDate != null ? DateTime.parse(createdDate) : DateTime.now(),
+        ));
+      }
+    }
+    return LessonModel(
+      id: lessonId,
+      courseId: languageId, // courseId maps to language_id
+      title: title,
+      description: _generateDescription(content, level),
+      order: orderIndex,
+      type: lessonType,
+      status: LessonStatus.available, // All lessons are available by default
+      estimatedDuration: _calculateEstimatedDuration(content, audioUrl, videoUrl),
+      thumbnailUrl: _generateThumbnailUrl(languageId, level),
+      contents: contents,
+      createdAt: createdDate != null ? DateTime.parse(createdDate) : DateTime.now(),
+      updatedAt: createdDate != null ? DateTime.parse(createdDate) : DateTime.now(),
+    );
+  }
+  /// Generate description from content and level
+  String _generateDescription(String content, String level) {
+    String levelText;
+    switch (level.toLowerCase()) {
+      case 'beginner':
+        levelText = 'Débutant';
+        break;
+      case 'intermediate':
+        levelText = 'Intermédiaire';
+        break;
+      case 'advanced':
+        levelText = 'Avancé';
+        break;
+      default:
+        levelText = 'Tous niveaux';
+    }
+    if (content.length > 100) {
+      return '${content.substring(0, 100)}... (Niveau: $levelText)';
+    }
+    return '$content (Niveau: $levelText)';
+  }
+  /// Calculate estimated duration based on content
+  int _calculateEstimatedDuration(String content, String? audioUrl, String? videoUrl) {
+    int duration = 10; // Base duration in minutes
+    // Add time for text content (roughly 200 words per minute reading time)
+    final wordCount = content.split(' ').length;
+    duration += (wordCount / 200).ceil();
+    // Add time for audio content
+    if (audioUrl != null && audioUrl.isNotEmpty) {
+      duration += 5; // Assume 5 minutes for audio
+    }
+    // Add time for video content
+    if (videoUrl != null && videoUrl.isNotEmpty) {
+      duration += 10; // Assume 10 minutes for video
+    }
+    return duration;
+  }
+  /// Generate thumbnail URL based on language and level
+  String _generateThumbnailUrl(String languageId, String level) {
+    String levelSuffix;
+    switch (level.toLowerCase()) {
+      case 'beginner':
+        levelSuffix = 'beginner';
+        break;
+      case 'intermediate':
+        levelSuffix = 'intermediate';
+        break;
+      case 'advanced':
+        levelSuffix = 'advanced';
+        break;
+      default:
+        levelSuffix = 'general';
+    }
+    return 'assets/images/lessons/${languageId.toLowerCase()}_${levelSuffix}.jpg';
   }
 }

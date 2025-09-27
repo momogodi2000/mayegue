@@ -265,7 +265,7 @@ class FullScreenImageViewer extends StatelessWidget {
                     const SizedBox(height: 16),
                     Text(
                       'Erreur de chargement de l\'image',
-                      style: TextStyle(color: Colors.white.withValues(alpha: 178)),
+                      style: const TextStyle(color: Color(0xB3FFFFFF)),
                     ),
                   ],
                 ),

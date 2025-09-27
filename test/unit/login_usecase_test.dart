@@ -1,27 +1,20 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mayegue/features/authentication/domain/usecases/login_usecase.dart';
+import 'package:mayegue/features/authentication/domain/entities/auth_response_entity.dart';
+import 'package:mayegue/features/authentication/domain/entities/user_entity.dart';
+import 'package:mayegue/features/authentication/domain/repositories/auth_repository.dart';
+import 'package:mockito/mockito.dart';
 
-// Simple mock repository for testing
-class TestAuthRepository {
-  Future<Map<String, dynamic>> signInWithEmailAndPassword(String email, String password) async {
-    if (email == 'valid@example.com' && password == 'validpass') {
-      return {
-        'user': {'id': 'user123', 'email': email, 'createdAt': DateTime.now().toIso8601String()},
-        'success': true,
-        'message': 'Login successful'
-      };
-    } else {
-      throw Exception('Invalid credentials');
-    }
-  }
-}
+// Mock repository for testing
+class MockAuthRepository extends Mock implements AuthRepository {}
 
 void main() {
   late LoginUsecase usecase;
+  late MockAuthRepository mockRepository;
 
   setUp(() {
-    final mockRepository = TestAuthRepository();
-    usecase = LoginUsecase(mockRepository as dynamic);
+    mockRepository = MockAuthRepository();
+    usecase = LoginUsecase(mockRepository);
   });
 
   test('should be instantiated correctly', () {

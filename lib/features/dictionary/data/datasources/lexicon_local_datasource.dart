@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:sqflite/sqflite.dart';
 import '../models/dictionary_entry_model.dart';
 import '../../domain/entities/dictionary_entry_entity.dart';
-import '../../../../core/services/database_helper.dart';
+import '../../../../core/database/database_helper.dart';
 
 /// Local data source for dictionary entries using SQLite
 abstract class LexiconLocalDataSource {
@@ -45,9 +45,7 @@ abstract class LexiconLocalDataSource {
 }
 
 class LexiconLocalDataSourceImpl implements LexiconLocalDataSource {
-  final DatabaseHelper _dbHelper = DatabaseHelper.instance;
-
-  Future<Database> get _database => _dbHelper.database;
+  Future<Database> get _database => DatabaseHelper.database;
 
   static const String _tableName = 'dictionary_entries';
 

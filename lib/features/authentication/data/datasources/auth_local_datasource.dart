@@ -1,5 +1,5 @@
 import 'package:sqflite/sqflite.dart';
-import '../../../../core/services/database_helper.dart';
+import '../../../../core/database/database_helper.dart';
 import '../../domain/entities/user_entity.dart';
 import '../models/user_model.dart';
 
@@ -13,11 +13,9 @@ abstract class AuthLocalDataSource {
 }
 
 class AuthLocalDataSourceImpl implements AuthLocalDataSource {
-  final DatabaseHelper _dbHelper = DatabaseHelper.instance;
-
   @override
   Future<UserEntity?> getCurrentUser() async {
-    final db = await _dbHelper.database;
+    final db = await DatabaseHelper.database;
     final maps = await db.query(
       'users',
       limit: 1,
@@ -32,7 +30,7 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
 
   @override
   Future<void> saveUser(UserEntity user) async {
-    final db = await _dbHelper.database;
+    final db = await DatabaseHelper.database;
     final userData = {
       'id': user.id,
       'email': user.email,
@@ -57,7 +55,7 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
 
   @override
   Future<void> updateUser(UserEntity user) async {
-    final db = await _dbHelper.database;
+    final db = await DatabaseHelper.database;
     final userData = {
       'email': user.email,
       'displayName': user.displayName,
@@ -81,7 +79,7 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
 
   @override
   Future<void> deleteUser(String userId) async {
-    final db = await _dbHelper.database;
+    final db = await DatabaseHelper.database;
     await db.delete(
       'users',
       where: 'id = ?',
@@ -91,7 +89,7 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
 
   @override
   Future<List<UserEntity>> getAllUsers() async {
-    final db = await _dbHelper.database;
+    final db = await DatabaseHelper.database;
     final maps = await db.query('users');
 
     return maps.map((map) => UserModel.fromFirestore(map, map['id'] as String)).toList();

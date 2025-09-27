@@ -9,6 +9,11 @@ class DatabaseHelper {
 
   static Database? _database;
 
+  /// Singleton instance
+  static DatabaseHelper get instance => DatabaseHelper._();
+
+  DatabaseHelper._();
+
   /// Get database instance (singleton pattern)
   static Future<Database> get database async {
     if (_database != null) return _database!;
