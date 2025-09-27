@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 
 class AnalyticsWidget extends StatelessWidget {
-  const AnalyticsWidget({super.key});
+  final Map<String, dynamic> teacherData;
+  final VoidCallback onExportReport;
+
+  const AnalyticsWidget({
+    super.key,
+    required this.teacherData,
+    required this.onExportReport,
+  });
 
   @override
   Widget build(BuildContext context) {

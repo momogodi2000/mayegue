@@ -531,7 +531,7 @@ class StudentDashboardViewModel extends ChangeNotifier {
         lesson['isCompleted'] = true;
         lesson['progress'] = 100.0;
 
-        final experience = lesson['experience'] ?? 0;
+        final experience = ((lesson['experience'] ?? 0) as num).toInt();
         final languageCode = lesson['language'];
 
         // Update progress

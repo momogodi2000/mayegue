@@ -1,7 +1,20 @@
 import 'package:flutter/material.dart';
 
 class AdminStatsWidget extends StatelessWidget {
-  const AdminStatsWidget({super.key});
+  final int totalUsers;
+  final int activeUsers;
+  final int totalContent;
+  final double revenue;
+  final Map<String, dynamic> systemHealth;
+
+  const AdminStatsWidget({
+    super.key,
+    required this.totalUsers,
+    required this.activeUsers,
+    required this.totalContent,
+    required this.revenue,
+    required this.systemHealth,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -25,15 +38,15 @@ class AdminStatsWidget extends StatelessWidget {
                 _buildStatItem(
                   context,
                   'Total Users',
-                  '2,847',
+                  totalUsers.toString(),
                   Icons.people,
                   Colors.blue,
                 ),
                 const SizedBox(width: 16),
                 _buildStatItem(
                   context,
-                  'Active Sessions',
-                  '456',
+                  'Active Users',
+                  activeUsers.toString(),
                   Icons.online_prediction,
                   Colors.green,
                 ),
@@ -44,17 +57,17 @@ class AdminStatsWidget extends StatelessWidget {
               children: [
                 _buildStatItem(
                   context,
-                  'Total Revenue',
-                  '\$12,456',
-                  Icons.attach_money,
+                  'Total Content',
+                  totalContent.toString(),
+                  Icons.library_books,
                   Colors.amber,
                 ),
                 const SizedBox(width: 16),
                 _buildStatItem(
                   context,
-                  'Server Uptime',
-                  '99.9%',
-                  Icons.cloud_done,
+                  'Monthly Revenue',
+                  '\$${revenue.toStringAsFixed(2)}',
+                  Icons.attach_money,
                   Colors.purple,
                 ),
               ],

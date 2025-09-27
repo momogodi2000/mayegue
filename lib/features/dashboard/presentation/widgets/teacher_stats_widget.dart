@@ -1,7 +1,18 @@
 import 'package:flutter/material.dart';
 
 class TeacherStatsWidget extends StatelessWidget {
-  const TeacherStatsWidget({super.key});
+  final int totalStudents;
+  final int activeStudents;
+  final int completedLessons;
+  final double averageProgress;
+
+  const TeacherStatsWidget({
+    super.key,
+    required this.totalStudents,
+    required this.activeStudents,
+    required this.completedLessons,
+    required this.averageProgress,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -25,16 +36,16 @@ class TeacherStatsWidget extends StatelessWidget {
                 _buildStatItem(
                   context,
                   'Total Students',
-                  '156',
+                  totalStudents.toString(),
                   Icons.people,
                   Colors.blue,
                 ),
                 const SizedBox(width: 16),
                 _buildStatItem(
                   context,
-                  'Active Courses',
-                  '12',
-                  Icons.book,
+                  'Active Students',
+                  activeStudents.toString(),
+                  Icons.online_prediction,
                   Colors.green,
                 ),
               ],
@@ -45,16 +56,16 @@ class TeacherStatsWidget extends StatelessWidget {
                 _buildStatItem(
                   context,
                   'Completed Lessons',
-                  '89',
+                  completedLessons.toString(),
                   Icons.check_circle,
                   Colors.orange,
                 ),
                 const SizedBox(width: 16),
                 _buildStatItem(
                   context,
-                  'Average Rating',
-                  '4.8',
-                  Icons.star,
+                  'Avg Progress',
+                  '${averageProgress.toStringAsFixed(1)}%',
+                  Icons.trending_up,
                   Colors.amber,
                 ),
               ],

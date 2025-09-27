@@ -1,7 +1,20 @@
 import 'package:flutter/material.dart';
 
 class SystemHealthWidget extends StatelessWidget {
-  const SystemHealthWidget({super.key});
+  final String serverStatus;
+  final String databaseStatus;
+  final String cacheStatus;
+  final double storageUsage;
+  final VoidCallback onRefreshStatus;
+
+  const SystemHealthWidget({
+    super.key,
+    required this.serverStatus,
+    required this.databaseStatus,
+    required this.cacheStatus,
+    required this.storageUsage,
+    required this.onRefreshStatus,
+  });
 
   @override
   Widget build(BuildContext context) {

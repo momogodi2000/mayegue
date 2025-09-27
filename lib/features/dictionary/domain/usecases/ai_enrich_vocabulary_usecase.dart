@@ -22,7 +22,7 @@ class AiEnrichVocabularyUsecase implements UseCase<List<DictionaryEntryEntity>, 
       final aiResponse = await aiService.generateVocabulary(
         languageCode: params.languageCode,
         category: params.category,
-        difficultyLevel: params.difficultyLevel,
+        difficultyLevel: params.difficultyLevel.name,
         count: params.count,
         context: params.context,
       );
@@ -164,7 +164,7 @@ class AiExpandEntryUsecase implements UseCase<DictionaryEntryEntity, AiExpansion
               'ipa': entry.ipa,
               'partOfSpeech': entry.partOfSpeech,
             },
-            expansionType: params.expansionType,
+            expansionType: params.expansionType.name,
           );
 
           // Update entry with AI-generated content

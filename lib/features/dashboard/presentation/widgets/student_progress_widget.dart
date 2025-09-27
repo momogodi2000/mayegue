@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 
 class StudentProgressWidget extends StatelessWidget {
-  const StudentProgressWidget({super.key});
+  final List<Map<String, dynamic>> students;
+  final Function(Map<String, dynamic>) onStudentTap;
+
+  const StudentProgressWidget({
+    super.key,
+    required this.students,
+    required this.onStudentTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -20,26 +27,34 @@ class StudentProgressWidget extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            _buildProgressItem(
-              'John Doe',
-              'Ewondo Basics',
-              0.75,
-              Colors.green,
-            ),
-            const SizedBox(height: 12),
-            _buildProgressItem(
-              'Jane Smith',
-              'Bulu Grammar',
-              0.60,
-              Colors.orange,
-            ),
-            const SizedBox(height: 12),
-            _buildProgressItem(
-              'Bob Johnson',
-              'Fang Vocabulary',
-              0.45,
-              Colors.red,
-            ),
+            if (students.isEmpty)
+              const Text('No students found')
+            else
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: students.length > 3 ? 3 : students.length, // Show max 3 students
+                itemBuilder: (context, index) {
+                  final student = students[index];
+                  final progress = (student['progress'] as num?)?.toDouble() ?? 0.0;
+                  final color = progress > 0.7 ? Colors.green : progress > 0.4 ? Colors.orange : Colors.red;
+                  
+                  return Column(
+                    children: [
+                      InkWell(
+                        onTap: () => onStudentTap(student),
+                        child: _buildProgressItem(
+                          student['name'] ?? 'Unknown',
+                          student['currentCourse'] ?? 'No course',
+                          progress,
+                          color,
+                        ),
+                      ),
+                      if (index < (students.length > 3 ? 2 : students.length - 1)) const SizedBox(height: 12),
+                    ],
+                  );
+                },
+              ),
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {

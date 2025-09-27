@@ -1,7 +1,20 @@
 import 'package:flutter/material.dart';
 
 class UserManagementWidget extends StatelessWidget {
-  const UserManagementWidget({super.key});
+  final int totalUsers;
+  final int newUsers;
+  final int bannedUsers;
+  final Function(String) onUserSearch;
+  final Function(String) onUserFilter;
+
+  const UserManagementWidget({
+    super.key,
+    required this.totalUsers,
+    required this.newUsers,
+    required this.bannedUsers,
+    required this.onUserSearch,
+    required this.onUserFilter,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -66,11 +79,11 @@ class UserManagementWidget extends StatelessWidget {
   Widget _buildUserTypeSummary() {
     return Row(
       children: [
-        _buildUserTypeCard('Students', '1,245', Colors.blue),
+        _buildUserTypeCard('Total Users', totalUsers.toString(), Colors.blue),
         const SizedBox(width: 12),
-        _buildUserTypeCard('Teachers', '89', Colors.green),
+        _buildUserTypeCard('New Today', newUsers.toString(), Colors.green),
         const SizedBox(width: 12),
-        _buildUserTypeCard('Admins', '12', Colors.purple),
+        _buildUserTypeCard('Banned', bannedUsers.toString(), Colors.red),
       ],
     );
   }

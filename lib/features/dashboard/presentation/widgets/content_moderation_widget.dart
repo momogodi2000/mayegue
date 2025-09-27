@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
 
 class ContentModerationWidget extends StatelessWidget {
-  const ContentModerationWidget({super.key});
+  final int pendingContent;
+  final int reportedContent;
+  final Function(String, String) onModerateContent;
+
+  const ContentModerationWidget({
+    super.key,
+    required this.pendingContent,
+    required this.reportedContent,
+    required this.onModerateContent,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -22,11 +31,11 @@ class ContentModerationWidget extends StatelessWidget {
             const SizedBox(height: 16),
             Row(
               children: [
-                _buildModerationStat('Pending Review', '23', Colors.orange),
+                _buildModerationStat('Pending Review', pendingContent.toString(), Colors.orange),
+                const SizedBox(width: 12),
+                _buildModerationStat('Reported', reportedContent.toString(), Colors.red),
                 const SizedBox(width: 12),
                 _buildModerationStat('Approved', '156', Colors.green),
-                const SizedBox(width: 12),
-                _buildModerationStat('Rejected', '8', Colors.red),
               ],
             ),
             const SizedBox(height: 16),

@@ -3,7 +3,6 @@ import '../../../../core/constants/supported_languages.dart';
 import '../../../dictionary/domain/entities/dictionary_entry_entity.dart';
 import '../../../dictionary/data/models/dictionary_entry_model.dart';
 import '../../../dictionary/data/datasources/lexicon_local_datasource.dart';
-import '../../../../core/database/database_helper.dart';
 
 /// Dialog for teachers to contribute new dictionary entries
 class TeacherDictionaryContributionDialog extends StatefulWidget {
@@ -249,8 +248,7 @@ class _TeacherDictionaryContributionDialogState
         await widget.onCreateEntry!(entry);
       } else {
         // Save to local database for offline sync
-        final database = await DatabaseHelper.database;
-        final localDataSource = LexiconLocalDataSourceImpl(database: database);
+        final localDataSource = LexiconLocalDataSourceImpl();
         final model = DictionaryEntryModel.fromEntity(entry);
         await localDataSource.queueForSync(model);
       }

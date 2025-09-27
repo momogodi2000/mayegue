@@ -111,7 +111,11 @@ class AdminDashboardViewModel extends ChangeNotifier {
   String get serverStatus => _systemHealth['server']?['status'] ?? 'unknown';
   String get databaseStatus => _systemHealth['database']?['status'] ?? 'unknown';
   String get cacheStatus => 'healthy'; // Mock
-  String get storageUsage => _systemHealth['storage']?['used'] ?? '0%';
+  double get storageUsage {
+    final used = _systemHealth['storage']?['used'] ?? '0%';
+    final percentage = double.tryParse(used.replaceAll('%', '')) ?? 0.0;
+    return percentage / 100.0; // Convert to decimal
+  }
 
   // Methods
   void Function(String) get onUserSearch => _onUserSearch;
@@ -144,8 +148,8 @@ class AdminDashboardViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void moderateContent() {
-    // Implement moderate
+  void moderateContent(String contentId, String action) {
+    // Implement moderate with parameters
     notifyListeners();
   }
 

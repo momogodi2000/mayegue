@@ -6,6 +6,7 @@ import '../../../../core/constants/supported_languages.dart';
 import '../viewmodels/teacher_dashboard_viewmodel.dart';
 import '../widgets/teacher_stats_widget.dart';
 import '../widgets/student_progress_widget.dart';
+import '../widgets/analytics_widget.dart';
 import '../widgets/content_management_widget.dart';
 import '../widgets/teacher_dictionary_contribution_dialog.dart';
 
@@ -243,11 +244,11 @@ class _TeacherDashboardViewState extends State<TeacherDashboardView>
           SizedBox(height: AppDimensions.spacingLarge),
 
           // Communication tools
-          _buildCommunicationToolsCard(),
+          _buildCommunicationToolsCard(viewModel),
           SizedBox(height: AppDimensions.spacingLarge),
 
           // Settings and preferences
-          _buildTeacherSettingsCard(),
+          _buildTeacherSettingsCard(viewModel),
         ],
       ),
     );
@@ -1090,7 +1091,7 @@ class _TeacherDashboardViewState extends State<TeacherDashboardView>
     );
   }
 
-  Widget AnalyticsWidget(TeacherDashboardViewModel viewModel) {
+  Widget _buildAnalyticsCard(TeacherDashboardViewModel viewModel) {
     return Card(
       child: Padding(
         padding: EdgeInsets.all(AppDimensions.paddingLarge),
