@@ -47,6 +47,20 @@ class TeacherDashboardViewModel extends ChangeNotifier {
   int get quizzesCount => _quizzesCount;
   int get mediaCount => _mediaCount;
 
+  // Additional Getters for View
+  void Function(Map<String, dynamic>) get onStudentTap => _onStudentTap;
+  void Function(String) get onStudentFilter => _onStudentFilter;
+
+  void _onStudentTap(Map<String, dynamic> student) {
+    // Implement tap
+    notifyListeners();
+  }
+
+  void _onStudentFilter(String query) {
+    // Implement filter
+    notifyListeners();
+  }
+
   /// Load teacher dashboard data
   Future<void> loadTeacherDashboard() async {
     _setLoading(true);

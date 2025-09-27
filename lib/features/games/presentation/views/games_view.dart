@@ -500,7 +500,6 @@ class _GamesViewState extends State<GamesView> with SingleTickerProviderStateMix
                     );
                   },
                 ),
-              ],
             ],
           ),
         );

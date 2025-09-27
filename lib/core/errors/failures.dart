@@ -40,3 +40,8 @@ class CacheFailure extends Failure {
 class NotFoundFailure extends Failure {
   const NotFoundFailure(String message, {String? code}) : super(message, code: code);
 }
+
+/// Unknown failure
+class UnknownFailure extends Failure {
+  const UnknownFailure(String message, {String? code}) : super(message, code: code);
+}

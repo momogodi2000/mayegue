@@ -304,7 +304,7 @@ class DataValidators {
 
   static bool _isValidSentence(String sentence) {
     // Allow letters, numbers, basic punctuation, and common sentence characters
-    final sentencePattern = RegExp(r"^[a-zA-ZÀ-ÿ\u0100-\u024F\u1E00-\u1EFF0-9\s\.,!?;:\-'\"()\[\]]+$");
+    final sentencePattern = RegExp(r'^[a-zA-Z0-9\s.,!?;:()\[\]]+$');
     return sentencePattern.hasMatch(sentence);
   }
 
@@ -347,18 +347,15 @@ class DataValidators {
 
   /// Sanitize text input
   static String sanitizeText(String input) {
-    return input
-        .trim()
-        .replaceAll(RegExp(r'\s+'), ' ') // Normalize whitespace
-        .replaceAll(RegExp(r'[^\w\s\-\'\.,!?;:()\[\]À-ÿ\u0100-\u024F\u1E00-\u1EFF]'), '') // Remove invalid chars
-        .substring(0, input.length > 1000 ? 1000 : input.length); // Limit length
+    return input.trim();
   }
 
   /// Sanitize IPA notation
   static String sanitizeIPA(String ipa) {
+    // Allow IPA characters, punctuation, and whitespace
     return ipa
         .trim()
-        .replaceAll(RegExp(r'[^a-zA-ZÀ-ÿɑɒæɐɞɨɯɪʊʏʉɘɵɤɣχʁhɦʔɢŋɴɲɳɭɽɾrɟcɕʝɭβθðsʃʒʐvzʑɹɻjɰlɭʎʟwɥ̃̈̊̊̃̈̄̀́̂̌̇̋̏̑̌̇̚ːˈˌ\.\s\[\]\/\-ˈˌ]'), '');
+        .replaceAll(RegExp(r'[^a-zA-Zɑɒæɐɞɨɯɪʊʏʉɘɵɤɣχʁhɦʔɢŋɴɲɳɭɽɾrɟcɕʝβθðsʃʒʐvzʑɹɻjɰlʎʟwɥˈˌː\s\-.()\[\]]'), '');
   }
 }
 

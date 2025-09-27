@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../domain/entities/dictionary_entry_entity.dart';
 
@@ -76,6 +77,49 @@ class DictionaryEntryModel extends DictionaryEntryEntity {
     );
   }
 
+  /// Create from SQLite row
+  factory DictionaryEntryModel.fromSQLite(Map<String, dynamic> map) {
+    return DictionaryEntryModel(
+      id: map['id'] as String,
+      languageCode: map['language_code'] as String,
+      canonicalForm: map['canonical_form'] as String,
+      orthographyVariants: map['orthography_variants'] != null
+          ? List<String>.from(jsonDecode(map['orthography_variants'] as String))
+          : [],
+      ipa: map['ipa'] as String?,
+      audioFileReferences: map['audio_file_references'] != null
+          ? List<String>.from(jsonDecode(map['audio_file_references'] as String))
+          : [],
+      partOfSpeech: map['part_of_speech'] as String,
+      translations: map['translations'] != null
+          ? Map<String, String>.from(jsonDecode(map['translations'] as String))
+          : {},
+      exampleSentences: map['example_sentences'] != null
+          ? (jsonDecode(map['example_sentences'] as String) as List)
+              .map((e) => ExampleSentence.fromJson(e as Map<String, dynamic>))
+              .toList()
+          : [],
+      tags: map['tags'] != null
+          ? List<String>.from(jsonDecode(map['tags'] as String))
+          : [],
+      difficultyLevel: DifficultyLevel.values.firstWhere(
+        (e) => e.toString().split('.').last == map['difficulty_level'],
+        orElse: () => DifficultyLevel.beginner,
+      ),
+      contributorId: map['contributor_id'] as String?,
+      reviewStatus: ReviewStatus.values.firstWhere(
+        (e) => e.toString().split('.').last == map['review_status'],
+        orElse: () => ReviewStatus.autoSuggested,
+      ),
+      qualityScore: (map['quality_score'] as num?)?.toDouble() ?? 0.0,
+      lastUpdated: DateTime.fromMillisecondsSinceEpoch(map['last_updated'] as int),
+      sourceReference: map['source_reference'] as String?,
+      metadata: map['metadata'] != null
+          ? Map<String, dynamic>.from(jsonDecode(map['metadata'] as String))
+          : {},
+    );
+  }
+
   /// Create from domain entity
   factory DictionaryEntryModel.fromEntity(DictionaryEntryEntity entity) {
     return DictionaryEntryModel(
@@ -120,6 +164,30 @@ class DictionaryEntryModel extends DictionaryEntryEntity {
       sourceReference: sourceReference,
       metadata: metadata,
     );
+  }
+
+  /// Convert to SQLite row
+  Map<String, dynamic> toSQLite() {
+    return {
+      'id': id,
+      'language_code': languageCode,
+      'canonical_form': canonicalForm,
+      'orthography_variants': jsonEncode(orthographyVariants),
+      'ipa': ipa,
+      'audio_file_references': jsonEncode(audioFileReferences),
+      'part_of_speech': partOfSpeech,
+      'translations': jsonEncode(translations),
+      'example_sentences': jsonEncode(exampleSentences.map((e) => e.toJson()).toList()),
+      'tags': jsonEncode(tags),
+      'difficulty_level': difficultyLevel.toString().split('.').last,
+      'contributor_id': contributorId,
+      'review_status': reviewStatus.toString().split('.').last,
+      'quality_score': qualityScore,
+      'last_updated': lastUpdated.millisecondsSinceEpoch,
+      'source_reference': sourceReference,
+      'metadata': jsonEncode(metadata),
+      'search_terms': jsonEncode(_generateSearchTerms()),
+    };
   }
 
   /// Generate search terms for full-text search

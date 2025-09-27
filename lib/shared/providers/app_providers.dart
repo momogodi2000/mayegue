@@ -58,6 +58,10 @@ import '../../features/dictionary/domain/usecases/remove_from_favorites.dart';
 import '../../features/dictionary/domain/usecases/get_favorite_words.dart';
 import '../../features/dictionary/presentation/viewmodels/dictionary_viewmodel.dart';
 import '../../features/dictionary/data/datasources/dictionary_local_datasource.dart';
+import '../../features/dictionary/data/datasources/lexicon_local_datasource.dart';
+import '../../features/dictionary/domain/repositories/lexicon_repository.dart';
+import '../../features/dictionary/data/repositories/lexicon_repository_impl.dart';
+import '../../features/dictionary/data/datasources/lexicon_remote_datasource.dart';
 import '../../features/gamification/data/datasources/gamification_datasource.dart';
 import '../../features/gamification/data/datasources/gamification_local_datasource.dart';
 import '../../features/gamification/data/repositories/gamification_repository_impl.dart';
@@ -451,6 +455,23 @@ List<SingleChildWidget> getProviders() {
         removeFromFavorites: context.read<RemoveFromFavorites>(),
         getFavoriteWords: context.read<GetFavoriteWords>(),
         aiService: context.read<GeminiAIService>(),
+      ),
+    ),
+
+    // Lexicon providers
+    ProxyProvider<FirebaseService, LexiconRemoteDataSource>(
+      update: (_, firebaseService, __) => LexiconRemoteDataSource(
+        firestore: firebaseService.firestore,
+      ),
+    ),
+    Provider<LexiconLocalDataSource>(
+      create: (_) => LexiconLocalDataSourceImpl(),
+    ),
+    ProxyProvider3<LexiconRemoteDataSource, LexiconLocalDataSource, NetworkInfo, LexiconRepository>(
+      update: (_, remoteDataSource, localDataSource, networkInfo, __) => LexiconRepositoryImpl(
+        remoteDataSource: remoteDataSource,
+        localDataSource: localDataSource,
+        networkInfo: networkInfo,
       ),
     ),
 

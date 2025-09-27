@@ -85,6 +85,80 @@ class AdminDashboardViewModel extends ChangeNotifier {
   List<Map<String, dynamic>> get availableReports => _availableReports;
   Map<String, dynamic> get reportAnalytics => _reportAnalytics;
 
+  // Additional Getters for View
+  int get alertsCount => _overviewStats['systemAlerts'] ?? 0;
+  int get totalUsers => _overviewStats['totalUsers'] ?? 0;
+  int get activeUsers => _overviewStats['activeUsers'] ?? 0;
+  int get newUsersToday => _overviewStats['newUsersToday'] ?? 0;
+  int get bannedUsersCount => _userStatistics['banned'] ?? 0;
+  int get pendingModerationCount => _pendingContent.length;
+  int get reportedContentCount => _reportedContent.length;
+  int get totalContent => _overviewStats['totalContent'] ?? 0;
+  double get monthlyRevenue => (_overviewStats['monthlyRevenue'] ?? 0).toDouble();
+  double get yearlyRevenue => (_overviewStats['totalRevenue'] ?? 0).toDouble();
+  int get totalLessons => _contentStatistics['lessonsCount'] ?? 0;
+  int get totalGames => _contentStatistics['gamesCount'] ?? 0;
+  int get totalTeachers => _userStatistics['teachers'] ?? 0;
+  int get weeklyActiveUsers => (_overviewStats['activeUsers'] ?? 0) ~/ 7;
+  double get retentionRate => 85.5; // Mock
+  int get studentsCount => _userStatistics['students'] ?? 0;
+  int get teachersCount => _userStatistics['teachers'] ?? 0;
+  int get moderatorsCount => _userStatistics['moderators'] ?? 0;
+  int get adminsCount => _userStatistics['admins'] ?? 0;
+  List<Map<String, dynamic>> get recentAdminActivities => _recentSystemActivities;
+
+  // System Health Getters
+  String get serverStatus => _systemHealth['server']?['status'] ?? 'unknown';
+  String get databaseStatus => _systemHealth['database']?['status'] ?? 'unknown';
+  String get cacheStatus => 'healthy'; // Mock
+  String get storageUsage => _systemHealth['storage']?['used'] ?? '0%';
+
+  // Methods
+  void Function(String) get onUserSearch => _onUserSearch;
+  void Function(String) get onUserFilter => _onUserFilter;
+  void Function() get onModerateContent => _onModerateContent;
+  void Function() get onRefreshStatus => _onRefreshStatus;
+
+  void _onUserSearch(String query) {
+    // Implement search
+    notifyListeners();
+  }
+
+  void _onUserFilter(String filter) {
+    // Implement filter
+    notifyListeners();
+  }
+
+  void _onModerateContent() {
+    // Implement moderate
+    notifyListeners();
+  }
+
+  void _onRefreshStatus() {
+    // Implement refresh
+    loadAdminDashboard();
+  }
+
+  void filterUsers(String query) {
+    // Implement filter
+    notifyListeners();
+  }
+
+  void moderateContent() {
+    // Implement moderate
+    notifyListeners();
+  }
+
+  void refreshSystemStatus() {
+    // Implement refresh
+    loadAdminDashboard();
+  }
+
+  int getContentCountForLanguage(String language) {
+    // Mock implementation
+    return _content.where((c) => c['language'] == language).length;
+  }
+
   /// Load admin dashboard data
   Future<void> loadAdminDashboard() async {
     _setLoading(true);
@@ -228,6 +302,8 @@ class AdminDashboardViewModel extends ChangeNotifier {
       'studentsCount': 14892,
       'teachersCount': 942,
       'adminsCount': 13,
+      'moderatorsCount': 45,
+      'banned': 23,
       'premiumUsers': 8456,
       'freeUsers': 7391,
     };

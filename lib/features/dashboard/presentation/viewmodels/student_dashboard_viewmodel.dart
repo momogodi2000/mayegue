@@ -20,7 +20,7 @@ class StudentDashboardViewModel extends ChangeNotifier {
   int _streakGoal = 7;
   int _completedLessons = 0;
   int _gamesPlayed = 0;
-  int _quizzesT aken = 0;
+  int _quizzesTaken = 0;
 
   // Language Learning Data
   List<String> _currentLearningLanguages = [];

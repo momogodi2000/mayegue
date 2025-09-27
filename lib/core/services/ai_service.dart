@@ -31,11 +31,6 @@ abstract class AIService {
     required String toLanguage,
   });
 
-  /// Generate pronunciation guide
-  Future<String> generatePronunciationGuide({
-    required String word,
-    required String languageName,
-  });
 
   /// Generate vocabulary entries for dictionary enrichment
   Future<List<Map<String, dynamic>>> generateVocabulary({
@@ -208,26 +203,6 @@ Please provide:
 1. The direct translation
 2. Cultural context or nuances if applicable
 3. Alternative translations if there are multiple meanings
-''';
-
-    return await generateContent(prompt);
-  }
-
-  /// Generate pronunciation guide
-  @override
-  Future<String> generatePronunciationGuide({
-    required String word,
-    required String languageName,
-  }) async {
-    final prompt = '''
-Create a detailed pronunciation guide for the word "$word" in $languageName.
-
-Please include:
-1. Phonetic transcription (IPA)
-2. Syllable breakdown
-3. Common pronunciation mistakes
-4. Audio description (how it sounds)
-5. Similar sounds in English if applicable
 ''';
 
     return await generateContent(prompt);

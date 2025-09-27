@@ -7,7 +7,7 @@ import '../viewmodels/teacher_dashboard_viewmodel.dart';
 import '../widgets/teacher_stats_widget.dart';
 import '../widgets/student_progress_widget.dart';
 import '../widgets/content_management_widget.dart';
-import '../widgets/analytics_widget.dart';
+import '../widgets/teacher_dictionary_contribution_dialog.dart';
 
 /// Dashboard view specifically designed for teachers
 class TeacherDashboardView extends StatefulWidget {
@@ -1006,8 +1006,9 @@ class _TeacherDashboardViewState extends State<TeacherDashboardView>
   }
 
   void _manageVocabulary(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Gestion vocabulaire - À implémenter')),
+    showDialog(
+      context: context,
+      builder: (context) => const TeacherDictionaryContributionDialog(),
     );
   }
 
@@ -1068,6 +1069,114 @@ class _TeacherDashboardViewState extends State<TeacherDashboardView>
   void _sendGroupMessage(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Message de groupe - À implémenter')),
+    );
+  }
+
+  Widget _buildPendingReviewsCard(TeacherDashboardViewModel viewModel) {
+    return Card(
+      child: Padding(
+        padding: EdgeInsets.all(AppDimensions.paddingLarge),
+        child: const Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Révisions en Attente',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            Text('Aucune révision en attente'),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget AnalyticsWidget(TeacherDashboardViewModel viewModel) {
+    return Card(
+      child: Padding(
+        padding: EdgeInsets.all(AppDimensions.paddingLarge),
+        child: const Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Analytics',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            Text('Analytics data here'),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDetailedMetricsCard(TeacherDashboardViewModel viewModel) {
+    return Card(
+      child: Padding(
+        padding: EdgeInsets.all(AppDimensions.paddingLarge),
+        child: const Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Métriques Détaillées',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            Text('Detailed metrics here'),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEngagementMetricsCard(TeacherDashboardViewModel viewModel) {
+    return Card(
+      child: Padding(
+        padding: EdgeInsets.all(AppDimensions.paddingLarge),
+        child: const Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Métriques d\'Engagement',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            Text('Engagement metrics here'),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCommunicationToolsCard(TeacherDashboardViewModel viewModel) {
+    return Card(
+      child: Padding(
+        padding: EdgeInsets.all(AppDimensions.paddingLarge),
+        child: const Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Outils de Communication',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            Text('Communication tools here'),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTeacherSettingsCard(TeacherDashboardViewModel viewModel) {
+    return Card(
+      child: Padding(
+        padding: EdgeInsets.all(AppDimensions.paddingLarge),
+        child: const Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Paramètres Enseignant',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            Text('Teacher settings here'),
+          ],
+        ),
+      ),
     );
   }
 }

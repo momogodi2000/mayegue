@@ -27,14 +27,14 @@ class ConflictResolutionService {
     final conflictData = jsonDecode(conflictEntry.metadata['conflict_data'] ?? '{}');
     final localVersion = DictionaryEntryModel.fromFirestore(conflictData['localVersion']);
 
-    final resolvedEntry = localVersion.copyWith(
+    final resolvedEntry = DictionaryEntryModel.fromEntity(localVersion.copyWith(
       lastUpdated: DateTime.now(),
       metadata: {
         ...localVersion.metadata,
         'conflictResolvedAt': DateTime.now().toIso8601String(),
         'resolutionMethod': 'local_chosen',
       },
-    );
+    ));
 
     await localDataSource.resolveConflict(entryId, resolvedEntry);
   }
@@ -47,28 +47,28 @@ class ConflictResolutionService {
     final conflictData = jsonDecode(conflictEntry.metadata['conflict_data'] ?? '{}');
     final remoteVersion = DictionaryEntryModel.fromFirestore(conflictData['remoteVersion']);
 
-    final resolvedEntry = remoteVersion.copyWith(
+    final resolvedEntry = DictionaryEntryModel.fromEntity(remoteVersion.copyWith(
       lastUpdated: DateTime.now(),
       metadata: {
         ...remoteVersion.metadata,
         'conflictResolvedAt': DateTime.now().toIso8601String(),
         'resolutionMethod': 'remote_chosen',
       },
-    );
+    ));
 
     await localDataSource.resolveConflict(entryId, resolvedEntry);
   }
 
   /// Resolve conflict with custom merged version
   Future<void> resolveWithMerged(String entryId, DictionaryEntryModel mergedEntry) async {
-    final resolvedEntry = mergedEntry.copyWith(
+    final resolvedEntry = DictionaryEntryModel.fromEntity(mergedEntry.copyWith(
       lastUpdated: DateTime.now(),
       metadata: {
         ...mergedEntry.metadata,
         'conflictResolvedAt': DateTime.now().toIso8601String(),
         'resolutionMethod': 'manual_merge',
       },
-    );
+    ));
 
     await localDataSource.resolveConflict(entryId, resolvedEntry);
   }
@@ -80,7 +80,7 @@ class ConflictResolutionService {
     List<String> conflictFields,
   ) {
     // Start with local version as base
-    var merged = localVersion;
+    DictionaryEntryEntity merged = localVersion;
 
     // Apply smart merging strategies for each field
     for (final field in conflictFields) {
@@ -145,10 +145,7 @@ class ConflictResolutionService {
         case 'reviewStatus':
           // Use the more advanced review status
           if (_isReviewStatusMoreAdvanced(remoteVersion.reviewStatus, localVersion.reviewStatus)) {
-            merged = merged.copyWith(
-              reviewStatus: remoteVersion.reviewStatus,
-              verifiedBy: remoteVersion.verifiedBy,
-            );
+            merged = merged.copyWith(reviewStatus: remoteVersion.reviewStatus);
           }
           break;
 
@@ -162,21 +159,22 @@ class ConflictResolutionService {
         case 'difficultyLevel':
           // For difficulty, we could use a more conservative approach (lower difficulty)
           // or trust the remote version if it comes from a teacher
-          if (remoteVersion.verifiedBy != null) {
+          if (remoteVersion.reviewStatus == ReviewStatus.humanVerified) {
             merged = merged.copyWith(difficultyLevel: remoteVersion.difficultyLevel);
           }
           break;
       }
     }
 
-    return merged.copyWith(
+    return DictionaryEntryModel.fromEntity(merged.copyWith(
       lastUpdated: DateTime.now(),
       metadata: {
         ...merged.metadata,
         'mergedFields': conflictFields,
         'mergedAt': DateTime.now().toIso8601String(),
+        'resolutionMethod': 'merged',
       },
-    );
+    ));
   }
 
   /// Check if one part of speech is more specific than another
@@ -206,10 +204,9 @@ class ConflictResolutionService {
   /// Check if review status is more advanced
   bool _isReviewStatusMoreAdvanced(ReviewStatus status1, ReviewStatus status2) {
     const statusOrder = {
-      ReviewStatus.draft: 0,
+      ReviewStatus.autoSuggested: 0,
       ReviewStatus.pendingReview: 1,
-      ReviewStatus.autoSuggested: 2,
-      ReviewStatus.verified: 3,
+      ReviewStatus.humanVerified: 2,
       ReviewStatus.rejected: -1,
     };
 

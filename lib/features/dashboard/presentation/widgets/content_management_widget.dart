@@ -1,7 +1,18 @@
 import 'package:flutter/material.dart';
 
 class ContentManagementWidget extends StatelessWidget {
-  const ContentManagementWidget({super.key});
+  final VoidCallback? onCreateLesson;
+  final VoidCallback? onCreateGame;
+  final VoidCallback? onManageVocabulary;
+  final VoidCallback? onUploadMedia;
+
+  const ContentManagementWidget({
+    super.key,
+    this.onCreateLesson,
+    this.onCreateGame,
+    this.onManageVocabulary,
+    this.onUploadMedia,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -55,9 +66,7 @@ class ContentManagementWidget extends StatelessWidget {
                 const SizedBox(width: 8),
                 Expanded(
                   child: OutlinedButton.icon(
-                    onPressed: () {
-                      // Navigate to manage existing content
-                    },
+                    onPressed: onManageVocabulary,
                     icon: const Icon(Icons.manage_search),
                     label: const Text('Manage'),
                   ),

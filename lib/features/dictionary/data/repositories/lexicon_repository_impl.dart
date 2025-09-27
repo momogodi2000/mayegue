@@ -119,7 +119,6 @@ class LexiconRepositoryImpl implements LexiconRepository {
       } else {
         final localEntries = await localDataSource.getEntriesByLanguage(
           languageCode,
-          limit: limit,
         );
         return Right(localEntries.map((e) => e.toEntity()).toList());
       }
@@ -332,8 +331,7 @@ class LexiconRepositoryImpl implements LexiconRepository {
         return Right(suggestions);
       } else {
         final suggestions = await localDataSource.getWordSuggestions(
-          query,
-          languageCode,
+          query: query,
           limit: limit,
         );
         return Right(suggestions);
@@ -380,10 +378,10 @@ class LexiconRepositoryImpl implements LexiconRepository {
         );
         return Right(entry.toEntity());
       } else {
-        final entry = await localDataSource.getRandomEntry(
-          languageCode,
-          difficultyLevel: difficultyLevel,
-        );
+        final entry = await localDataSource.getRandomEntry();
+        if (entry == null) {
+          return Left(UnknownFailure('No entry found'));
+        }
         return Right(entry.toEntity());
       }
     } on ServerException catch (e) {
@@ -409,9 +407,7 @@ class LexiconRepositoryImpl implements LexiconRepository {
         return Right(entries.map((e) => e.toEntity()).toList());
       } else {
         final entries = await localDataSource.getEntriesByDifficulty(
-          languageCode,
           difficulty,
-          limit: limit,
         );
         return Right(entries.map((e) => e.toEntity()).toList());
       }
@@ -548,7 +544,6 @@ class LexiconRepositoryImpl implements LexiconRepository {
         // Download in batches
         const batchSize = 50;
         String? lastDocId;
-        int totalDownloaded = 0;
 
         while (true) {
           final entries = await remoteDataSource.getEntriesByLanguage(
@@ -572,7 +567,6 @@ class LexiconRepositoryImpl implements LexiconRepository {
             await localDataSource.cacheEntry(entry);
           }
 
-          totalDownloaded += filteredEntries.length;
           lastDocId = entries.last.id;
 
           // Break if we got less than batch size (end of data)

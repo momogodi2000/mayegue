@@ -60,16 +60,14 @@ class DictionaryMigration {
       tags: wordModel.category != null ? [wordModel.category!] : [],
       difficultyLevel: difficultyLevel,
       contributorId: null, // Legacy system didn't track contributors
-      reviewStatus: ReviewStatus.verified, // Assume legacy entries are verified
-      verifiedBy: null,
+      reviewStatus: ReviewStatus.humanVerified, // Assume legacy entries are verified
       qualityScore: _calculateQualityScore(wordModel),
-      lastUpdated: wordModel.updatedAt ?? now,
+      lastUpdated: wordModel.updatedAt,
       sourceReference: 'Migrated from legacy dictionary',
       metadata: {
         'migrated': true,
         'migratedAt': now.toIso8601String(),
         'legacyId': wordModel.id,
-        'usageCount': wordModel.usageCount ?? 0,
         'definition': wordModel.definition,
         'synonyms': wordModel.synonyms,
         'antonyms': wordModel.antonyms,
@@ -116,11 +114,11 @@ class DictionaryMigration {
       score += 0.1;
     }
 
-    if (wordModel.synonyms != null && wordModel.synonyms!.isNotEmpty) {
+    if (wordModel.synonyms.isNotEmpty) {
       score += 0.05;
     }
 
-    if (wordModel.antonyms != null && wordModel.antonyms!.isNotEmpty) {
+    if (wordModel.antonyms.isNotEmpty) {
       score += 0.05;
     }
 
@@ -171,10 +169,8 @@ class DictionaryMigration {
 
     final categoryDistribution = <String, int>{};
     for (final word in legacyWords) {
-      if (word.category != null) {
-        categoryDistribution[word.category!] =
-            (categoryDistribution[word.category!] ?? 0) + 1;
-      }
+      categoryDistribution[word.category] =
+          (categoryDistribution[word.category] ?? 0) + 1;
     }
 
     return {

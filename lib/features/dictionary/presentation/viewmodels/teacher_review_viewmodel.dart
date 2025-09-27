@@ -83,7 +83,10 @@ class TeacherReviewViewModel extends ChangeNotifier {
       await currentUser.fold(
         (failure) => throw Exception('Failed to get current user: ${failure.message}'),
         (user) async {
-          final result = await lexiconRepository.markAsVerified(entryId, user.uid);
+          if (user == null) {
+            throw Exception('User not authenticated');
+          }
+          final result = await lexiconRepository.markAsVerified(entryId, user.id);
           result.fold(
             (failure) => throw Exception('Failed to approve entry: ${failure.message}'),
             (approvedEntry) {
@@ -117,7 +120,10 @@ class TeacherReviewViewModel extends ChangeNotifier {
       await currentUser.fold(
         (failure) => throw Exception('Failed to get current user: ${failure.message}'),
         (user) async {
-          final result = await lexiconRepository.markAsRejected(entryId, user.uid, reason);
+          if (user == null) {
+            throw Exception('User not authenticated');
+          }
+          final result = await lexiconRepository.markAsRejected(entryId, user.id, reason);
           result.fold(
             (failure) => throw Exception('Failed to reject entry: ${failure.message}'),
             (_) {
@@ -193,11 +199,14 @@ class TeacherReviewViewModel extends ChangeNotifier {
       await currentUser.fold(
         (failure) => throw Exception('Failed to get current user: ${failure.message}'),
         (user) async {
+          if (user == null) {
+            throw Exception('User not authenticated');
+          }
           int approvedCount = 0;
 
           for (final entry in highConfidenceEntries) {
             try {
-              final result = await lexiconRepository.markAsVerified(entry.id, user.uid);
+              final result = await lexiconRepository.markAsVerified(entry.id, user.id);
               result.fold(
                 (failure) => print('Failed to approve ${entry.canonicalForm}: ${failure.message}'),
                 (_) {

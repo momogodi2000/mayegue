@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import '../network/network_info.dart';
 import '../../features/dictionary/data/datasources/lexicon_local_datasource.dart';
 import '../../features/dictionary/data/datasources/lexicon_remote_datasource.dart';
@@ -62,7 +61,7 @@ class SyncManager {
       if (result.isSuccess) {
         _syncController.add(SyncStatus.completed);
       } else {
-        _syncController.add(SyncStatus.error(result.error ?? 'Unknown sync error'));
+        _syncController.add(SyncStatus.error(result.errorMessage ?? 'Unknown sync error'));
       }
 
       return result;
@@ -188,19 +187,14 @@ class SyncManager {
       // Get the current remote version
       final remoteEntry = await remoteDataSource.getDictionaryEntry(localEntry.id);
 
-      remoteEntry.fold(
-        (failure) => throw Exception('Failed to get remote entry: ${failure.message}'),
-        (remote) async {
-          final conflictData = {
-            'type': 'upload_conflict',
-            'localVersion': localEntry.toFirestore(),
-            'remoteVersion': remote.toFirestore(),
-            'detectedAt': DateTime.now().toIso8601String(),
-          };
+      final conflictData = {
+        'type': 'upload_conflict',
+        'localVersion': localEntry.toFirestore(),
+        'remoteVersion': remoteEntry.toFirestore(),
+        'detectedAt': DateTime.now().toIso8601String(),
+      };
 
-          await localDataSource.markAsConflict(localEntry.id, conflictData);
-        },
-      );
+      await localDataSource.markAsConflict(localEntry.id, conflictData);
     } catch (e) {
       print('Failed to handle upload conflict for ${localEntry.id}: $e');
     }
@@ -289,10 +283,10 @@ class SyncManager {
         final mergedTranslations = Map<String, String>.from(localVersion.translations);
         mergedTranslations.addAll(remoteVersion.translations);
 
-        resolvedEntry = localVersion.copyWith(
+        resolvedEntry = DictionaryEntryModel.fromEntity(localVersion.copyWith(
           translations: mergedTranslations,
           lastUpdated: DateTime.now(),
-        );
+        ));
       }
 
       // Strategy 3: If only tags differ, merge them
@@ -300,10 +294,10 @@ class SyncManager {
         final mergedTags = Set<String>.from(localVersion.tags);
         mergedTags.addAll(remoteVersion.tags);
 
-        resolvedEntry = localVersion.copyWith(
+        resolvedEntry = DictionaryEntryModel.fromEntity(localVersion.copyWith(
           tags: mergedTags.toList(),
           lastUpdated: DateTime.now(),
-        );
+        ));
       }
 
       // Strategy 4: Use remote version if it has higher quality score
@@ -327,10 +321,9 @@ class SyncManager {
   /// Check if review status is more advanced
   bool _isReviewStatusMoreAdvanced(ReviewStatus status1, ReviewStatus status2) {
     const statusOrder = {
-      ReviewStatus.draft: 0,
+      ReviewStatus.autoSuggested: 0,
       ReviewStatus.pendingReview: 1,
-      ReviewStatus.autoSuggested: 2,
-      ReviewStatus.verified: 3,
+      ReviewStatus.humanVerified: 3,
       ReviewStatus.rejected: -1,
     };
 
@@ -397,7 +390,7 @@ class SyncStatus {
 /// Sync result with statistics
 class SyncResult {
   final bool isSuccess;
-  final String? error;
+  final String? errorMessage;
   final int uploadedCount;
   final int downloadedCount;
   final int conflictsDetected;
@@ -405,7 +398,7 @@ class SyncResult {
 
   const SyncResult._({
     required this.isSuccess,
-    this.error,
+    this.errorMessage,
     this.uploadedCount = 0,
     this.downloadedCount = 0,
     this.conflictsDetected = 0,
@@ -427,9 +420,9 @@ class SyncResult {
     );
   }
 
-  static SyncResult error(String error) => SyncResult._(isSuccess: false, error: error);
-  static SyncResult offline() => SyncResult._(isSuccess: false, error: 'No network connection');
-  static SyncResult inProgress() => SyncResult._(isSuccess: false, error: 'Sync already in progress');
+  static SyncResult error(String error) => SyncResult._(isSuccess: false, errorMessage: error);
+  static SyncResult offline() => SyncResult._(isSuccess: false, errorMessage: 'No network connection');
+  static SyncResult inProgress() => SyncResult._(isSuccess: false, errorMessage: 'Sync already in progress');
 }
 
 /// Conflict detection result
