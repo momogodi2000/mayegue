@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 import '../constants/supported_languages.dart';
 import '../services/ai_service.dart';
@@ -154,7 +155,10 @@ Format: word|phonetic|english|french|definition|example|cultural_notes
       final response = await _aiService!.generateContent(prompt);
       return _parseAIVocabularyResponse(response, language);
     } catch (e) {
-      print('Error enhancing vocabulary with AI: $e');
+      // Log error silently in production
+      if (kDebugMode) {
+        print('Error enhancing vocabulary with AI: $e');
+      }
       return [];
     }
   }
@@ -190,7 +194,10 @@ Format: word|phonetic|english|french|definition|example|cultural_notes
           entries.add(entry);
         }
       } catch (e) {
-        print('Error parsing AI vocabulary line: $line');
+        // Log error silently in production
+        if (kDebugMode) {
+          print('Error parsing AI vocabulary line: $line');
+        }
       }
     }
 
@@ -493,7 +500,7 @@ List<VocabularyEntry> get fulfuldeVocabulary => [
 ];
 
 /// BASSA vocabulary (90+ entries)
-const bassaVocabulary = [
+List<VocabularyEntry> get bassaVocabulary => [
   VocabularyEntry(
     id: 'bassa_001',
     word: 'Baane',
@@ -515,7 +522,7 @@ const bassaVocabulary = [
 ];
 
 /// BAMUM vocabulary (100+ entries)
-const bamumVocabulary = [
+List<VocabularyEntry> get bamumVocabulary => [
   VocabularyEntry(
     id: 'bamum_001',
     word: 'Nshyee',
@@ -540,7 +547,7 @@ const bamumVocabulary = [
 List<PhraseEntry> _getCommonPhrases() {
   return [
     // Add common phrases for each language
-    const PhraseEntry(
+    PhraseEntry(
       id: 'ewondo_phrase_001',
       phrase: 'Mbolo, osezeye? Mezeye.',
       translation: 'Hello, how are you? I am fine.',
@@ -557,7 +564,7 @@ List<PhraseEntry> _getCommonPhrases() {
 /// Cultural content for all languages
 List<CultureEntry> _getCulturalContent() {
   return [
-    const CultureEntry(
+    CultureEntry(
       id: 'ewondo_culture_001',
       title: 'Proverbe traditionnel',
       content: 'Abiali a si abum nnem - Les enfants ne mangent pas les noix de palme (les enfants doivent respecter leurs aînés)',
