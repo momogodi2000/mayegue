@@ -67,6 +67,7 @@ flutter:
   # 📂 Assets (images, sons, vidéos)
   assets:
     - assets/images/
+    - assets/databases/cameroon_languages.db
     # - assets/audios/
     # - assets/videos/
   generate: true

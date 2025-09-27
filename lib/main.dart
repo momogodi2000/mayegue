@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'core/router.dart';
 import 'core/config/environment_config.dart';
+import 'core/database/database_initialization_service.dart';
+import 'core/database/data_seeding_service.dart';
 import 'shared/providers/app_providers.dart';
 import 'shared/themes/app_theme.dart';
 import 'shared/providers/theme_provider.dart';
@@ -16,9 +18,23 @@ void main() async {
   // Initialize environment configuration
   await EnvironmentConfig.init();
 
+  // Initialize Firebase
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // Initialize databases and seed data
+  try {
+    // Initialize the pre-built Cameroon languages database
+    await DatabaseInitializationService.database;
+    
+    // Seed the main app database with initial data
+    await DataSeedingService.seedDatabase();
+  } catch (e) {
+    // Log error but don't crash the app
+    print('Error initializing databases: $e');
+  }
+
   runApp(const MyApp());
 }
 
