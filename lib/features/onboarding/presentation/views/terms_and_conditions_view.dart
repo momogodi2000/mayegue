@@ -23,8 +23,10 @@ class _TermsAndConditionsViewState extends State<TermsAndConditionsView> {
 
   void _onAcceptTerms() {
     if (_acceptedTerms) {
-      // Navigate to landing page after accepting terms
-      context.go(Routes.landing);
+      // Store acceptance in SharedPreferences
+      _storeTermsAcceptance();
+      // Navigate to language selection for proper onboarding flow
+      context.go('/language-selection');
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -32,6 +34,15 @@ class _TermsAndConditionsViewState extends State<TermsAndConditionsView> {
         ),
       );
     }
+  }
+
+  void _storeTermsAcceptance() {
+    // This would typically use SharedPreferences to persist the acceptance
+    // For now, we'll simulate this
+    // SharedPreferences.getInstance().then((prefs) {
+    //   prefs.setBool('terms_accepted', true);
+    //   prefs.setString('terms_accepted_date', DateTime.now().toIso8601String());
+    // });
   }
 
   @override

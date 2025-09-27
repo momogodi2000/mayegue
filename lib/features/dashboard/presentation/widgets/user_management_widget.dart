@@ -1,0 +1,171 @@
+import 'package:flutter/material.dart';
+
+class UserManagementWidget extends StatelessWidget {
+  const UserManagementWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 4,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'User Management',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 16),
+            _buildUserTypeSummary(),
+            const SizedBox(height: 16),
+            const Text(
+              'Recent Users',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const SizedBox(height: 8),
+            _buildUserItem('Alice Johnson', 'Student', 'Active', Colors.green),
+            _buildUserItem('Dr. Michael Brown', 'Teacher', 'Active', Colors.green),
+            _buildUserItem('Sarah Wilson', 'Student', 'Pending', Colors.orange),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      // Navigate to add new user
+                    },
+                    icon: const Icon(Icons.person_add),
+                    label: const Text('Add User'),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () {
+                      // Navigate to user list
+                    },
+                    icon: const Icon(Icons.list),
+                    label: const Text('View All'),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildUserTypeSummary() {
+    return Row(
+      children: [
+        _buildUserTypeCard('Students', '1,245', Colors.blue),
+        const SizedBox(width: 12),
+        _buildUserTypeCard('Teachers', '89', Colors.green),
+        const SizedBox(width: 12),
+        _buildUserTypeCard('Admins', '12', Colors.purple),
+      ],
+    );
+  }
+
+  Widget _buildUserTypeCard(String type, String count, Color color) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Column(
+          children: [
+            Text(
+              count,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: color,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              type,
+              style: TextStyle(
+                fontSize: 12,
+                color: color,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildUserItem(String name, String role, String status, Color statusColor) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      margin: const EdgeInsets.only(bottom: 8),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey[300]!),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        children: [
+          CircleAvatar(
+            backgroundColor: Colors.grey[300],
+            child: Text(name[0], style: const TextStyle(color: Colors.black)),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  name,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                Text(
+                  role,
+                  style: const TextStyle(
+                    color: Colors.grey,
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: statusColor.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Text(
+              status,
+              style: TextStyle(
+                color: statusColor,
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          IconButton(
+            onPressed: () {
+              // Edit user
+            },
+            icon: const Icon(Icons.more_vert, size: 20),
+            color: Colors.grey,
+          ),
+        ],
+      ),
+    );
+  }
+}

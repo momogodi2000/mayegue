@@ -53,6 +53,7 @@ class GamesViewModel extends ChangeNotifier {
   String? _errorMessage;
   String _currentLanguage = 'ewondo';
   String _searchQuery = '';
+  String? _selectedLanguage;
 
   // Getters
   List<GameEntity> get games => _games;
@@ -67,8 +68,10 @@ class GamesViewModel extends ChangeNotifier {
   bool get isLoadingProgress => _isLoadingProgress;
   bool get isSearching => _isSearching;
   String? get errorMessage => _errorMessage;
+  String? get error => _errorMessage; // Alias for compatibility
   String get currentLanguage => _currentLanguage;
   String get searchQuery => _searchQuery;
+  String? get selectedLanguage => _selectedLanguage;
 
   // Computed getters
   List<GameEntity> get memoryGames =>
@@ -406,6 +409,18 @@ class GamesViewModel extends ChangeNotifier {
     _errorMessage = null;
     _searchQuery = '';
     _currentLanguage = 'ewondo';
+    _selectedLanguage = null;
+    notifyListeners();
+  }
+
+  /// Load available games (simplified method for the view)
+  Future<void> loadAvailableGames() async {
+    await loadGames();
+  }
+
+  /// Set selected language
+  void setSelectedLanguage(String? language) {
+    _selectedLanguage = language;
     notifyListeners();
   }
 }

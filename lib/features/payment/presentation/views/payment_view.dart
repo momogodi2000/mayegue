@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
+import '../../../../core/constants/routes.dart';
 import '../viewmodels/payment_viewmodel.dart';
 import '../widgets/payment_form.dart';
 
@@ -140,12 +142,14 @@ class _PaymentViewState extends State<PaymentView> {
       method: _selectedMethod,
       phoneNumber: _phoneController.text,
     ).then((_) {
-      if (mounted && viewModel.successMessage != null) {
-        // Navigate to success view
-        Navigator.pushReplacementNamed(
-          context,
-          '/payment/success',
-          arguments: widget.selectedPlan,
+      if (mounted && viewModel.successMessage != null && viewModel.lastProcessedPayment != null) {
+        // Navigate to processing view with actual payment ID
+        context.go(
+          '${Routes.payment}/processing',
+          extra: {
+            'paymentId': viewModel.lastProcessedPayment.id,
+            'selectedPlan': widget.selectedPlan,
+          },
         );
       }
     });

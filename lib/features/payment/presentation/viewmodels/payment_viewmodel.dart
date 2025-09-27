@@ -23,11 +23,13 @@ class PaymentViewModel extends ChangeNotifier {
   String? _error;
   String? _successMessage;
   List<dynamic> _paymentHistory = [];
+  dynamic _lastProcessedPayment;
 
   bool get isLoading => _isLoading;
   String? get error => _error;
   String? get successMessage => _successMessage;
   List<dynamic> get paymentHistory => _paymentHistory;
+  dynamic get lastProcessedPayment => _lastProcessedPayment;
 
   /// Validate payment configuration before processing
   String? validatePaymentConfig() {
@@ -68,9 +70,11 @@ class PaymentViewModel extends ChangeNotifier {
     result.fold(
       (failure) {
         _error = failure.message;
+        _lastProcessedPayment = null;
       },
       (payment) {
         _successMessage = 'Payment initiated successfully. Transaction ID: ${payment.transactionId}';
+        _lastProcessedPayment = payment;
       },
     );
 
@@ -140,9 +144,13 @@ class PaymentViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void clearMessages() {
-    _error = null;
-    _successMessage = null;
-    notifyListeners();
+  Future<String?> getPaymentStatus(String paymentId) async {
+    final params = GetPaymentStatusParams(paymentId: paymentId);
+    final result = await getPaymentStatusUseCase(params);
+
+    return result.fold(
+      (failure) => null,
+      (payment) => payment.status,
+    );
   }
 }

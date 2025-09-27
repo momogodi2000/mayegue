@@ -14,9 +14,11 @@ import '../features/onboarding/presentation/views/onboarding_view.dart';
 import '../features/profile/presentation/views/profile_view.dart';
 import '../features/lessons/presentation/views/courses_view.dart';
 import '../features/dictionary/presentation/views/dictionary_view.dart';
+import '../features/games/presentation/views/games_view.dart';
+import '../features/assessment/presentation/views/quiz_view.dart';
 import '../features/payment/presentation/views/subscription_plans_view.dart';
 import '../features/payment/presentation/views/payment_view.dart';
-import '../features/payment/presentation/views/payment_success_view.dart';
+import '../features/payment/presentation/views/payment_processing_view.dart';
 import '../features/payment/presentation/views/payment_history_view.dart';
 import '../features/languages/presentation/views/languages_list_view.dart';
 import 'constants/routes.dart';
@@ -79,7 +81,11 @@ class AppRouter {
         ),
         GoRoute(
           path: Routes.games,
-          builder: (context, state) => const _GamesPlaceholder(),
+          builder: (context, state) => const GamesView(),
+        ),
+        GoRoute(
+          path: Routes.quiz,
+          builder: (context, state) => const QuizView(),
         ),
         GoRoute(
           path: Routes.community,
@@ -97,10 +103,15 @@ class AppRouter {
           },
         ),
         GoRoute(
-          path: '${Routes.payment}/success',
+          path: '${Routes.payment}/processing',
           builder: (context, state) {
-            final plan = state.extra as Map<String, dynamic>?;
-            return PaymentSuccessView(selectedPlan: plan ?? {});
+            final args = state.extra as Map<String, dynamic>?;
+            final paymentId = args?['paymentId'] as String? ?? '';
+            final plan = args?['selectedPlan'] as Map<String, dynamic>? ?? {};
+            return PaymentProcessingView(
+              paymentId: paymentId,
+              selectedPlan: plan,
+            );
           },
         ),
         GoRoute(
@@ -215,18 +226,6 @@ class _AuthRefreshListenable extends ChangeNotifier {
 }
 
 /// Placeholder widgets for routes not yet implemented
-class _GamesPlaceholder extends StatelessWidget {
-  const _GamesPlaceholder();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Games')),
-      body: const Center(child: Text('Games - Coming Soon')),
-    );
-  }
-}
-
 class _CommunityPlaceholder extends StatelessWidget {
   const _CommunityPlaceholder();
 

@@ -242,6 +242,7 @@ enum PointActivity {
   perfectScore,
   helpOthers,
   shareAchievement,
+  quizCompleted,
 }
 
 /// Point values for different activities
@@ -252,6 +253,7 @@ class PointValues {
   static const int perfectScore = 25;
   static const int helpOthers = 15;
   static const int shareAchievement = 10;
+  static const int quizCompleted = 20;
 
   static int getPointsForActivity(PointActivity activity) {
     switch (activity) {
@@ -267,6 +269,8 @@ class PointValues {
         return helpOthers;
       case PointActivity.shareAchievement:
         return shareAchievement;
+      case PointActivity.quizCompleted:
+        return quizCompleted;
     }
   }
 }
